@@ -1,9 +1,9 @@
 (*
-ISO TC184/SC4/WG12 N1911 - ISO/CD-TS 10303-1001 Appearance assignment - EXPRESS ARM
+ISO TC184/SC4/WG12 N2690 - ISO/TS 10303-1001 Appearance assignment - EXPRESS ARM
 *) 
 
 
-SCHEMA Appearance_assignment_arm; 
+SCHEMA Appearance_assignment_arm;
 
 USE FROM Elemental_geometric_shape_arm;    -- ISO/TS 10303-1004
 
@@ -18,8 +18,8 @@ END_TYPE;
 
 TYPE styled_model_element_select = SELECT
    (Mapping_based_styled_model, 
-    Transformation_based_styled_model, 
-    Styled_element);
+    Styled_element, 
+    Transformation_based_styled_model);
 END_TYPE; 
 
 ENTITY Appearance_assignment;
@@ -29,6 +29,13 @@ END_ENTITY;
 ENTITY Context_dependent_appearance_assignment
   SUBTYPE OF (Appearance_assignment);
   context_definition : appearance_context;
+END_ENTITY;
+
+ENTITY Mapping_based_styled_model
+  SUBTYPE OF (Representation_item);
+  replicated_model : Styled_model;
+  source : Axis_placement;
+  target : geometric_mapping_target;
 END_ENTITY;
 
 ENTITY Over_riding_styled_element
@@ -47,7 +54,7 @@ ENTITY Styled_geometric_model
   SUBTYPE OF (Styled_model);
   styled_geometry : Geometric_model;
 DERIVE
-  context_of_items : Numerical_representation_context := styled_geometry\Representation.context_of_items;
+  SELF\Representation.context_of_items : Numerical_representation_context := styled_geometry\Representation.context_of_items;
 END_ENTITY;
 
 ENTITY Styled_model
@@ -59,13 +66,6 @@ END_ENTITY;
 ENTITY Styled_model_element
   SUBTYPE OF (Styled_element);
   element : Detailed_geometric_model_element;
-END_ENTITY;
-
-ENTITY Mapping_based_styled_model
-  SUBTYPE OF (Representation_item);
-  replicated_model : Styled_model;
-  source : Axis_placement;
-  target : geometric_mapping_target;
 END_ENTITY;
 
 ENTITY Transformation_based_styled_model
