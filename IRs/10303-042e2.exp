@@ -1,5 +1,6 @@
- (* Document WG12 N537 date 2000-05-01
-   EXPRESS listing extracted from part 42 IS WG12 N536 *)
+ (* WG12 N976 August 2001 - Formally document WG12 N934 date 2001-04-25. EXPRESS listing
+    corresponding to part 42 edition IS WG12 N536, as modified by TC1 WG12 N608 and N616
+    revolved_area_sold, revolved_face_solid corrected August 2001 to match TC1 *)
  SCHEMA geometry_schema;
    REFERENCE FROM representation_schema
      (definitional_representation,
@@ -47,7 +48,7 @@
        torus);
 
  CONSTANT
-   dummy_gri : geometric_representation_item :=  representation_item('')||
+  dummy_gri : geometric_representation_item :=  representation_item('')||
                                    geometric_representation_item();
  END_CONSTANT;
 
@@ -990,11 +991,14 @@ ENTITY point
  END_ENTITY;
 
  ENTITY surface_of_revolution
-   SUBTYPE OF (swept_surface);
+  SUBTYPE OF (swept_surface);
    axis_position       : axis1_placement;
  DERIVE
-   axis_line : line := dummy_gri || curve() || line (axis_position.location,
-                          dummy_gri || vector(axis_position.z, 1.0));
+   axis_line : line := representation_item('')||
+                     geometric_representation_item()|| curve()||
+                     line(axis_position.location, representation_item('')||
+                     geometric_representation_item()||
+                     vector(axis_position.z, 1.0));
  END_ENTITY;
 
  ENTITY surface_patch
@@ -2925,20 +2929,25 @@ END_ENTITY;
    axis  : axis1_placement;
    angle : plane_angle_measure;
  DERIVE
-   axis_line : line := dummy_gri || curve() || line(axis.location,
-                          dummy_gri || vector(axis.z, 1.0));
+   axis_line : line := representation_item('')||
+                    geometric_representation_item()|| curve()||
+                    line(axis.location, representation_item('')||
+                    geometric_representation_item()||
+                    vector(axis.z, 1.0));
  END_ENTITY;
 
- ENTITY revolved_face_solid
-   SUBTYPE OF (swept_face_solid);
+ ENTITY revolved_face_solid  SUBTYPE OF (swept_face_solid);
    axis  : axis1_placement;
    angle : plane_angle_measure;
  DERIVE
-   axis_line : line := dummy_gri || curve() || line(axis.location,
-                          dummy_gri || vector(axis.z, 1.0));
+   axis_line : line := representation_item('')||
+                     geometric_representation_item()|| curve()||
+                     line(axis.location, representation_item('')||
+                     geometric_representation_item()||
+                     vector(axis.z, 1.0));
  END_ENTITY;
 
-  ENTITY right_angular_wedge
+ ENTITY right_angular_wedge
    SUBTYPE OF (geometric_representation_item);
    position : axis2_placement_3d;
    x        : positive_length_measure;
