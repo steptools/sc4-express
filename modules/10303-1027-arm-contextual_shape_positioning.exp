@@ -2,31 +2,31 @@
    
 SCHEMA Contextual_shape_positioning_arm;
 
-USE FROM Elemental_geometric_shape_arm; 		
-USE FROM Foundation_representation_arm; 		
+USE FROM Elemental_geometric_shape_arm; 
+USE FROM Foundation_representation_arm; 
 USE FROM Shape_property_assignment_arm; 
 
-TYPE template_instance = SELECT (Mapping_based_template_instance, Transformation_based_template_instance);
+TYPE template_instance = SELECT (Mapping_based_template_instance, 
+                                 Transformation_based_template_instance);
 END_TYPE;
 
 ENTITY Contextual_shape_representation_inclusion;
-  contextual_shape		: Contextual_item_shape;
-  context_representation	: Geometric_model;
-  positioned_representation	: template_instance;
+  contextual_shape          : Contextual_item_shape;
+  context_representation    : Geometric_model;
+  positioned_representation : template_instance;
 END_ENTITY;
 
 ENTITY Mapping_based_template_instance
 SUBTYPE OF (Detailed_geometric_model_element);
   replicated_model: shape_model;
-  source		: Axis_placement;
-  target		: geometric_mapping_target;
+  source          : Axis_placement;
+  target          : geometric_mapping_target;
 END_ENTITY;
 
 ENTITY Transformation_based_template_instance
 SUBTYPE OF (Detailed_geometric_model_element);
- replicated_model    		: shape_model;
- replication_transformation	: cartesian_transformation;
+ replicated_model           : shape_model;
+ replication_transformation : cartesian_transformation;
 END_ENTITY;
 
 END_SCHEMA;
-

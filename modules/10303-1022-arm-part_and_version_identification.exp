@@ -2,10 +2,10 @@
    
 SCHEMA Part_and_version_identification_arm;
 
-USE FROM Product_version_arm; --ISO/TS 10303-1018.
+USE FROM Product_version_arm; -- ISO/TS 10303-1018
 
 REFERENCE FROM Product_identification_arm(
-	types_of_product);
+                 types_of_product);
 
 
 ENTITY Part

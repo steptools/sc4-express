@@ -3,17 +3,16 @@
 SCHEMA Independent_property_arm;
 
 ENTITY Independent_property;
-  id : STRING;
+  id            : STRING;
   property_type : STRING;
-  description : OPTIONAL STRING;
+  description   : OPTIONAL STRING;
 END_ENTITY;
 
 ENTITY Independent_property_relationship;
   relation_type : STRING;
-  related : Independent_property;
-  relating : Independent_property;
-  description : OPTIONAL STRING;
+  related       : Independent_property;
+  relating      : Independent_property;
+  description   : OPTIONAL STRING;
 END_ENTITY;
 
 END_SCHEMA;
-

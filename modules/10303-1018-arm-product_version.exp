@@ -2,7 +2,6 @@
    
 SCHEMA Product_version_arm;
 
-   
 USE FROM Product_identification_arm; -- ISO/TS 10303-1017
    
 ENTITY Product_version;
@@ -13,5 +12,4 @@ UNIQUE
   UR1: id, of_product;
 END_ENTITY;
 
-   
 END_SCHEMA;
