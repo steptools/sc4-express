@@ -1,0 +1,123 @@
+(*
+
+  ISO/CD 10303-54, Set theory, 2002-14-19
+
+  WG12 N985
+
+   This file contains the following schema:
+      classification_schema;
+      set_theory_schema.
+*)
+
+SCHEMA classification_schema;
+
+  REFERENCE FROM management_resources_schema -- ISO 10303-41
+    (classification_assignment);
+
+  REFERENCE FROM group_schema -- ISO 10303-41
+    (group);
+
+TYPE classified_select = EXTENSIBLE SELECT;
+END_TYPE; 
+
+ENTITY class
+  SUPERTYPE OF (ONEOF (
+    class_by_extension,
+    class_by_intension))
+  SUBTYPE OF (group);
+END_ENTITY;
+
+ENTITY class_by_extension
+  SUBTYPE OF (class);
+END_ENTITY;
+
+ENTITY class_by_intension
+  SUBTYPE OF (class);
+END_ENTITY;
+
+ENTITY classification
+  SUBTYPE OF (classification_assignment);
+  classified  : classified_select;
+DERIVE
+  classifier  : class := SELF\classification_assignment.assigned_class;
+END_ENTITY;
+
+ENTITY complete_membership
+  SUBTYPE OF (classification_assignment);
+  members        : SET[1:?] OF classified_select;
+DERIVE
+  containing_set : class :=
+                         SELF\classification_assignment.assigned_class;
+END_ENTITY;
+
+END_SCHEMA;
+
+SCHEMA set_theory_schema;
+
+  REFERENCE FROM support_resource_schema -- ISO 10303-41
+    (identifier,
+    label,
+    text);
+
+  REFERENCE FROM classification_schema
+    (class);
+
+ENTITY complement;
+  id          : identifier;
+  name        : label;
+  description : OPTIONAL text;
+  set_1       : class;
+  set_2       : class;
+  universe    : class;
+END_ENTITY;
+
+ENTITY intersection;
+  id          : identifier;
+  name        : label;
+  description : OPTIONAL text;
+  operand     : SET[2:?] OF class;
+  resultant   : class;
+END_ENTITY;
+
+ENTITY power_set;
+  id          : identifier;
+  name        : label;
+  description : OPTIONAL text;
+  base        : class;
+  derived     : class;
+END_ENTITY;
+
+ENTITY proper_subset;
+  id          : identifier;
+  name        : label;
+  description : OPTIONAL text;
+  subset      : class;
+  superset    : class;
+END_ENTITY;
+
+ENTITY same_membership;
+  id          : identifier;
+  name        : label;
+  description : OPTIONAL text;
+  set_1       : class;
+  set_2       : class;
+END_ENTITY;
+
+ENTITY subset;
+  id          : identifier;
+  name        : label;
+  description : OPTIONAL text;
+  subset      : class;
+  superset    : class;
+END_ENTITY;
+
+ENTITY union;
+  id          : identifier;
+  name        : label;
+  description : OPTIONAL text;
+  operand     : SET[2:?] OF class;
+  resultant   : class;
+END_ENTITY;
+
+END_SCHEMA;
+
