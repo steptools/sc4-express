@@ -1,6 +1,6 @@
  (* Curve Swept Solid AIC EXPRESS definitions - 
-   document WG12 N1487 dated  2002-10-17 *)
- SCHEMA aic_curve_swept_solid; -- WG12 N1487 As in WG12 N1486, N2082
+   document WG12 N2506 dated  2003-12-19 *)
+ SCHEMA aic_curve_swept_solid; -- WG12 N2506 As in WG12 N2505 part 523 IS
 
   USE FROM geometry_schema  -- ISO 10303-42
                           (axis2_placement_2d,
@@ -82,10 +82,11 @@
 ENTITY ruled_surface_swept_area_solid
   SUBTYPE OF(surface_curve_swept_area_solid);
   WHERE
-  WR1: ('B_SPLINE_SURFACE' IN TYPEOF(SELF.reference_surface)) AND
-         (SELF.reference_surface\b_spline_surface.u_degree = 1);
-  WR2: ('PCURVE' IN TYPEOF(SELF.directrix)) OR
-        (('B_SPLINE_CURVE' IN TYPEOF(SELF.directrix\surface_curve.curve_3d))
+  WR1: ('GEOMETRY_SCHEMA.B_SPLINE_SURFACE' IN TYPEOF(SELF.reference_surface))
+            AND (SELF.reference_surface\b_spline_surface.u_degree = 1);
+  WR2: ('GEOMETRY_SCHEMA.PCURVE' IN TYPEOF(SELF.directrix)) OR
+        (('GEOMETRY_SCHEMA.B_SPLINE_CURVE' IN
+             TYPEOF(SELF.directrix\surface_curve.curve_3d))
          AND
          (SELF.directrix\surface_curve.curve_3d\b_spline_curve.degree =
          SELF.reference_surface\b_spline_surface.v_degree));
