@@ -1,0 +1,48 @@
+(*
+WG12 N659
+ISO/TS 10303-1004
+Product data representation and exchange: Application module: Elemental geometric shape
+*)
+
+SCHEMA Elemental_geometric_shape_mim;
+  USE FROM Foundation_representation_mim; -- ISO/TS 10303-1006
+  USE FROM basic_attribute_schema -- ISO 10303-41
+      (description_attribute);
+  USE FROM geometry_schema -- ISO 10303-42
+      (geometric_representation_item,
+       geometric_representation_context,
+       cartesian_point,
+       placement,
+       axis1_placement,
+       axis2_placement_2d,
+       axis2_placement_3d,
+       cartesian_transformation_operator,
+       cartesian_transformation_operator_2d,
+       cartesian_transformation_operator_3d);
+  USE FROM measure_schema -- ISO 10303-41
+      (global_unit_assigned_context);
+  USE FROM management_resources_schema -- ISO 10303-41
+      (identification_assignment);
+  USE FROM product_property_representation_schema -- ISO 10303-41
+      (shape_representation,
+       shape_representation_relationship);
+  USE FROM representation_schema -- ISO 10303-43
+      (functionally_defined_transformation,
+       global_uncertainty_assigned_context,
+       item_defined_transformation,
+       mapped_item,
+       representation_relationship_with_transformation, 
+       uncertainty_measure_with_unit,
+       value_representation_item);
+
+TYPE identification_item  = SELECT
+  (representation);
+END_TYPE;
+
+ENTITY applied_identification_assignment
+  SUBTYPE OF (identification_assignment);
+  items : SET[1:?] OF identification_item;
+END_ENTITY;
+
+END_SCHEMA;
+

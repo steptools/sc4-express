@@ -1,0 +1,14 @@
+(*
+WG12 N663
+ISO/TS 10303-1006
+Product data representation and exchange: Application module: Foundation representation
+*)
+
+SCHEMA Foundation_representation_mim;
+  USE FROM representation_schema -- ISO 10303-43
+      (representation,
+       representation_context,
+       representation_item);
+
+END_SCHEMA;
+

@@ -1,0 +1,44 @@
+(*
+WG12 N673
+ISO/TS 10303-1004
+Product data representation and exchange: Application module: Elemental geometric shape - EXPRESS ARM
+*)
+
+SCHEMA Elemental_geometric_shape_arm;
+
+USE FROM Foundation_representation_arm; -- ISO/TS 10303-1006
+
+ENTITY Cartesian_coordinate_space;
+  unit : SET[2:?] OF REAL;
+END_ENTITY;
+
+ENTITY Detailed_geometric_model_element
+  ABSTRACT SUPERTYPE
+  SUBTYPE OF (Representation_item);
+END_ENTITY;
+
+ENTITY Geometric_model
+  SUBTYPE OF (Representation);
+  is_defined_in : Cartesian_coordinate_space;
+  id            : STRING;
+  version_id    : OPTIONAL STRING;
+  description   : OPTIONAL STRING;
+  role          : STRING;
+  elements      : SET [1:?] OF Representation_item;
+  model_extent  : OPTIONAL REAL;
+  accuracy      : OPTIONAL REAL;
+END_ENTITY;
+
+ENTITY Template_instance
+  SUBTYPE OF (Representation_item);
+  id                  : STRING;
+  scale               : OPTIONAL REAL;
+  template_definition : Geometric_model;
+  transformation      : Transformation;
+END_ENTITY;
+
+ENTITY Transformation;
+END_ENTITY;
+
+END_SCHEMA;
+

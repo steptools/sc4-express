@@ -1,0 +1,28 @@
+(*
+WG12 N675
+ISO/TS 10303-1006
+Product data representation and exchange: Application module: Foundation representation - EXPRESS ARM
+*)
+
+SCHEMA Foundation_representation_arm;
+
+ENTITY Representation;
+  name             : STRING;
+  items            : SET[1:?] OF Representation_item;
+  foundation       : Representation_context;
+END_ENTITY;
+
+ENTITY Representation_context;
+  identifier : STRING;
+  kind       : STRING;
+INVERSE 
+  representations_in_context : SET [1:?] OF representation 
+                               FOR context_of_items;
+END_ENTITY;
+
+ENTITY Representation_item;
+name : STRING;
+END_ENTITY;
+
+END_SCHEMA;
+
