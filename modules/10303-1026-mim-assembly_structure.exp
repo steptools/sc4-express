@@ -2,10 +2,11 @@
 
 SCHEMA Assembly_structure_mim;
 
-USE FROM Product_view_definition_relationship_mim; -- ISO/TS 10303-1041
-USE FROM Value_with_unit_mim; -- ISO/TS 10303-1054
+USE FROM Product_view_definition_relationship_mim; -- ISO 10303-1041
 
-USE FROM product_structure_schema -- ISO 10303-44
+USE FROM Value_with_unit_mim;                      -- ISO 10303-1054
+
+USE FROM product_structure_schema                  -- ISO 10303-44
   (assembly_component_usage,
    next_assembly_usage_occurrence,
    promissory_usage_occurrence,
@@ -13,7 +14,3 @@ USE FROM product_structure_schema -- ISO 10303-44
    specified_higher_usage_occurrence);
 
 END_SCHEMA;
-
-
-
-

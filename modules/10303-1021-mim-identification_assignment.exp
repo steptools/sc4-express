@@ -21,7 +21,7 @@ END_ENTITY;
 RULE version_assignments_are_valid FOR (applied_identification_assignment);
 WHERE
   WR1: SIZEOF(QUERY(aia <* applied_identification_assignment | 
-		NOT version_assignment_is_valid(aia)))=0;
+       NOT version_assignment_is_valid(aia)))=0;
 END_RULE;
 
 
@@ -34,16 +34,16 @@ END_LOCAL;
 role:= aia.role;
 IF role.name='version' THEN
   REPEAT i:=LOINDEX(aia.items) TO HIINDEX(aia.items);
-    item:= aia.items[i];
+    item := aia.items[i];
 
     IF (SIZEOF(['IDENTIFICATION_ASSIGNMENT_MIM.' + 'VERSIONABLE_ITEM']*TYPEOF(item))=0) THEN
 -- item invalid if item does not belong to versionable types
-	RETURN(FALSE);
+      RETURN(FALSE);
     END_IF;
   END_REPEAT;
   RETURN(TRUE);
 
-ELSE		-- case where aia does not convey a version id
+ELSE    -- case where aia does not convey a version id
   RETURN(TRUE);
 END_IF;
 END_FUNCTION;

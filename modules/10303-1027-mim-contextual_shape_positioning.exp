@@ -7,15 +7,11 @@ USE FROM Foundation_representation_mim;
 USE FROM Shape_property_assignment_mim; 
 
 USE FROM product_property_representation_schema -- ISO 10303-41
-  (context_dependent_shape_representation);
+      (context_dependent_shape_representation);
 
-USE FROM representation_schema 	-- ISO 10303-43
+USE FROM representation_schema                  -- ISO 10303-43
       (functionally_defined_transformation,
-      representation_relationship_with_transformation,
-      mapped_item);
+       representation_relationship_with_transformation,
+       mapped_item);
 
 END_SCHEMA;
-
-
-
-
