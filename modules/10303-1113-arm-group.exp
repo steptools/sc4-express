@@ -1,0 +1,28 @@
+(*
+   $Id$
+   ISO/TC184/SC4 WG12N1754 - ISO/CD-TS 10303-1113 Group - EXPRESS ARM
+*)
+
+SCHEMA Group_arm;
+
+TYPE groupable_item = EXTENSIBLE GENERIC_ENTITY SELECT;
+WHERE
+WR1: NOT ('GROUP_ARM.GROUP' IN TYPEOF(SELF));
+END_TYPE;
+
+ENTITY Group;
+  id: OPTIONAL STRING;
+  name: STRING;
+  description: OPTIONAL STRING;
+  elements: SET[0:?] OF groupable_item;
+  membership_meaning: OPTIONAL STRING;
+END_ENTITY;
+
+ENTITY Group_relationship;
+  relation_type : STRING;
+  relating_group : Group;
+  related_group : Group;
+  description : OPTIONAL STRING;
+END_ENTITY; 
+
+END_SCHEMA;
