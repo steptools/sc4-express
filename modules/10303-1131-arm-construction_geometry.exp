@@ -1,16 +1,18 @@
 (*
-ISO TC184/SC4/WG12 N1541 - ISO/CD-TS 10303-1131 Construction geometry - EXPRESS ARM
+$Id$
+ISO TC184/SC4/WG12 N2867 - ISO/TS 10303-1131 Construction geometry - EXPRESS ARM
+Supersedes ISO TC184/SC4/WG12 N1541
 *) 
 
 
-SCHEMA Construction_geometry_arm; 
+SCHEMA Construction_geometry_arm;
 
 USE FROM Elemental_geometric_shape_arm;    -- ISO/TS 10303-1004
 
 USE FROM Foundation_representation_arm;    -- ISO/TS 10303-1006
 
 
-TYPE constructive_element_select = EXTENSIBLE SELECT
+TYPE constructive_element_select = EXTENSIBLE GENERIC_ENTITY SELECT
    (Axis_placement, 
     Curve, 
     point_select, 
@@ -22,7 +24,7 @@ TYPE constructive_geometry_select = SELECT
     Geometric_model);
 END_TYPE; 
 
-TYPE point_select = SELECT
+TYPE point_select = EXTENSIBLE GENERIC_ENTITY SELECT
    (Cartesian_point, 
     Point_on_curve, 
     Point_on_surface);
