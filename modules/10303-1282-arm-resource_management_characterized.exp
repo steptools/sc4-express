@@ -1,0 +1,95 @@
+(*
+  $Id$
+  ISO/TC184/SC4 WG12N1607 - ISO/TS - 10303-1282 Resource management characterized - EXPRESS ARM 
+*)
+
+SCHEMA Resource_management_characterized_arm;
+
+USE FROM Condition_arm;
+
+USE FROM Contract_arm;
+
+USE FROM Date_time_assignment_arm;
+
+USE FROM Document_assignment_arm;
+
+USE FROM Effectivity_application_arm;
+
+USE FROM Identification_assignment_arm;
+
+USE FROM Justification_arm;
+
+USE FROM Location_assignment_arm;
+
+USE FROM Person_organization_assignment_arm;
+
+USE FROM Process_property_assignment_arm;
+
+USE FROM Required_resource_characterized_arm;
+
+USE FROM Resource_management_arm;
+
+USE FROM Resource_property_assignment_arm;
+
+TYPE resource_management_characterized_activity_definition = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON characterized_activity_definition WITH
+(Resource_event);
+END_TYPE;
+
+TYPE resource_management_characterized_resource_select = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON characterized_resource_select WITH
+(Managed_resource,
+ Resource_location);
+END_TYPE;
+
+TYPE resource_management_condition_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON condition_item WITH
+(Managed_resource,
+ Managed_resource_relationship,
+ Resource_event,
+ Resource_event_relationship,
+ Resource_location,
+ Resource_location_relationship);
+END_TYPE;
+
+TYPE resource_management_contract_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON contract_item WITH
+(Managed_resource,
+ Resource_event,
+ Resource_location);
+END_TYPE;
+
+TYPE resource_management_date_or_date_time_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON date_or_date_time_item WITH
+(Managed_resource,
+ Resource_event,
+ Resource_location);
+END_TYPE;
+
+TYPE resource_management_documented_element_select = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON documented_element_select WITH
+(Resource_event,
+ Resource_location);
+END_TYPE;
+
+TYPE resource_management_effectivity_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON effectivity_item WITH
+(Managed_resource,
+ Managed_resource_relationship,
+ Resource_location);
+END_TYPE;
+
+TYPE resource_management_identification_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON identification_item WITH
+(Managed_resource,
+ Resource_event,
+ Resource_location);
+END_TYPE;
+
+TYPE resource_management_justification_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON justification_item WITH
+(Resource_event);
+END_TYPE;
+
+TYPE resource_management_location_assignment_select = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON location_assignment_select WITH
+(Resource_location);
+END_TYPE;
+
+TYPE resource_management_organization_or_person_in_organization_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON organization_or_person_in_organization_item WITH
+(Managed_resource,
+ Resource_event,
+ Resource_location);
+END_TYPE;
+
+END_SCHEMA;

@@ -1,0 +1,89 @@
+(*
+ISO TC184/SC4/WG12 N1589 - ISO/CD-TS 10303-1276 Location - EXPRESS ARM
+*) 
+
+
+SCHEMA Location_arm; 
+
+USE FROM Classification_assignment_arm;    -- ISO/CD-TS 10303-1114
+
+USE FROM Person_organization_arm;    -- ISO/TS 10303-1011
+
+USE FROM Product_identification_arm;    -- ISO/TS 10303-1017
+
+USE FROM Value_with_unit_arm;    -- ISO/TS 10303-1054
+
+USE FROM Zonal_breakdown_arm;    -- ISO/CD-TS 10303-1217
+
+
+TYPE location_classification_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON classification_item WITH 
+   (Location_relationship);
+END_TYPE; 
+
+TYPE location_representation = EXTENSIBLE GENERIC_ENTITY SELECT
+   (Address_based_location_representation, 
+    Global_location_representation, 
+    Organization_based_location_representation, 
+    Product_based_location_identification, 
+    Regional_grid_location_representation);
+END_TYPE; 
+
+TYPE product_based_location_representation = EXTENSIBLE GENERIC_ENTITY SELECT
+   (Product, 
+    Zone_element);
+END_TYPE; 
+
+ENTITY Address_based_location_representation;
+  postal_address : Address_assignment;
+END_ENTITY;
+
+ENTITY Global_location_representation;
+  altitude : OPTIONAL Value_with_unit;
+  geographical_area : OPTIONAL STRING;
+  latitude : Value_with_unit;
+  longitude : Value_with_unit;
+END_ENTITY;
+
+ENTITY Location;
+  alternative_location_representations : SET[1:?] OF location_representation;
+  description : OPTIONAL STRING;
+  name : STRING;
+END_ENTITY;
+
+ENTITY Location_relationship;
+  description : OPTIONAL STRING;
+  name : STRING;
+  related : Location;
+  relating : Location;
+END_ENTITY;
+
+ENTITY Organization_based_location_representation;
+  location_identifications : SET[0:?] OF Organizational_location_identification;
+  organization_for_location : Organization;
+END_ENTITY;
+
+ENTITY Organizational_location_identification;
+  identification_type : STRING;
+  location_value : STRING;
+END_ENTITY;
+
+ENTITY Product_based_location_identification;
+  location_identification : STRING;
+  location_value : STRING;
+  referenced_product : product_based_location_representation;
+END_ENTITY;
+
+ENTITY Regional_coordinate;
+  coordinate_value : Value_with_unit;
+  grid_system : Regional_grid_location_representation;
+  name : STRING;
+END_ENTITY;
+
+ENTITY Regional_grid_location_representation;
+  description : OPTIONAL STRING;
+  name : STRING;
+END_ENTITY;
+
+END_SCHEMA;  -- Location_arm
+
+

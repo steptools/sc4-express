@@ -1,0 +1,23 @@
+(*
+ISO TC184/SC4/WG12 N1592 - ISO/CD-TS 10303-1277 Location assignment - EXPRESS ARM
+*) 
+
+
+SCHEMA Location_assignment_arm; 
+
+USE FROM Location_arm;    -- ISO/CD-TS 10303-1278
+
+
+TYPE location_assignment_select = EXTENSIBLE GENERIC_ENTITY SELECT;
+END_TYPE; 
+
+ENTITY Location_assignment;
+  description : OPTIONAL STRING;
+  role : OPTIONAL STRING;
+  entity_for_location : location_assignment_select;
+  location_for_assignment : Location;
+END_ENTITY;
+
+END_SCHEMA;  -- Location_assignment_arm
+
+

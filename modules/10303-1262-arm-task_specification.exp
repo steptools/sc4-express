@@ -1,0 +1,194 @@
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1451 - ISO/CD-TS 10303-1262 Task specification - EXPRESS ARM
+*) 
+
+SCHEMA Task_specification_arm; 
+
+USE FROM Activity_method_arm;    -- ISO/TS 10303-1049
+
+USE FROM Activity_method_assignment_arm;    -- ISO/CD-TS 10303-1249
+
+USE FROM Classification_assignment_arm;    -- ISO/CD-TS 10303-1114
+
+USE FROM Condition_arm;    -- ISO/CD-TS 10303-1253
+
+USE FROM State_definition_arm;    -- ISO/CD-TS 10303-1255
+
+USE FROM State_observed_arm;    -- ISO/CD-TS 10303-1256
+
+
+TYPE constraint_context = EXTENSIBLE GENERIC_ENTITY SELECT
+   (Task, 
+    Task_method);
+END_TYPE; 
+
+TYPE state_or_state_definition_select = SELECT
+   (State, 
+    State_definition);
+END_TYPE; 
+
+TYPE task_classification_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON classification_item WITH 
+   (Activity_method, 
+    Activity_method_relationship, 
+    Applied_activity_method_assignment, 
+    Task_method_state_relationship, 
+    Task_result, 
+    Task_result_state_relationship, 
+    Task_state_relationship);
+END_TYPE; 
+
+TYPE task_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON activity_method_item;
+END_TYPE; 
+
+ENTITY Advisory_task_step
+  SUBTYPE OF (Task_step);
+END_ENTITY;
+
+ENTITY Concurrent_methods
+  SUBTYPE OF (Structured_task_method);
+  methods : SET[2:?] OF Task_method;
+END_ENTITY;
+
+ENTITY Decision_point
+  SUBTYPE OF (Structured_task_method);
+  condition : Condition;
+  true_case_method : OPTIONAL Task_method;
+  false_case_method : OPTIONAL Task_method;
+  unknown_case_method : OPTIONAL Task_method;
+END_ENTITY;
+
+ENTITY End_task
+  SUBTYPE OF (Task_method);
+END_ENTITY;
+
+ENTITY Exit_loop
+  SUBTYPE OF (Task_method);
+END_ENTITY;
+
+ENTITY Looping_method
+  SUPERTYPE OF (ONEOF (Repeat_count,
+                       Repeat_until,
+                       Repeat_while))
+  SUBTYPE OF (Structured_task_method);
+  repeated_method : Task_method;
+END_ENTITY;
+
+ENTITY Method_constraint
+  SUBTYPE OF (Task_method_relationship);
+  applies_in : OPTIONAL constraint_context;
+END_ENTITY;
+
+ENTITY Repeat_count
+  SUBTYPE OF (Looping_method);
+  count : INTEGER;
+END_ENTITY;
+
+ENTITY Repeat_until
+  SUBTYPE OF (Looping_method);
+  condition : Condition;
+END_ENTITY;
+
+ENTITY Repeat_while
+  SUBTYPE OF (Looping_method);
+  condition : Condition;
+END_ENTITY;
+
+ENTITY Simultaneous_methods
+  SUBTYPE OF (Concurrent_methods);
+END_ENTITY;
+
+ENTITY Structured_task_method
+  ABSTRACT SUPERTYPE OF (ONEOF (Concurrent_methods,
+                                Decision_point,
+                                Looping_method,
+                                Task_method_sequence))
+  SUBTYPE OF (Task_method);
+END_ENTITY;
+
+ENTITY Task
+  SUBTYPE OF (Activity_method);
+  method : OPTIONAL Task_method;
+  objective : SET[1:?] OF Task_result;
+END_ENTITY;
+
+ENTITY Task_assignment
+  SUBTYPE OF (Applied_activity_method_assignment);
+  SELF\Applied_activity_method_assignment.assigned_activity_method RENAMED assigned_task : Task;
+  SELF\Applied_activity_method_assignment.items : SET[1:?] OF task_item;
+END_ENTITY;
+
+ENTITY Task_invocation
+  SUBTYPE OF (Task_method);
+  task : Task;
+END_ENTITY;
+
+ENTITY Task_method
+  ABSTRACT SUPERTYPE OF (ONEOF (End_task,
+                                Exit_loop,
+                                Structured_task_method,
+                                Task_invocation,
+                                Task_method_levels,
+                                Task_step))
+  SUBTYPE OF (Activity_method);
+  notes : OPTIONAL LIST[1:?] OF Advisory_task_step;
+END_ENTITY;
+
+ENTITY Task_method_levels
+  SUBTYPE OF (Task_method);
+  alternatives : SET[2:?] OF Task_method;
+END_ENTITY;
+
+ENTITY Task_method_relationship
+  SUBTYPE OF (Activity_method_relationship);
+  SELF\Activity_method_relationship.related_method : Task_method;
+  SELF\Activity_method_relationship.relating_method : Task_method;
+END_ENTITY;
+
+ENTITY Task_method_sequence
+  SUBTYPE OF (Structured_task_method);
+  methods : LIST[2:?] OF Task_method;
+END_ENTITY;
+
+ENTITY Task_method_state_relationship;
+  state : state_or_state_definition_select;
+  task_method : Task_method;
+END_ENTITY;
+
+ENTITY Task_relationship
+  SUBTYPE OF (Activity_method_relationship);
+  SELF\Activity_method_relationship.related_method RENAMED related_task : Task;
+  SELF\Activity_method_relationship.relating_method RENAMED relating_task : Task;
+END_ENTITY;
+
+ENTITY Task_result;
+  name : STRING;
+  description : STRING;
+END_ENTITY;
+
+ENTITY Task_result_state_relationship;
+  state : state_or_state_definition_select;
+  task_result : Task_result;
+END_ENTITY;
+
+ENTITY Task_state_relationship;
+  state : state_or_state_definition_select;
+  task : Task;
+END_ENTITY;
+
+ENTITY Task_step
+  SUBTYPE OF (Task_method);
+  step_text : STRING;
+END_ENTITY;
+
+SUBTYPE_CONSTRAINT restrict_activity_method_relationship FOR Activity_method_relationship;
+  ONEOF (Task_method_relationship,
+         Task_relationship);
+END_SUBTYPE_CONSTRAINT;
+
+SUBTYPE_CONSTRAINT restrict_activity_method_subtypes FOR Activity_method;
+  ONEOF (Task,
+         Task_method);
+END_SUBTYPE_CONSTRAINT;
+
+END_SCHEMA;  -- Task_specification_arm

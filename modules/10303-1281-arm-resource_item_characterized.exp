@@ -1,0 +1,94 @@
+(*
+  $Id$
+  ISO/TC184/SC4 WG12N1604 - ISO/TS - 10303-1281 Resource item characterized - EXPRESS ARM 
+*)
+
+SCHEMA Resource_item_characterized_arm;
+
+USE FROM Ap239_properties_arm;
+
+USE FROM Approval_arm;
+
+USE FROM Certification_arm;
+
+USE FROM Condition_arm;
+
+USE FROM Contract_arm;
+
+USE FROM Date_time_assignment_arm;
+
+USE FROM Document_assignment_arm;
+
+USE FROM Effectivity_application_arm;
+
+USE FROM Identification_assignment_arm;
+
+USE FROM Justification_arm;
+
+USE FROM Person_organization_assignment_arm;
+
+USE FROM Resource_item_arm;
+
+USE FROM Resource_property_assignment_arm;
+
+USE FROM Security_classification_arm;
+
+TYPE resource_item_approval_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON approval_item WITH
+(Resource_item,
+ Resource_item_assignment,
+ Resource_item_relationship);
+END_TYPE;
+
+TYPE resource_item_certification_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON certification_item WITH
+(Resource_item);
+END_TYPE;
+
+TYPE resource_item_characterized_resource_select = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON characterized_resource_select WITH
+(Resource_item);
+END_TYPE;
+
+TYPE resource_item_condition_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON condition_item WITH
+(Resource_item,
+ Resource_item_assignment,
+ Resource_item_relationship);
+END_TYPE;
+
+TYPE resource_item_contract_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON contract_item WITH
+(Resource_item);
+END_TYPE;
+
+TYPE resource_item_date_or_date_time_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON date_or_date_time_item WITH
+(Resource_item,
+ Resource_item_assignment);
+END_TYPE;
+
+TYPE resource_item_documented_element_select = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON documented_element_select WITH
+(Resource_item);
+END_TYPE;
+
+TYPE resource_item_effectivity_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON effectivity_item WITH
+(Resource_item,
+ Resource_item_assignment,
+ Resource_item_relationship);
+END_TYPE;
+
+TYPE resource_item_identification_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON identification_item WITH
+(Resource_item);
+END_TYPE;
+
+TYPE resource_item_justification_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON justification_item WITH
+(Resource_item,
+ Resource_item_assignment,
+ Resource_item_relationship);
+END_TYPE;
+
+TYPE resource_item_organization_or_person_in_organization_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON organization_or_person_in_organization_item WITH
+(Resource_item,
+ Resource_item_assignment);
+END_TYPE;
+
+TYPE resource_item_security_classification_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON security_classification_item WITH
+(Resource_item);
+END_TYPE;
+
+END_SCHEMA;
