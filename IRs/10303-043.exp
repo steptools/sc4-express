@@ -5,6 +5,8 @@
   This document represents the Technical Changes
      identified in ISO TC184/SC4/WG12/N290.
 
+  Technical Corrigendum 2:2000 (WG12/N499)
+   introduced no EXPRESS changes
 *)
 SCHEMA representation_schema;
 
