@@ -1,0 +1,35 @@
+(*  ISO/TC184/SC4 WG12N2052 - ISO/CD-TS - 10303-1080 property_space - EXPRESS MIM*)
+
+SCHEMA Property_space_mim;
+
+USE FROM Class_mim;    --  ISO/CD-TS 10303-1070
+USE FROM Independent_property_mim;    --  ISO/TS 10303-1036
+USE FROM external_reference_schema    --  ISO 10303-41
+  (externally_defined_item,
+   external_source); 
+
+ENTITY property_space
+  SUBTYPE OF (general_property, class);
+END_ENTITY;
+
+ENTITY standard_tensor_order_and_symmetry
+  SUBTYPE OF (tensor_order_and_symmetry_by_library_reference);
+WHERE
+  valid_standard_class: (SELF\tensor_order_and_symmetry_by_library_reference\externally_defined_item.source_id = 'ISO-TS-10303-1080') AND (SELF\tensor_order_and_symmetry_by_library_reference\externally_defined_item.item_id IN ['TO001', 'TO002', 'TO003', 'TO004', 'TO005', 'TO006', 'TO007', 'TO008', 'TO009']);
+END_ENTITY;
+
+ENTITY tensor_order_and_symmetry
+  SUBTYPE OF (general_property, class);
+END_ENTITY;
+
+ENTITY tensor_order_and_symmetry_by_library_reference
+  SUBTYPE OF (tensor_order_and_symmetry, externally_defined_item);
+END_ENTITY;
+
+ENTITY tensor_order_and_symmetry_for_property_space
+  SUBTYPE OF (general_property_relationship);
+  SELF\general_property_relationship.relating_property : tensor_order_and_symmetry;
+  SELF\general_property_relationship.related_property : property_space;
+END_ENTITY;
+
+END_SCHEMA;

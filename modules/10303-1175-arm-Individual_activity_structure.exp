@@ -1,0 +1,10 @@
+(*  ISO/TC184/SC4 WG12N1855 - ISO/CD-TS - 10303-1175 individual_activity_structure - EXPRESS ARM*)
+
+SCHEMA Individual_activity_structure_arm;
+
+USE FROM Composition_of_individual_activity_arm;    -- ISO/TS 10303-1177
+USE FROM Connection_of_individual_activity_arm;    -- ISO/TS 10303-1178
+USE FROM Individual_activity_arm;    -- ISO/TS 10303-1176
+USE FROM Individual_involvement_in_activity_arm;    -- ISO/TS 10303-1179
+
+END_SCHEMA;

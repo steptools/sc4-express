@@ -1,0 +1,11 @@
+(*  ISO/TC184/SC4 WG12N2045 - ISO/CD-TS - 10303-1198 property_and_property_assignment - EXPRESS ARM*)
+
+SCHEMA Property_and_property_assignment_arm;
+
+USE FROM Independent_property_definition_arm;    --  ISO/CD-TS 10303-1099
+USE FROM Property_space_arm;    --  ISO/CD-TS 10303-1080
+USE FROM Property_identification_arm;    --  ISO/CD-TS 10303-1085
+USE FROM Possession_of_property_arm;    --  ISO/CD-TS 10303-1199
+USE FROM Property_condition_arm;    --  ISO/CD-TS 10303-1074
+
+END_SCHEMA;
