@@ -1,0 +1,12 @@
+(*  ISO/TC184/SC4 WG12N1840 - ISO/CD-TS - 10303-1071 class_of_activity - EXPRESS ARM*)
+
+SCHEMA Class_of_activity_arm;
+
+USE FROM Activity_arm;    -- ISO/TS 10303-1047
+USE FROM Class_arm;    -- ISO/TS 10303-1070
+
+ENTITY Class_of_activity
+  SUBTYPE OF (Activity, Class);
+END_ENTITY;
+
+END_SCHEMA;

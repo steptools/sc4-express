@@ -1,0 +1,34 @@
+(*  ISO/TC184/SC4 WG12N2051 - ISO/CD-TS - 10303-1080 property_space - EXPRESS ARM*)
+
+SCHEMA Property_space_arm;
+
+USE FROM Class_arm;    --  ISO/CD-TS 10303-1070
+USE FROM Independent_property_arm;    --  ISO/TS 10303-1036
+
+ENTITY Property_space
+  SUBTYPE OF (Independent_property, Class);
+END_ENTITY;
+
+ENTITY Standard_tensor_order_and_symmetry
+  SUBTYPE OF (Tensor_order_and_symmetry_by_library_reference);
+WHERE
+  valid_standard_class: (SELF\Tensor_order_and_symmetry_by_library_reference.source_id = 'ISO-TS-10303-1099') AND (SELF\Tensor_order_and_symmetry_by_library_reference.item_id IN ['TO001', 'TO002', 'TO003', 'TO004', 'TO005', 'TO006', 'TO007', 'TO008', 'TO009']);
+END_ENTITY;
+
+ENTITY Tensor_order_and_symmetry
+  SUBTYPE OF (Independent_property, Class);
+END_ENTITY;
+
+ENTITY Tensor_order_and_symmetry_by_library_reference
+  SUBTYPE OF (Tensor_order_and_symmetry);
+  item_id : STRING;
+  source_id : STRING;
+END_ENTITY;
+
+ENTITY Tensor_order_and_symmetry_for_property_space
+  SUBTYPE OF (Independent_property_relationship);
+  SELF\Independent_property_relationship.relating : Tensor_order_and_symmetry;
+  SELF\Independent_property_relationship.related : Property_space;
+END_ENTITY;
+
+END_SCHEMA;

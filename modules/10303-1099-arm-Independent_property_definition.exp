@@ -1,0 +1,51 @@
+(*  ISO/TC184/SC4 WG12N2048 - ISO/CD-TS - 10303-1099 independent_property_definition - EXPRESS ARM*)
+
+SCHEMA Independent_property_definition_arm;
+
+USE FROM Class_arm;    --  ISO/CD-TS 10303-1070
+USE FROM Independent_property_arm;    --  ISO/TS 10303-1036
+USE FROM Property_space_arm;    --  ISO/CD-TS 10303-1080
+
+ENTITY Independent_property_definition
+  SUPERTYPE OF (ONEOF (Point_property_definition,
+                       Range_property_definition))
+  SUBTYPE OF (Independent_property, Class);
+END_ENTITY;
+
+ENTITY Point_property_definition
+  SUBTYPE OF (Independent_property_definition);
+END_ENTITY;
+
+ENTITY Property_symmetry
+  SUBTYPE OF (Independent_property, Class);
+END_ENTITY;
+
+ENTITY Property_symmetry_by_library_reference
+  SUBTYPE OF (Property_symmetry);
+  item_id : STRING;
+  source_id : STRING;
+END_ENTITY;
+
+ENTITY Range_property_definition
+  SUBTYPE OF (Independent_property_definition);
+END_ENTITY;
+
+ENTITY Space_for_property_definition
+  SUBTYPE OF (Independent_property_relationship);
+  SELF\Independent_property_relationship.relating : Property_space;
+  SELF\Independent_property_relationship.related : Independent_property_definition;
+END_ENTITY;
+
+ENTITY Standard_property_symmetry
+  SUBTYPE OF (Property_symmetry_by_library_reference);
+WHERE
+  valid_standard_class: (SELF\Property_symmetry_by_library_reference.source_id = 'ISO-TS-10303-1099') AND (SELF\Property_symmetry_by_library_reference.item_id IN ['PS001', 'PS002', 'PS003', 'PS004', 'PS005', 'PS006', 'PS007', 'PS008', 'PS009', 'PS010', 'PS011', 'PS012', 'PS013']);
+END_ENTITY;
+
+ENTITY Symmetry_for_property_definition
+  SUBTYPE OF (Independent_property_relationship);
+  SELF\Independent_property_relationship.relating : Property_symmetry;
+  SELF\Independent_property_relationship.related : Independent_property_definition;
+END_ENTITY;
+
+END_SCHEMA;
