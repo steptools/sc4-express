@@ -1,0 +1,4041 @@
+-- This file constitutes document WG12 N557
+SCHEMA mathematical_functions_schema;
+-- Master document: ISO 10303-50/DIS
+-- EXPRESS last modified: 2000-05-11
+
+REFERENCE FROM ISO13584_generic_expressions_schema     -- ISO 13584-20
+    (binary_generic_expression,
+     environment,
+     generic_expression,
+     generic_literal,
+     generic_variable,
+     multiple_arity_generic_expression,
+     simple_generic_expression,
+     unary_generic_expression,
+     variable_semantics);
+
+REFERENCE FROM ISO13584_expressions_schema             -- ISO 13584-20
+    (abs_function                   AS abs_expression,
+     acos_function                  AS acos_expression,
+     and_expression,
+     asin_function                  AS asin_expression,
+     atan_function                  AS atan_expression,
+     binary_boolean_expression,
+     binary_function_call           AS binary_numeric_call_expression,
+     binary_numeric_expression,
+     boolean_defined_function       AS boolean_defined_expression,
+     boolean_expression,
+     boolean_literal,
+     boolean_variable,
+     comparison_equal,
+     comparison_expression,
+     comparison_greater,
+     comparison_greater_equal,
+     comparison_less,
+     comparison_less_equal,
+     comparison_not_equal,
+     concat_expression,
+     cos_function                   AS cos_expression,
+     defined_function               AS defined_expression,
+     div_expression,
+     equals_expression,
+     exp_function                   AS exp_expression,
+     expression,
+     format_function                AS format_expression,
+     index_expression,
+     int_literal,
+     int_numeric_variable,
+     int_value_function             AS int_value_expression,
+     integer_defined_function       AS integer_defined_expression,
+     interval_expression,
+     length_function                AS length_expression,
+     like_expression,
+     literal_number,
+     log_function                   AS log_expression,
+     log10_function                 AS log10_expression,
+     log2_function                  AS log2_expression,
+     maximum_function               AS maximum_expression,
+     minimum_function               AS minimum_expression,
+     minus_expression,
+     minus_function                 AS unary_minus_expression,
+     mod_expression,
+     mult_expression,
+     multiple_arity_boolean_expression,
+     multiple_arity_function_call   AS multiple_arity_numeric_call_expression,
+     multiple_arity_numeric_expression,
+     not_expression,
+     numeric_defined_function       AS numeric_defined_expression,
+     numeric_expression,
+     numeric_variable,
+     odd_function                   AS odd_expression,
+     or_expression,
+     plus_expression,
+     power_expression,
+     real_defined_function          AS real_defined_expression,
+     real_literal,
+     real_numeric_variable,
+     simple_boolean_expression,
+     simple_numeric_expression,
+     simple_string_expression,
+     sin_function AS sin_expression,
+     slash_expression,
+     sql_mappable_defined_function  AS sql_mappable_defined_expression,
+     square_root_function           AS square_root_expression,
+     string_defined_function        AS string_defined_expression,
+     string_expression,
+     string_literal,
+     string_variable,
+     substring_expression,
+     tan_function                   AS tan_expression,
+     unary_boolean_expression,
+     unary_function_call            AS unary_numeric_call_expression,
+     unary_numeric_expression,
+     value_function                 AS value_expression,
+     variable,
+     xor_expression);
+
+REFERENCE FROM support_resource_schema                 -- ISO 10303-41
+    (label,
+     text);
+
+REFERENCE FROM geometry_schema                         -- ISO 10303-42
+    (curve,
+     dimension_of,
+     point,
+     surface,
+     volume);
+CONSTANT
+  schema_prefix : STRING := 'MATHEMATICAL_FUNCTIONS_SCHEMA.';
+  the_integers        : elementary_space := make_elementary_space(es_integers);
+  the_reals           : elementary_space := make_elementary_space(es_reals);
+  the_complex_numbers : elementary_space := make_elementary_space(es_complex_numbers);
+  the_numbers         : elementary_space := make_elementary_space(es_numbers);
+  the_logicals        : elementary_space := make_elementary_space(es_logicals);
+  the_booleans        : elementary_space := make_elementary_space(es_booleans);
+  the_strings         : elementary_space := make_elementary_space(es_strings);
+  the_binarys         : elementary_space := make_elementary_space(es_binarys);
+  the_maths_spaces    : elementary_space := make_elementary_space(es_maths_spaces);
+  the_generics        : elementary_space := make_elementary_space(es_generics);
+  the_nonnegative_reals         : real_interval_from_min := make_real_interval_from_min(
+   0.0, closed);
+  the_zero_one_interval         : finite_real_interval := make_finite_real_interval(
+   0.0, closed, 1.0, closed);
+  the_zero_pi_interval          : finite_real_interval := make_finite_real_interval(
+   0.0, closed, pi, closed);
+  the_neg1_one_interval         : finite_real_interval := make_finite_real_interval(
+   -1.0, closed, 1.0, closed);
+  the_neghalfpi_halfpi_interval : finite_real_interval := make_finite_real_interval(
+   -0.5*pi, closed, 0.5*pi, closed);
+  the_negpi_pi_interval         : finite_real_interval := make_finite_real_interval(
+   -pi, open, pi, closed);
+  the_zero_tuple_space : listed_product_space := make_listed_product_space([]);
+  the_tuples           : extended_tuple_space := make_extended_tuple_space(
+   the_zero_tuple_space, the_generics);
+  the_integer_tuples   : extended_tuple_space := make_extended_tuple_space(
+   the_zero_tuple_space, the_integers);
+  the_real_tuples      : extended_tuple_space := make_extended_tuple_space(
+   the_zero_tuple_space, the_reals);
+  the_complex_tuples   : extended_tuple_space := make_extended_tuple_space(
+   the_zero_tuple_space, the_complex_numbers);
+  the_empty_maths_tuple      : maths_tuple := [];
+  the_empty_maths_value      : maths_value := the_empty_maths_tuple;
+  the_empty_atom_based_tuple : atom_based_tuple := [];
+  the_empty_atom_based_value : atom_based_value := the_empty_atom_based_tuple;
+END_CONSTANT;
+TYPE nonnegative = INTEGER;
+WHERE nonnegativity: SELF >= 0;
+END_TYPE;
+TYPE positive = nonnegative;
+WHERE positivity: SELF > 0;
+END_TYPE;
+TYPE zero_or_one = nonnegative;
+WHERE in_range: (SELF = 0) OR (SELF = 1);
+END_TYPE;
+TYPE one_or_two = positive;
+WHERE in_range: (SELF = 1) OR (SELF = 2);
+END_TYPE;
+TYPE maths_number = NUMBER;
+END_TYPE;
+TYPE maths_logical = LOGICAL;
+END_TYPE;
+TYPE maths_string = STRING;
+END_TYPE;
+TYPE maths_binary = BINARY;
+END_TYPE;
+TYPE maths_simple_atom = SELECT
+    (maths_number,
+     maths_logical,
+     maths_string,
+     maths_binary);
+END_TYPE;
+TYPE maths_atom = SELECT
+    (maths_simple_atom,
+     maths_enum_atom);
+END_TYPE;
+TYPE atom_based_tuple = LIST OF atom_based_value;
+END_TYPE;
+TYPE atom_based_value = SELECT
+    (maths_atom,
+     atom_based_tuple);
+END_TYPE;
+TYPE maths_tuple = LIST [0:?] OF maths_value;
+END_TYPE;
+TYPE maths_value = SELECT
+    (atom_based_value,
+     maths_tuple,
+     generic_expression);
+END_TYPE;
+TYPE maths_function_select = SELECT
+    (maths_function,
+     elementary_function_enumerators);
+END_TYPE;
+TYPE encoded_constant = LIST [1:1] OF maths_value;
+END_TYPE;
+TYPE encoded_selector = INTEGER;
+END_TYPE;
+TYPE prep_function_select = SELECT
+    (maths_function,
+     encoded_constant,
+     encoded_selector);
+END_TYPE;
+TYPE elementary_space_enumerators = ENUMERATION OF
+    (es_numbers,
+     es_complex_numbers,
+     es_reals,
+     es_integers,
+     es_logicals,
+     es_booleans,
+     es_strings,
+     es_binarys,
+     es_maths_spaces,
+     es_maths_functions,
+     es_generics);
+END_TYPE;
+TYPE ordering_type = ENUMERATION OF
+    (by_rows,
+     by_columns);
+END_TYPE;
+TYPE lower_upper = ENUMERATION OF
+    (lower,
+     upper);
+END_TYPE;
+TYPE elementary_function_enumerators = ENUMERATION OF
+    (ef_and, ef_or, ef_not, ef_xor,
+     ef_negate_i, ef_add_i, ef_subtract_i, ef_multiply_i, ef_divide_i, ef_mod_i,
+     ef_exponentiate_i, ef_eq_i, ef_ne_i, ef_gt_i, ef_lt_i, ef_ge_i, ef_le_i,
+     ef_abs_i, ef_if_i,
+     ef_negate_r, ef_reciprocal_r, ef_add_r, ef_subtract_r, ef_multiply_r,
+     ef_divide_r, ef_mod_r, ef_exponentiate_r, ef_exponentiate_ri,
+     ef_eq_r, ef_ne_r, ef_gt_r, ef_lt_r, ef_ge_r, ef_le_r,
+     ef_abs_r, ef_acos_r, ef_asin_r, ef_atan2_r, ef_cos_r, ef_exp_r, ef_ln_r,
+     ef_log2_r, ef_log10_r, ef_sin_r, ef_sqrt_r, ef_tan_r, ef_if_r,
+     ef_form_c, ef_rpart_c, ef_ipart_c,
+     ef_negate_c, ef_reciprocal_c, ef_add_c, ef_subtract_c, ef_multiply_c,
+     ef_divide_c, ef_exponentiate_c, ef_exponentiate_ci, ef_eq_c, ef_ne_c,
+     ef_conjugate_c, ef_abs_c, ef_cos_c, ef_exp_c, ef_ln_c, ef_sin_c, ef_sqrt_c,
+     ef_tan_c, ef_if_c,
+     ef_subscript_s, ef_eq_s, ef_ne_s, ef_gt_s, ef_lt_s, ef_ge_s, ef_le_s,
+     ef_subsequence_s, ef_concat_s, ef_size_s, ef_format, ef_value, ef_like, ef_if_s,
+     ef_subscript_b, ef_eq_b, ef_ne_b, ef_gt_b, ef_lt_b, ef_ge_b, ef_le_b,
+     ef_subsequence_b, ef_concat_b, ef_size_b, ef_if_b,
+     ef_subscript_t, ef_eq_t, ef_ne_t, ef_concat_t, ef_size_t,
+     ef_entuple, ef_detuple, ef_insert, ef_remove, ef_if_t,
+     ef_sum_it, ef_product_it,
+     ef_add_it, ef_subtract_it, ef_scalar_mult_it, ef_dot_prod_it,
+     ef_sum_rt, ef_product_rt,
+     ef_add_rt, ef_subtract_rt, ef_scalar_mult_rt, ef_dot_prod_rt, ef_norm_rt,
+     ef_sum_ct, ef_product_ct,
+     ef_add_ct, ef_subtract_ct, ef_scalar_mult_ct, ef_dot_prod_ct, ef_norm_ct,
+     ef_ensemble, ef_member_of);
+END_TYPE;
+TYPE open_closed = ENUMERATION OF
+    (open,
+     closed);
+END_TYPE;
+TYPE space_constraint_type = ENUMERATION OF
+    (sc_equal,
+     sc_subspace,
+     sc_member);
+END_TYPE;
+TYPE repackage_options = ENUMERATION OF
+    (ro_nochange,
+     ro_wrap_as_tuple,
+     ro_unwrap_tuple);
+END_TYPE;
+TYPE maths_enum_atom = SELECT
+    (elementary_space_enumerators,
+     ordering_type,
+     lower_upper,
+     elementary_function_enumerators,
+     open_closed,
+     space_constraint_type,
+     repackage_options);
+END_TYPE;
+TYPE dotted_express_identifier = STRING;
+WHERE syntax: dotted_identifiers_syntax(SELF);
+END_TYPE;
+TYPE express_identifier = dotted_express_identifier;
+WHERE syntax: dot_count(SELF) = 0;
+END_TYPE;
+TYPE product_space = SELECT
+    (uniform_product_space,
+     listed_product_space);
+END_TYPE;
+TYPE tuple_space = SELECT
+    (product_space,
+     extended_tuple_space);
+END_TYPE;
+ENTITY quantifier_expression
+  ABSTRACT SUPERTYPE
+  SUBTYPE OF (multiple_arity_generic_expression);
+  variables : LIST [1:?] OF UNIQUE generic_variable;
+WHERE
+  WR1: SIZEOF (QUERY (vrbl <* variables | NOT (vrbl IN
+       SELF\multiple_arity_generic_expression.operands))) = 0;
+  WR2: SIZEOF (QUERY (vrbl <* variables | NOT ((schema_prefix +
+       'BOUND_VARIABLE_SEMANTICS') IN TYPEOF (vrbl.interpretation.semantics)))) = 0;
+END_ENTITY;
+ENTITY dependent_variable_definition
+  SUBTYPE OF (unary_generic_expression);
+  name        : label;
+  description : text;
+END_ENTITY;
+ENTITY bound_variable_semantics
+  SUBTYPE OF (variable_semantics);
+END_ENTITY;
+ENTITY free_variable_semantics
+  SUBTYPE OF (variable_semantics);
+END_ENTITY;
+ENTITY logical_literal
+  SUBTYPE OF (generic_literal);
+  lit_value : LOGICAL;
+END_ENTITY;
+ENTITY binary_literal
+  SUBTYPE OF (generic_literal);
+  lit_value : BINARY;
+END_ENTITY;
+ENTITY maths_enum_literal
+  SUBTYPE OF (generic_literal);
+  lit_value : maths_enum_atom;
+END_ENTITY;
+ENTITY real_tuple_literal
+  SUBTYPE OF (generic_literal);
+  lit_value : LIST [1:?] OF REAL;
+END_ENTITY;
+ENTITY integer_tuple_literal
+  SUBTYPE OF (generic_literal);
+  lit_value : LIST [1:?] OF INTEGER;
+END_ENTITY;
+ENTITY atom_based_literal
+  SUBTYPE OF (generic_literal);
+  lit_value : atom_based_value;
+END_ENTITY;
+ENTITY maths_variable
+  SUBTYPE OF (generic_variable);
+  values_space : maths_space;
+  name         : label;
+WHERE
+  WR1: expression_is_constant(values_space);
+END_ENTITY;
+ENTITY maths_real_variable
+  SUBTYPE OF (maths_variable, real_numeric_variable);
+WHERE
+  WR1: subspace_of_reals(SELF\maths_variable.values_space);
+END_ENTITY;
+ENTITY maths_integer_variable
+  SUBTYPE OF (maths_variable, int_numeric_variable);
+WHERE
+  WR1: subspace_of_integers(SELF\maths_variable.values_space);
+END_ENTITY;
+ENTITY maths_boolean_variable
+  SUBTYPE OF (maths_variable, boolean_variable);
+WHERE
+  WR1: subspace_of_booleans(SELF\maths_variable.values_space);
+END_ENTITY;
+ENTITY maths_string_variable
+  SUBTYPE OF (maths_variable, string_variable);
+WHERE
+  WR1: subspace_of_strings(SELF\maths_variable.values_space);
+END_ENTITY;
+ENTITY function_application
+  SUBTYPE OF (multiple_arity_generic_expression);
+  func      : maths_function_select;
+  arguments : LIST [1:?] OF maths_value;
+DERIVE
+  SELF\multiple_arity_generic_expression.operands : LIST [2:?] OF generic_expression
+    := convert_to_maths_function(func) + convert_to_operands(arguments);
+WHERE
+  WR1: function_applicability(func, arguments);
+END_ENTITY;
+ENTITY maths_space
+  ABSTRACT SUPERTYPE OF (ONEOF (elementary_space,
+                                finite_integer_interval,
+                                integer_interval_from_min,
+                                integer_interval_to_max,
+                                finite_real_interval,
+                                real_interval_from_min,
+                                real_interval_to_max,
+                                finite_space,
+                                uniform_product_space,
+                                listed_product_space,
+                                extended_tuple_space,
+                                function_space))
+  SUBTYPE OF (generic_expression);
+END_ENTITY;
+ENTITY elementary_space
+  SUBTYPE OF (maths_space, generic_literal);
+  space_id : elementary_space_enumerators;
+END_ENTITY;
+ENTITY finite_integer_interval
+  SUBTYPE OF (maths_space, generic_literal);
+  min  : INTEGER;
+  max  : INTEGER;
+DERIVE
+  size : positive := max - min + 1;
+WHERE
+  WR1: min <= max;
+END_ENTITY;
+ENTITY integer_interval_from_min
+  SUBTYPE OF (maths_space, generic_literal);
+  min : INTEGER;
+END_ENTITY;
+ENTITY integer_interval_to_max
+  SUBTYPE OF (maths_space, generic_literal);
+  max : INTEGER;
+END_ENTITY;
+ENTITY finite_real_interval
+  SUBTYPE OF (maths_space, generic_literal);
+  min         : REAL;
+  min_closure : open_closed;
+  max         : REAL;
+  max_closure : open_closed;
+WHERE
+  WR1: min < max;
+END_ENTITY;
+ENTITY real_interval_from_min
+  SUBTYPE OF (maths_space, generic_literal);
+  min         : REAL;
+  min_closure : open_closed;
+END_ENTITY;
+ENTITY real_interval_to_max
+  SUBTYPE OF (maths_space, generic_literal);
+  max         : REAL;
+  max_closure : open_closed;
+END_ENTITY;
+ENTITY finite_space
+  SUBTYPE OF (maths_space, generic_literal);
+  members : SET OF maths_value;
+WHERE
+  WR1: VALUE_UNIQUE(members);
+  WR2: SIZEOF (QUERY (expr <* QUERY (member <* members |
+       'ISO13584_GENERIC_EXPRESSIONS_SCHEMA.GENERIC_EXPRESSION' IN TYPEOF (member))
+       | NOT expression_is_constant(expr))) = 0;
+  WR3: no_cyclic_space_reference(SELF, []);
+END_ENTITY;
+ENTITY uniform_product_space
+  SUBTYPE OF (maths_space, generic_literal);
+  base     : maths_space;
+  exponent : positive;
+WHERE
+  WR1: expression_is_constant(base);
+  WR2: no_cyclic_space_reference(SELF, []);
+END_ENTITY;
+ENTITY listed_product_space
+  SUBTYPE OF (maths_space, generic_literal);
+  factors : LIST OF maths_space;
+WHERE
+  WR1: SIZEOF (QUERY (space <* factors |
+       NOT (expression_is_constant(space)))) = 0;
+  WR2: no_cyclic_space_reference(SELF, []);
+END_ENTITY;
+ENTITY extended_tuple_space
+  SUBTYPE OF (maths_space, generic_literal);
+  base     : product_space;
+  extender : maths_space;
+WHERE
+  WR1: expression_is_constant(base) AND
+       expression_is_constant(extender);
+  WR2: no_cyclic_space_reference(SELF, []);
+END_ENTITY;
+ENTITY function_space
+  SUBTYPE OF (maths_space, generic_literal);
+  domain_constraint : space_constraint_type;
+  domain_argument  : maths_space;
+  range_constraint : space_constraint_type;
+  range_argument   : maths_space;
+WHERE
+  WR1: expression_is_constant(domain_argument) AND
+       expression_is_constant(range_argument);
+END_ENTITY;
+ENTITY maths_function
+  ABSTRACT SUPERTYPE OF (ONEOF (finite_function,
+                                elementary_function,
+                                restriction_function,
+                                repackaging_function,
+                                series_composed_function,
+                                parallel_composed_function,
+                                explicit_table_function,
+                                homogeneous_linear_function,
+                                general_linear_function,
+                                b_spline_basis,
+                                b_spline_function,
+                                rationalize_function,
+                                abstracted_expression_function,
+                                expression_denoted_function,
+                                imported_point_function,
+                                imported_curve_function,
+                                imported_surface_function,
+                                imported_volume_function,
+                                application_defined_function))
+  SUBTYPE OF (generic_expression);
+DERIVE
+  domain : tuple_space := derive_function_domain(SELF);
+  range : tuple_space := derive_function_range(SELF);
+END_ENTITY;
+ENTITY finite_function
+  SUBTYPE OF (maths_function, generic_literal);
+  pairs : SET [1:?] OF LIST [2:2] OF maths_value;
+WHERE
+  WR1: VALUE_UNIQUE(list_selected_components(pairs, 1));
+END_ENTITY;
+ENTITY elementary_function
+  SUBTYPE OF (maths_function, generic_literal);
+  func_id : elementary_function_enumerators;
+END_ENTITY;
+ENTITY restriction_function
+  SUBTYPE OF (maths_function, unary_generic_expression);
+  SELF\unary_generic_expression.operand : maths_space;
+END_ENTITY;
+ENTITY repackaging_function
+  SUBTYPE OF (maths_function, unary_generic_expression);
+  SELF\unary_generic_expression.operand : maths_function;
+  input_repack    : repackage_options;
+  output_repack   : repackage_options;
+  selected_output : nonnegative;
+WHERE
+  WR1: (input_repack <> ro_wrap_as_tuple) OR
+       ((space_dimension(operand.domain) = 1) AND
+         ((schema_prefix + 'TUPLE_SPACE') IN TYPEOF (factor1(operand.domain))));
+  WR2: (output_repack <> ro_unwrap_tuple) OR
+       ((space_dimension(operand.range) = 1) AND
+         ((schema_prefix + 'TUPLE_SPACE') IN TYPEOF (factor1(operand.range))));
+  WR3: selected_output <= space_dimension( repackage(
+       operand.range, output_repack));
+END_ENTITY;
+ENTITY series_composed_function
+  SUBTYPE OF (maths_function, multiple_arity_generic_expression);
+  SELF\multiple_arity_generic_expression.operands : LIST [2:?] of maths_function;
+WHERE
+  WR1: composable_sequence(SELF\multiple_arity_generic_expression.operands);
+END_ENTITY;
+ENTITY parallel_composed_function
+  SUBTYPE OF (maths_function, multiple_arity_generic_expression);
+  common_domain  : tuple_space;
+  prep_functions : LIST [1:?] OF prep_function_select;
+  final_function : maths_function_select;
+DERIVE
+  SELF\multiple_arity_generic_expression.operands : LIST [2:?] of generic_expression
+    := convert_to_operands_prcmfn(common_domain, prep_functions, final_function);
+WHERE
+  WR1: expression_is_constant(common_domain);
+  WR2: parallel_composed_function_domain_check(common_domain, prep_functions);
+  WR3: parallel_composed_function_composability_check
+       (common_domain, prep_functions, final_function);
+END_ENTITY;
+ENTITY explicit_table_function
+  ABSTRACT SUPERTYPE OF (ONEOF (listed_real_data,
+                                listed_integer_data,
+                                listed_logical_data,
+                                listed_string_data,
+                                listed_data,
+                                linearized_table_function,
+                                basic_sparse_matrix))
+  SUBTYPE OF (maths_function);
+  index_base : zero_or_one;
+  shape      : LIST [1:?] OF positive;
+END_ENTITY;
+ENTITY listed_real_data
+  SUBTYPE OF (explicit_table_function, generic_literal);
+  values : LIST [1:?] OF REAL;
+DERIVE
+  self\explicit_table_function.shape : LIST [1:?] OF positive := [SIZEOF (values)];
+END_ENTITY;
+ENTITY listed_integer_data
+  SUBTYPE OF (explicit_table_function, generic_literal);
+  values : LIST [1:?] OF INTEGER;
+DERIVE
+  self\explicit_table_function.shape : LIST [1:?] OF positive := [SIZEOF (values)];
+END_ENTITY;
+ENTITY listed_logical_data
+  SUBTYPE OF(explicit_table_function, generic_literal);
+  values : LIST [1:?] OF LOGICAL;
+DERIVE
+  self\explicit_table_function.shape : LIST [1:?] OF positive := [SIZEOF (values)];
+END_ENTITY;
+ENTITY listed_string_data
+  SUBTYPE OF (explicit_table_function, generic_literal);
+  values : LIST [1:?] OF STRING;
+DERIVE
+  self\explicit_table_function.shape : LIST [1:?] OF positive := [SIZEOF (values)];
+END_ENTITY;
+ENTITY listed_data
+  SUBTYPE OF (explicit_table_function, multiple_arity_generic_expression);
+  values      : LIST [2:?] OF maths_value;
+  value_range : maths_space;
+DERIVE
+  SELF\explicit_table_function.shape : LIST [1:?] OF positive := [SIZEOF (values)];
+  SELF\multiple_arity_generic_expression.operands : LIST [2:?] OF
+    generic_expression := convert_to_operands(values);
+WHERE
+  WR1: expression_is_constant(value_range);
+  WR2: SIZEOF (QUERY (val <* values | NOT (member_of( val, value_range)))) = 0;
+END_ENTITY;
+ENTITY linearized_table_function
+  SUPERTYPE OF (ONEOF (standard_table_function,
+                       regular_table_function,
+                       triangular_matrix,
+                       symmetric_matrix,
+                       banded_matrix))
+  SUBTYPE OF (explicit_table_function, unary_generic_expression);
+  SELF\unary_generic_expression.operand : maths_function;
+  first  : integer;
+DERIVE
+  source : maths_function := SELF\unary_generic_expression.operand;
+WHERE
+  WR1: function_is_1d_array(source);
+  WR2: member_of(first, source.domain);
+END_ENTITY;
+ENTITY standard_table_function
+  SUBTYPE OF (linearized_table_function);
+  order : ordering_type;
+WHERE
+  WR1: extremal_position_check(SELF);
+END_ENTITY;
+ENTITY regular_table_function
+  SUBTYPE OF (linearized_table_function);
+  increments : LIST [1:?] OF INTEGER;
+WHERE
+  WR1: SIZEOF (increments) = SIZEOF (self\explicit_table_function.shape);
+  WR2: extremal_position_check(self);
+END_ENTITY;
+ENTITY triangular_matrix
+  SUBTYPE OF (linearized_table_function);
+  default_entry : maths_value;
+  lo_up         : lower_upper;
+  order         : ordering_type;
+WHERE
+  WR1: SIZEOF (SELF\explicit_table_function.shape) = 2;
+  WR2: member_of(default_entry, SELF\maths_function.range);
+END_ENTITY;
+ENTITY strict_triangular_matrix
+  SUBTYPE OF (triangular_matrix);
+  main_diagonal_value : maths_value;
+END_ENTITY;
+ENTITY symmetric_matrix
+  SUBTYPE OF (linearized_table_function);
+  skew_symmetric : BOOLEAN;
+  order          : ordering_type;
+WHERE
+  WR1: SIZEOF (SELF\explicit_table_function.shape) = 2;
+  WR2: SELF\explicit_table_function.shape[1] =
+       SELF\explicit_table_function.shape[2];
+  WR3: (NOT skew_symmetric) OR (
+       (space_dimension(SELF\linearized_table_function.source.range) = 1) AND
+       (subspace_of_numbers(factor1(SELF\linearized_table_function.source.range))));
+END_ENTITY;
+ENTITY symmetric_banded_matrix
+  SUBTYPE OF (symmetric_matrix);
+  default_entry : maths_value;
+  above         : nonnegative;
+WHERE
+  WR1: member_of(default_entry,
+       factor1(SELF\linearized_table_function.source.range));
+END_ENTITY;
+ENTITY banded_matrix
+  SUBTYPE OF (linearized_table_function);
+  default_entry : maths_value;
+  below         : integer;
+  above         : integer;
+  order         : ordering_type;
+WHERE
+  WR1: SIZEOF (self\explicit_table_function.shape) = 2;
+  WR2: -below <= above;
+  WR3: member_of(default_entry,
+       factor1(SELF\linearized_table_function.source.range));
+END_ENTITY;
+ENTITY basic_sparse_matrix
+  SUBTYPE OF (explicit_table_function, multiple_arity_generic_expression);
+  SELF\multiple_arity_generic_expression.operands : LIST [3:3] OF maths_function;
+  default_entry : maths_value;
+  order : ordering_type;
+DERIVE
+  index : maths_function := SELF\multiple_arity_generic_expression.operands[1];
+  loc   : maths_function := SELF\multiple_arity_generic_expression.operands[2];
+  val   : maths_function := SELF\multiple_arity_generic_expression.operands[3];
+WHERE
+  WR1: function_is_1d_table(index);
+  WR2: function_is_1d_table(loc);
+  WR3: function_is_1d_table(val);
+  WR4: check_sparse_index_domain(index.domain, index_base, shape, order);
+  WR5: check_sparse_index_to_loc(index.range, loc.domain);
+  WR6: loc.domain = val.domain;
+  WR7: check_sparse_loc_range(loc.range, index_base, shape, order);
+  WR8: member_of(default_entry, val.range);
+END_ENTITY;
+ENTITY homogeneous_linear_function
+  SUBTYPE OF (maths_function, unary_generic_expression);
+  SELF\unary_generic_expression.operand : maths_function;
+  sum_index : one_or_two;
+DERIVE
+  mat       : maths_function := SELF\unary_generic_expression.operand;
+WHERE
+  WR1: function_is_2d_table(mat);
+  WR2: (space_dimension(mat.range) = 1) AND subspace_of_numbers(factor1(mat.range));
+END_ENTITY;
+ENTITY general_linear_function
+  SUBTYPE OF (maths_function, unary_generic_expression);
+  SELF\unary_generic_expression.operand : maths_function;
+  sum_index : one_or_two;
+DERIVE
+  mat       : maths_function := SELF\unary_generic_expression.operand;
+WHERE
+  WR1: function_is_2d_table(mat);
+  WR2: (space_dimension(mat.range) = 1) AND
+       subspace_of_numbers(factor1(mat.range));
+END_ENTITY;
+ENTITY b_spline_basis
+  SUBTYPE OF (maths_function, generic_literal);
+  degree         : nonnegative;
+  repeated_knots : LIST [2:?] OF REAL;
+DERIVE
+  order          : positive := degree + 1;
+  num_basis      : positive := SIZEOF (repeated_knots) - order;
+WHERE
+  WR1: num_basis >= order;
+  WR2: nondecreasing(repeated_knots);
+  WR3: repeated_knots[order] < repeated_knots[num_basis+1];
+END_ENTITY;
+ENTITY b_spline_function
+  SUBTYPE OF (maths_function, unary_generic_expression);
+  SELF\unary_generic_expression.operand : maths_function;
+  basis : LIST [1:?] OF b_spline_basis;
+DERIVE
+  coef  : maths_function := SELF\unary_generic_expression.operand;
+WHERE
+  WR1: function_is_table(coef);
+  WR2: (space_dimension(coef.range) = 1) AND
+       (number_superspace_of(factor1(coef.range)) = the_reals);
+  WR3: SIZEOF (basis) <=
+       SIZEOF (shape_of_array(coef));
+  WR4: compare_basis_and_coef(basis, coef);
+END_ENTITY;
+ENTITY rationalize_function
+  SUBTYPE OF (maths_function, unary_generic_expression);
+  SELF\unary_generic_expression.operand : maths_function;
+DERIVE
+  fun : maths_function := SELF\unary_generic_expression.operand;
+WHERE
+  WR1: (space_dimension(fun.domain) = 1) AND (space_dimension(fun.range) = 1);
+  WR2: number_tuple_subspace_check(factor1(fun.range));
+  WR3: space_dimension(factor1(fun.range)) > 1;
+END_ENTITY;
+ENTITY abstracted_expression_function
+  SUBTYPE OF (maths_function, quantifier_expression);
+DERIVE
+  SELF\quantifier_expression.variables : LIST [1:?] OF UNIQUE generic_variable :=
+    remove_first(SELF\multiple_arity_generic_expression.operands);
+  expr : generic_expression := SELF\multiple_arity_generic_expression.operands[1];
+WHERE
+  WR1: SIZEOF (QUERY ( operand <*
+       SELF\multiple_arity_generic_expression.operands | NOT (
+       has_values_space( operand)))) = 0;
+END_ENTITY;
+ENTITY expression_denoted_function
+  SUBTYPE OF (maths_function, unary_generic_expression);
+DERIVE
+  expr : generic_expression := SELF\unary_generic_expression.operand;
+WHERE
+  WR1: (schema_prefix + 'FUNCTION_SPACE') IN TYPEOF (values_space_of(expr));
+END_ENTITY;
+ENTITY imported_point_function
+  SUBTYPE OF (maths_function, generic_literal);
+  geometry : point;
+END_ENTITY;
+ENTITY imported_curve_function
+  SUBTYPE OF (maths_function, generic_literal);
+  geometry          : curve;
+  parametric_domain : tuple_space;
+WHERE
+  WR1: expression_is_constant(parametric_domain);
+END_ENTITY;
+ENTITY imported_surface_function
+  SUBTYPE OF (maths_function, generic_literal);
+  geometry          : surface;
+  parametric_domain : tuple_space;
+WHERE
+  WR1: expression_is_constant(parametric_domain);
+END_ENTITY;
+ENTITY imported_volume_function
+  SUBTYPE OF (maths_function, generic_literal);
+  geometry          : volume;
+  parametric_domain : tuple_space;
+WHERE
+  WR1: expression_is_constant(parametric_domain);
+END_ENTITY;
+ENTITY application_defined_function
+  ABSTRACT SUPERTYPE
+  SUBTYPE OF (maths_function);
+  explicit_domain : tuple_space;
+  explicit_range  : tuple_space;
+  parameters      : maths_value;
+WHERE
+  WR1: expression_is_constant(explicit_domain);
+  WR2: expression_is_constant(explicit_range);
+END_ENTITY;
+ENTITY mathml_function
+  SUBTYPE OF (application_defined_function, generic_literal);
+WHERE
+  WR1: 'STRING' IN TYPEOF (SELF\application_defined_function.parameters);
+END_ENTITY;
+FUNCTION assoc_product_space(ts1, ts2 : tuple_space) : tuple_space;
+  LOCAL
+    types1 : SET OF STRING := TYPEOF (ts1);
+    types2 : SET OF STRING := TYPEOF (ts2);
+    up1, up2 : uniform_product_space := make_uniform_product_space(the_reals,1);
+    lp1, lp2, lps : listed_product_space := the_zero_tuple_space;
+    et1, et2, ets : extended_tuple_space := the_tuples;
+    use_up1, use_up2, use_lp1, use_lp2 : BOOLEAN;
+    factors : LIST OF maths_space := [];
+    tspace : tuple_space;
+  END_LOCAL;
+  -- Identify type of first operand
+  IF (schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN types1 THEN
+    up1 := ts1;
+    use_up1 := true;
+    use_lp1 := false;
+  ELSE
+    IF (schema_prefix + 'LISTED_PRODUCT_SPACE') IN types1 THEN
+      lp1 := ts1;
+      use_up1 := false;
+      use_lp1 := true;
+    ELSE
+      IF NOT ((schema_prefix + 'EXTENDED_TUPLE_SPACE') IN types1) THEN
+        -- Unreachable when this function was written.
+        RETURN (?);
+      END_IF;
+      et1 := ts1;
+      use_up1 := false;
+      use_lp1 := false;
+    END_IF;
+  END_IF;
+  -- Identify type of second operand
+  IF (schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN types2 THEN
+    up2 := ts2;
+    use_up2 := true;
+    use_lp2 := false;
+  ELSE
+    IF (schema_prefix + 'LISTED_PRODUCT_SPACE') IN types2 THEN
+      lp2 := ts2;
+      use_up2 := false;
+      use_lp2 := true;
+    ELSE
+      IF NOT ((schema_prefix + 'EXTENDED_TUPLE_SPACE') IN types2) THEN
+        -- Unreachable when this function was written.
+        RETURN (?);
+      END_IF;
+      et2 := ts2;
+      use_up2 := false;
+      use_lp2 := false;
+    END_IF;
+  END_IF;
+  -- Construction for each combination of cases
+  IF use_up1 THEN
+    IF use_up2 THEN
+      IF up1.base = up2.base THEN
+        tspace := make_uniform_product_space(up1.base, up1.exponent + up2.exponent);
+      ELSE
+        factors := [up1.base : up1.exponent, up2.base : up2.exponent];
+        tspace := make_listed_product_space(factors);
+      END_IF;
+    ELSE
+      IF use_lp2 THEN
+        -- Avoid compiler confusion by breaking into two lines.
+        factors := [up1.base : up1.exponent];
+        factors := factors + lp2.factors;
+        tspace := make_listed_product_space(factors);
+      ELSE
+        tspace := assoc_product_space(up1, et2.base);
+        tspace := make_extended_tuple_space(tspace, et2.extender);
+      END_IF;
+    END_IF;
+  ELSE
+    IF use_lp1 THEN
+      IF use_up2 THEN
+        -- Avoid compiler confusion by breaking into two lines.
+        factors := [up2.base : up2.exponent];
+        factors := lp1.factors + factors;
+        tspace := make_listed_product_space(factors);
+      ELSE
+        IF use_lp2 THEN
+          tspace := make_listed_product_space(lp1.factors + lp2.factors);
+        ELSE
+          tspace := assoc_product_space(lp1, et2.base);
+          tspace := make_extended_tuple_space(tspace, et2.extender);
+        END_IF;
+      END_IF;
+    ELSE
+      IF use_up2 THEN
+        IF et1.extender = up2.base THEN
+          tspace := assoc_product_space(et1.base, up2);
+          tspace := make_extended_tuple_space(tspace, et1.extender);
+        ELSE
+          -- No subtype is available to represent this cartesian product.
+          RETURN (?);
+        END_IF;
+      ELSE
+        IF use_lp2 THEN
+          factors := lp2.factors;
+          REPEAT i := 1 TO SIZEOF (factors);
+            IF et1.extender <> factors[i] THEN
+              -- No subtype available to represent this cartesian product.
+              RETURN (?);
+            END_IF;
+          END_REPEAT;
+          tspace := assoc_product_space(et1.base, lp2);
+          tspace := make_extended_tuple_space(tspace, et1.extender);
+        ELSE
+          IF et1.extender = et2.extender THEN
+            -- Next line may assign indeterminate (?) to tspace.
+            tspace := assoc_product_space(et1, et2.base);
+          ELSE
+            -- No subtype available to represent this cartesian product.
+            RETURN (?);
+          END_IF;
+        END_IF;
+      END_IF;
+    END_IF;
+  END_IF;
+  RETURN (tspace);
+END_FUNCTION;  -- assoc_product_space
+FUNCTION bool(lgcl: LOGICAL) : BOOLEAN;
+  IF NOT EXISTS (lgcl) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF lgcl <> TRUE THEN
+    RETURN (FALSE);
+  END_IF;
+  RETURN (TRUE);
+END_FUNCTION;  -- bool
+FUNCTION check_sparse_index_domain(idxdom : tuple_space;
+                                   base   : zero_or_one;
+                                   shape  : LIST [1:?] OF positive;
+                                   order  : ordering_type) : BOOLEAN;
+  LOCAL
+    mthspc : maths_space;
+    interval : finite_integer_interval;
+    i : INTEGER;
+  END_LOCAL;
+  mthspc := factor1(idxdom);
+  -- A consequence of WR1 of basic_sparse_matrix is that here we need only
+  -- consider the case that mthspc is a finite integer interval and is the only
+  -- factor space of idxdom.
+  interval := mthspc;
+  IF order = by_rows THEN
+     i := 1;
+  ELSE
+     i := 2;
+  END_IF;
+  RETURN (bool((interval.min <= base) AND (interval.max >= base + shape[i])));
+  -- The index function is evaluated at (base+shape[i]) when determining the
+  -- upper search bound for entries of the last row or column, respectively.
+END_FUNCTION;  -- check_sparse_index_domain;
+FUNCTION check_sparse_loc_range(locrng : tuple_space;
+                                base   : zero_or_one;
+                                shape  : LIST [1:?] OF positive;
+                                order  : ordering_type) : BOOLEAN;
+  LOCAL
+    mthspc : maths_space;
+    interval : finite_integer_interval;
+    i : INTEGER;
+  END_LOCAL;
+  IF space_dimension(locrng) <> 1 THEN
+    RETURN (FALSE);
+  END_IF;
+  mthspc := factor1(locrng);
+  IF NOT ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN TYPEOF (mthspc)) THEN
+    RETURN (FALSE);
+  END_IF;
+  interval := mthspc;
+  IF order = by_rows THEN
+     i := 2;
+  ELSE
+     i := 1;
+  END_IF;
+  RETURN (bool((interval.min >= base) AND (interval.max <= base + shape[i] - 1)));
+END_FUNCTION;  -- check_sparse_loc_range;
+FUNCTION check_sparse_index_to_loc(index_range, loc_domain : tuple_space) : BOOLEAN;
+  LOCAL
+    temp : maths_space;
+    idx_rng_itvl, loc_dmn_itvl : finite_integer_interval;
+  END_LOCAL;
+  temp := factor1 (index_range);
+  IF (schema_prefix + 'TUPLE_SPACE') IN TYPEOF (temp) THEN
+    temp := factor1 (temp);
+  END_IF;
+  IF NOT ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN TYPEOF (temp)) THEN
+    RETURN (FALSE);
+  END_IF;
+  idx_rng_itvl := temp;
+  temp := factor1 (loc_domain);
+  IF (schema_prefix + 'TUPLE_SPACE') IN TYPEOF (temp) THEN
+    temp := factor1 (temp);
+  END_IF;
+  IF NOT ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN TYPEOF (temp)) THEN
+    RETURN (FALSE);
+  END_IF;
+  loc_dmn_itvl := temp;
+  RETURN (bool((loc_dmn_itvl.min <= idx_rng_itvl.min) AND
+    (idx_rng_itvl.max <= loc_dmn_itvl.max+1)));
+END_FUNCTION;  -- check_sparse_index_to_loc
+FUNCTION compare_basis_and_coef(basis : LIST [1:?] OF b_spline_basis;
+                                coef  : maths_function) : BOOLEAN;
+  LOCAL
+    shape : LIST OF positive;
+  END_LOCAL;
+  IF NOT EXISTS (basis) OR NOT EXISTS (coef) THEN
+    RETURN (FALSE);
+  END_IF;
+  shape := shape_of_array(coef);
+  IF NOT EXISTS (shape) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF SIZEOF (shape) < SIZEOF (basis) THEN
+    RETURN (FALSE);
+  END_IF;
+  REPEAT i := 1 TO SIZEOF (basis);
+    IF (basis[i].num_basis = shape[i]) <> TRUE THEN
+      RETURN (FALSE);
+    END_IF;
+  END_REPEAT;
+  RETURN (TRUE);
+END_FUNCTION;  -- compare_basis_and_coef
+FUNCTION compare_list_and_value(lv : LIST OF GENERIC:G;
+                                op : elementary_function_enumerators;
+                                v  : GENERIC:G) : BOOLEAN;
+  IF NOT EXISTS (lv) OR NOT EXISTS (op) OR NOT EXISTS (v) THEN
+    RETURN (FALSE);
+  END_IF;
+  REPEAT i := 1 TO SIZEOF (lv);
+    IF NOT compare_values(lv[i], op, v) THEN
+      RETURN (FALSE);
+    END_IF;
+  END_REPEAT;
+  RETURN (TRUE);
+END_FUNCTION;  -- compare_list_and_value
+FUNCTION compare_values(v1 : GENERIC:G;
+                        op : elementary_function_enumerators;
+                        v2 : GENERIC:G) : BOOLEAN;
+  -- This algorithm assumes a comparison between "incompatible" types will
+  -- produce the indeterminate value (or UNKNOWN?).
+  LOCAL
+    logl : LOGICAL := UNKNOWN;
+  END_LOCAL;
+  IF NOT EXISTS (v1) OR NOT EXISTS (op) OR NOT EXISTS (v2) THEN
+    RETURN (FALSE);
+  END_IF;
+  CASE op OF
+  ef_eq_i : logl := (v1 = v2);
+  ef_ne_i : logl := (v1 <> v2);
+  ef_gt_i : logl := (v1 > v2);
+  ef_lt_i : logl := (v1 < v2);
+  ef_ge_i : logl := (v1 >= v2);
+  ef_le_i : logl := (v1 <= v2);
+  END_CASE;
+  IF EXISTS (logl) THEN
+    IF logl = TRUE THEN
+      RETURN (TRUE);
+    END_IF;
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- compare_values
+FUNCTION compatible_es_values(esval1, esval2 : elementary_space_enumerators) : BOOLEAN;
+  LOCAL
+    esval1_is_numeric, esval2_is_numeric : LOGICAL;
+  END_LOCAL;
+  IF (esval1 = esval2) OR (esval1 = es_generics) OR (esval2 = es_generics) THEN
+    RETURN (TRUE);
+  END_IF;
+  esval1_is_numeric := (esval1 >= es_numbers) AND (esval1 <= es_integers);
+  esval2_is_numeric := (esval2 >= es_numbers) AND (esval2 <= es_integers);
+  IF esval1_is_numeric AND esval2_is_numeric THEN
+    RETURN (TRUE);
+  END_IF;
+  IF esval1_is_numeric XOR esval2_is_numeric THEN
+    RETURN (FALSE);
+  END_IF;
+  IF ((esval1 = es_logicals) AND (esval2 = es_booleans)) OR
+    ((esval1 = es_booleans) AND (esval2 = es_logicals)) THEN
+    RETURN (TRUE);
+  END_IF;
+  -- All other cases are incompatible
+  RETURN (FALSE);
+END_FUNCTION;  -- compatible_es_values
+FUNCTION compatible_spaces(sp1, sp2 : maths_space) : BOOLEAN;
+  LOCAL
+    types1 : SET OF STRING := TYPEOF (sp1);
+    types2 : SET OF STRING := TYPEOF (sp2);
+    sp1_is_int_interval, sp2_is_int_interval : LOGICAL;
+    sp1_is_interval, sp2_is_interval : LOGICAL;
+    lgcl : LOGICAL := UNKNOWN;
+    m, n : INTEGER;
+    amin, amax : REAL;
+    s1, s2 : maths_space;
+  END_LOCAL;
+  IF (schema_prefix + 'FINITE_SPACE') IN types1 THEN
+    REPEAT i := 1 TO SIZEOF (sp1\finite_space.members);
+      lgcl := member_of(sp1\finite_space.members[i], sp2);
+      IF lgcl <> FALSE THEN
+        RETURN (TRUE);
+      END_IF;
+    END_REPEAT;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'FINITE_SPACE') IN types2 THEN
+    REPEAT i := 1 TO SIZEOF (sp2\finite_space.members);
+      lgcl := member_of(sp2\finite_space.members[i], sp1);
+      IF lgcl <> FALSE THEN
+        RETURN (TRUE);
+      END_IF;
+    END_REPEAT;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_SPACE') IN types1 THEN
+    IF sp1\elementary_space.space_id = es_generics THEN
+      RETURN (TRUE);
+    END_IF;
+    IF (schema_prefix + 'ELEMENTARY_SPACE') IN types2 THEN
+      RETURN (compatible_es_values(sp1\elementary_space.space_id,
+        sp2\elementary_space.space_id));
+    END_IF;
+    IF ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types2) OR
+      ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN types2) OR
+      ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN types2) THEN
+      RETURN (compatible_es_values(sp1\elementary_space.space_id, es_integers));
+    END_IF;
+    IF ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types2) OR
+      ((schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN types2) OR
+      ((schema_prefix + 'REAL_INTERVAL_TO_MAX') IN types2) THEN
+      RETURN (compatible_es_values(sp1\elementary_space.space_id, es_reals));
+    END_IF;
+    IF (schema_prefix + 'TUPLE_SPACE') IN types2 THEN
+      RETURN (FALSE);
+    END_IF;
+    IF (schema_prefix + 'FUNCTION_SPACE') IN types2 THEN
+      RETURN (bool(sp1\elementary_space.space_id = es_maths_functions));
+    END_IF;
+    -- Should be unreachable.
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_SPACE') IN types2 THEN
+    IF sp2\elementary_space.space_id = es_generics THEN
+      RETURN (TRUE);
+    END_IF;
+    IF ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types1) OR
+      ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN types1) OR
+      ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN types1) THEN
+      RETURN (compatible_es_values(sp2\elementary_space.space_id, es_integers));
+    END_IF;
+    IF ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types1) OR
+      ((schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN types1) OR
+      ((schema_prefix + 'REAL_INTERVAL_TO_MAX') IN types1) THEN
+      RETURN (compatible_es_values(sp2\elementary_space.space_id, es_reals));
+    END_IF;
+    IF (schema_prefix + 'TUPLE_SPACE') IN types1 THEN
+      RETURN (FALSE);
+    END_IF;
+    IF (schema_prefix + 'FUNCTION_SPACE') IN types1 THEN
+      RETURN (bool(sp2\elementary_space.space_id = es_maths_functions));
+    END_IF;
+    -- Should be unreachable.
+    RETURN (TRUE);
+  END_IF;
+  sp1_is_int_interval := ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types1)
+    OR ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN types1)
+    OR ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN types1);
+  sp1_is_interval := sp1_is_int_interval
+    OR ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types1)
+    OR ((schema_prefix + 'INTEGER_REAL_FROM_MIN') IN types1)
+    OR ((schema_prefix + 'INTEGER_REAL_TO_MAX') IN types1);
+  sp2_is_int_interval := ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types2)
+    OR ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN types2)
+    OR ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN types2);
+  sp2_is_interval := sp2_is_int_interval
+    OR ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types2)
+    OR ((schema_prefix + 'INTEGER_REAL_FROM_MIN') IN types2)
+    OR ((schema_prefix + 'INTEGER_REAL_TO_MAX') IN types2);
+  IF sp1_is_interval THEN
+    IF sp2_is_interval THEN
+      IF min_exists(sp1) AND max_exists(sp2) THEN
+        amin := real_min(sp1);
+        amax := real_max(sp2);
+        IF amin > amax THEN
+          RETURN (FALSE);
+        END_IF;
+        IF amin = amax THEN
+          RETURN (min_included(sp1) AND max_included(sp2));
+        END_IF;
+      END_IF;
+      IF min_exists(sp2) AND max_exists(sp1) THEN
+        amin := real_min(sp2);
+        amax := real_max(sp1);
+        IF amin > amax THEN
+          RETURN (FALSE);
+        END_IF;
+        IF amin = amax THEN
+          RETURN (min_included(sp2) AND max_included(sp1));
+        END_IF;
+      END_IF;
+      IF sp1_is_int_interval AND NOT sp2_is_int_interval THEN
+        RETURN (contains_integer(sp2));
+      END_IF;
+      IF sp2_is_int_interval AND NOT sp1_is_int_interval THEN
+        RETURN (contains_integer(sp1));
+      END_IF;
+      RETURN (TRUE);
+    END_IF;
+    IF (schema_prefix + 'TUPLE_SPACE') IN types2 THEN
+      RETURN (FALSE);
+    END_IF;
+    IF (schema_prefix + 'FUNCTION_SPACE') IN types2 THEN
+      RETURN (FALSE);
+    END_IF;
+    -- Should be unreachable.
+    RETURN (TRUE);
+  END_IF;
+  IF sp2_is_interval THEN
+    IF (schema_prefix + 'TUPLE_SPACE') IN types1 THEN
+      RETURN (FALSE);
+    END_IF;
+    IF (schema_prefix + 'FUNCTION_SPACE') IN types1 THEN
+      RETURN (FALSE);
+    END_IF;
+    -- Should be unreachable.
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN types1 THEN
+    IF (schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN types2 THEN
+      IF sp1\uniform_product_space.exponent <> sp2\uniform_product_space.exponent THEN
+        RETURN (FALSE);
+      END_IF;
+      RETURN (compatible_spaces(sp1\uniform_product_space.base,
+        sp2\uniform_product_space.base));
+    END_IF;
+    IF (schema_prefix + 'LISTED_PRODUCT_SPACE') IN types2 THEN
+      n := SIZEOF (sp2\listed_product_space.factors);
+      IF sp1\uniform_product_space.exponent <> n THEN
+        RETURN (FALSE);
+      END_IF;
+      REPEAT i := 1 TO n;
+        IF NOT compatible_spaces(sp1\uniform_product_space.base,
+          sp2\listed_product_space.factors[i]) THEN
+          RETURN (FALSE);
+        END_IF;
+      END_REPEAT;
+      RETURN (TRUE);
+    END_IF;
+    IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN types2 THEN
+      m := sp1\uniform_product_space.exponent;
+      n := space_dimension(sp2\extended_tuple_space.base);
+      IF m < n THEN
+        RETURN (FALSE);
+      END_IF;
+      IF m = n THEN
+        RETURN (compatible_spaces(sp1, sp2\extended_tuple_space.base));
+      END_IF;
+      RETURN (compatible_spaces(sp1, assoc_product_space(
+        sp2\extended_tuple_space.base, make_uniform_product_space(
+        sp2\extended_tuple_space.extender, m - n))));
+    END_IF;
+    IF (schema_prefix + 'FUNCTION_SPACE') IN types2 THEN
+      RETURN (FALSE);
+    END_IF;
+    -- Should be unreachable.
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'LISTED_PRODUCT_SPACE') IN types1 THEN
+    n := SIZEOF (sp1\listed_product_space.factors);
+    IF (schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN types2 THEN
+      IF n <> sp2\uniform_product_space.exponent THEN
+        RETURN (FALSE);
+      END_IF;
+      REPEAT i := 1 TO n;
+        IF NOT compatible_spaces(sp2\uniform_product_space.base,
+          sp1\listed_product_space.factors[i]) THEN
+          RETURN (FALSE);
+        END_IF;
+      END_REPEAT;
+      RETURN (TRUE);
+    END_IF;
+    IF (schema_prefix + 'LISTED_PRODUCT_SPACE') IN types2 THEN
+      IF n <> SIZEOF (sp2\listed_product_space.factors) THEN
+        RETURN (FALSE);
+      END_IF;
+      REPEAT i := 1 TO n;
+        IF NOT compatible_spaces(sp1\listed_product_space.factors[i],
+          sp2\listed_product_space.factors[i]) THEN
+          RETURN (FALSE);
+        END_IF;
+      END_REPEAT;
+      RETURN (TRUE);
+    END_IF;
+    IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN types2 THEN
+      m := space_dimension(sp2\extended_tuple_space.base);
+      IF n < m THEN
+        RETURN (FALSE);
+      END_IF;
+      IF n = m THEN
+        RETURN (compatible_spaces(sp1, sp2\extended_tuple_space.base));
+      END_IF;
+      RETURN (compatible_spaces(sp1, assoc_product_space(
+        sp2\extended_tuple_space.base, make_uniform_product_space(
+        sp2\extended_tuple_space.extender, n - m))));
+    END_IF;
+    IF (schema_prefix + 'FUNCTION_SPACE') IN types2 THEN
+      RETURN (FALSE);
+    END_IF;
+    -- Should be unreachable.
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN types1 THEN
+    IF ((schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN types2) OR
+      ((schema_prefix + 'LISTED_PRODUCT_SPACE') IN types2) THEN
+      RETURN (compatible_spaces(sp2, sp1));
+    END_IF;
+    IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN types2 THEN
+      IF NOT compatible_spaces(sp1\extended_tuple_space.extender,
+        sp2\extended_tuple_space.extender) THEN
+        RETURN (FALSE);
+      END_IF;
+      n := space_dimension(sp1\extended_tuple_space.base);
+      m := space_dimension(sp2\extended_tuple_space.base);
+      IF n < m THEN
+        RETURN (compatible_spaces(assoc_product_space(sp1\extended_tuple_space.base,
+          make_uniform_product_space(sp1\extended_tuple_space.extender, m - n)),
+          sp2\extended_tuple_space.base));
+      END_IF;
+      IF n = m THEN
+        RETURN (compatible_spaces(sp1\extended_tuple_space.base,
+          sp2\extended_tuple_space.base));
+      END_IF;
+      IF n > m THEN
+        RETURN (compatible_spaces(sp1\extended_tuple_space.base,
+          assoc_product_space(sp2\extended_tuple_space.base,
+          make_uniform_product_space(sp2\extended_tuple_space.extender, n - m))));
+      END_IF;
+    END_IF;
+    IF (schema_prefix + 'FUNCTION_SPACE') IN types2 THEN
+      RETURN (FALSE);
+    END_IF;
+    -- Should be unreachable.
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'FUNCTION_SPACE') IN types1 THEN
+    IF (schema_prefix + 'FUNCTION_SPACE') IN types2 THEN
+      s1 := sp1\function_space.domain_argument;
+      s2 := sp2\function_space.domain_argument;
+      CASE sp1\function_space.domain_constraint OF
+      sc_equal : BEGIN
+        CASE sp2\function_space.domain_constraint OF
+        sc_equal : lgcl := subspace_of(s1, s2) AND subspace_of(s2, s1);
+        sc_subspace : lgcl := subspace_of(s1, s2);
+        sc_member : lgcl := member_of(s1, s2);
+        END_CASE;
+        END;
+      sc_subspace :BEGIN
+        CASE sp2\function_space.domain_constraint OF
+        sc_equal : lgcl := subspace_of(s2, s1);
+        sc_subspace : lgcl := compatible_spaces(s1, s2);
+        sc_member : lgcl := UNKNOWN;
+        END_CASE;
+        END;
+      sc_member :BEGIN
+        CASE sp2\function_space.domain_constraint OF
+        sc_equal : lgcl := member_of(s2, s1);
+        sc_subspace : lgcl := UNKNOWN;
+        sc_member : lgcl := compatible_spaces(s1, s2);
+        END_CASE;
+        END;
+      END_CASE;
+      IF lgcl = FALSE THEN
+        RETURN (FALSE);
+      END_IF;
+      s1 := sp1\function_space.range_argument;
+      s2 := sp2\function_space.range_argument;
+      CASE sp1\function_space.range_constraint OF
+      sc_equal : BEGIN
+        CASE sp2\function_space.range_constraint OF
+        sc_equal : lgcl := subspace_of(s1, s2) AND subspace_of(s2, s1);
+        sc_subspace : lgcl := subspace_of(s1, s2);
+        sc_member : lgcl := member_of(s1, s2);
+        END_CASE;
+        END;
+      sc_subspace :BEGIN
+        CASE sp2\function_space.range_constraint OF
+        sc_equal : lgcl := subspace_of(s2, s1);
+        sc_subspace : lgcl := compatible_spaces(s1, s2);
+        sc_member : lgcl := UNKNOWN;
+        END_CASE;
+        END;
+      sc_member :BEGIN
+        CASE sp2\function_space.range_constraint OF
+        sc_equal : lgcl := member_of(s2, s1);
+        sc_subspace : lgcl := UNKNOWN;
+        sc_member : lgcl := compatible_spaces(s1, s2);
+        END_CASE;
+        END;
+      END_CASE;
+      IF lgcl = FALSE THEN
+        RETURN (FALSE);
+      END_IF;
+      RETURN (TRUE);
+    END_IF;
+    -- Should be unreachable.
+    RETURN (TRUE);
+  END_IF;
+  -- Should be unreachable.
+  RETURN (TRUE);
+END_FUNCTION;  -- compatible_spaces
+FUNCTION composable_sequence(operands : LIST [2:?] OF maths_function) : BOOLEAN;
+  REPEAT i := 1 TO SIZEOF (operands) - 1;
+    IF NOT compatible_spaces (operands[i].range, operands[i+1].domain) THEN
+      RETURN (FALSE);
+    END_IF;
+  END_REPEAT;
+  RETURN (TRUE);
+END_FUNCTION;  -- composable_sequence
+FUNCTION contains_integer(spc : maths_space) : BOOLEAN;
+  LOCAL
+    typenames : SET OF STRING := TYPEOF (spc);
+    integer_min, integer_max : INTEGER;
+    tmp_min, tmp_max : REAL;
+    es_val : elementary_space_enumerators;
+  END_LOCAL;
+  IF ((schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN typenames) OR
+    ((schema_prefix + 'REAL_INTERVAL_TO_MAX') IN typenames) OR
+    ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN typenames) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN typenames) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN typenames) THEN
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'FINITE_REAL_INTERVAL') IN typenames THEN
+    tmp_min := real_min (spc);
+    tmp_max := real_max (spc);
+    integer_min := floor(tmp_min);
+    integer_max := floor(tmp_max);
+    IF integer_max = tmp_max THEN
+      IF max_included (spc) THEN
+        RETURN (TRUE);
+      ELSE
+        integer_max := integer_max - 1;
+      END_IF;
+    END_IF;
+    IF (integer_min = tmp_min) AND min_included (spc) THEN
+      RETURN (TRUE);
+    END_IF;
+    IF integer_min = integer_max THEN
+      RETURN (FALSE);
+    END_IF;
+    RETURN (TRUE);
+  END_IF;
+  -- Additional cases only when used as stand-alone function
+  IF (schema_prefix + 'FINITE_SPACE') IN typenames THEN
+    REPEAT i := 1 TO SIZEOF (spc\finite_space.members);
+      IF value_is_integer (spc\finite_space.members[i]) THEN
+        RETURN (TRUE);
+      END_IF;
+    END_REPEAT;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_SPACE') IN typenames THEN
+    es_val := spc\elementary_space.space_id;
+    RETURN (bool((es_val = es_generics) OR
+      ((es_val >= es_numbers) AND (es_val <= es_integers))));
+  END_IF;
+  IF (schema_prefix + 'TUPLE_SPACE') IN typenames THEN
+    RETURN (FALSE);
+  END_IF;
+  -- Should be unreachable
+  RETURN (TRUE);
+END_FUNCTION;  -- contains_integer
+FUNCTION convert_to_literal(val : maths_atom) : generic_literal;
+  LOCAL
+    types : SET OF STRING := TYPEOF (val);
+  END_LOCAL;
+  IF 'INTEGER' IN types THEN
+    RETURN (make_int_literal (val));
+  END_IF;
+  IF 'REAL' IN types THEN
+    RETURN (make_real_literal (val));
+  END_IF;
+  IF 'BOOLEAN' IN types THEN
+    RETURN (make_boolean_literal (val));
+  END_IF;
+  IF 'STRING' IN types THEN
+    RETURN (make_string_literal (val));
+  END_IF;
+  IF 'LOGICAL' IN types THEN
+    RETURN (make_logical_literal (val));
+  END_IF;
+  IF 'BINARY' IN types THEN
+    RETURN (make_binary_literal (val));
+  END_IF;
+  IF (schema_prefix + 'MATHS_ENUM_ATOM') IN types THEN
+    RETURN (make_maths_enum_literal (val));
+  END_IF;
+  -- Should be unreachable
+  RETURN (?);
+END_FUNCTION;  -- convert_to_literal
+FUNCTION convert_to_maths_function(func : maths_function_select) : maths_function;
+  LOCAL
+    efenum : elementary_function_enumerators;
+    mthfun : maths_function;
+  END_LOCAL;
+  IF (schema_prefix + 'MATHS_FUNCTION') IN TYPEOF (func) THEN
+    mthfun := func;
+  ELSE
+    efenum := func;
+    mthfun := make_elementary_function (efenum);
+  END_IF;
+  RETURN (mthfun);
+END_FUNCTION;  -- convert_to_maths_function
+FUNCTION convert_to_operand(val : maths_value) : generic_expression;
+  LOCAL
+    types : SET OF STRING := TYPEOF (val);
+    genexp : generic_expression;
+    mthatm : maths_atom;
+    mthtpl : maths_tuple;
+    values : LIST OF maths_value;
+  END_LOCAL;
+  -- Use intermediate variables of appropriate declared types to help the compilers.
+  IF 'ISO13584_GENERIC_EXPRESSIONS_SCHEMA.GENERIC_EXPRESSION' IN types THEN
+    genexp := val;
+    RETURN (genexp);
+  END_IF;
+  IF (schema_prefix + 'MATHS_ATOM') IN types THEN
+    mthatm := val;
+    RETURN (convert_to_literal (mthatm));
+  END_IF;
+  IF ((schema_prefix + 'MATHS_TUPLE') IN types) OR
+    ((schema_prefix + 'ATOM_BASED_TUPLE') IN types) THEN
+    mthtpl := val;
+    values := mthtpl;
+    IF SIZEOF (values) = 0 THEN
+      RETURN (make_atom_based_literal (the_empty_atom_based_tuple));
+    END_IF;
+    RETURN (make_function_application (ef_entuple, convert_to_operands (values)));
+  END_IF;
+  -- Should be reachable only when val is the indeterminate value (?), which
+  -- is an error in the current application.
+  RETURN (?);
+END_FUNCTION;  -- convert_to_operand
+FUNCTION convert_to_operands(values : AGGREGATE OF maths_value)
+                            : LIST OF generic_expression;
+  LOCAL
+    operands : LIST OF generic_expression := [];
+    loc : INTEGER := 0;
+  END_LOCAL;
+  IF NOT EXISTS (values) THEN
+    RETURN (?);
+  END_IF;
+  REPEAT i := LOINDEX (values) TO HIINDEX (values);
+    INSERT (operands, convert_to_operand (values[i]), loc);
+    loc := loc + 1;
+  END_REPEAT;
+  RETURN (operands);
+END_FUNCTION;  -- convert_to_operands
+FUNCTION convert_to_operands_prcmfn(comdom  : tuple_space;
+                                    prepfun : LIST OF prep_function_select;
+                                    finfun  : maths_function_select)
+                                   : LIST [2:?] OF generic_expression;
+  LOCAL
+    genexp : generic_expression;
+    operands : LIST OF generic_expression := [];
+    pftypes : SET OF STRING;
+    enccon : encoded_constant;
+    encsel : encoded_selector;
+    mthfun : maths_function;
+  END_LOCAL;
+  INSERT (operands, comdom, 0);
+  REPEAT i := 1 TO SIZEOF (prepfun);
+    -- Attempt to help the compilers by using intermediate variables with appropriate
+    -- declared types.
+    pftypes := TYPEOF (prepfun[i]);
+    IF 'LIST' IN pftypes THEN
+      enccon := prepfun[i];
+      genexp := make_function_application (ef_entuple, [enccon[1]]);
+    ELSE
+      IF 'INTEGER' IN pftypes THEN
+        encsel := prepfun[i];
+        genexp := make_int_literal (encsel);
+      ELSE
+        mthfun := prepfun[i];
+        genexp := mthfun;
+      END_IF;
+    END_IF;
+    INSERT (operands, genexp, i);
+  END_REPEAT;
+  INSERT (operands, convert_to_maths_function (finfun), SIZEOF (prepfun)+1);
+  RETURN (operands);
+END_FUNCTION;  -- convert_to_operands_prcmfn
+FUNCTION derive_elementary_function_domain(ef_val : elementary_function_enumerators)
+                                          : tuple_space;
+  IF NOT EXISTS (ef_val) THEN
+    RETURN (?);
+  END_IF;
+  CASE ef_val OF
+  ef_and : RETURN (make_uniform_product_space (the_logicals, 2));
+  ef_or : RETURN (make_uniform_product_space (the_logicals, 2));
+  ef_not : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_xor : RETURN (make_uniform_product_space (the_logicals, 2));
+  ef_negate_i : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_add_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_subtract_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_multiply_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_divide_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_mod_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_exponentiate_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_eq_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_ne_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_gt_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_lt_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_ge_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_le_i : RETURN (make_uniform_product_space (the_integers, 2));
+  ef_abs_i : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_if_i : RETURN (make_listed_product_space ([the_logicals, the_integers,
+    the_integers]));
+  ef_negate_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_reciprocal_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_add_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_subtract_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_multiply_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_divide_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_mod_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_exponentiate_r : RETURN (make_listed_product_space ([the_nonnegative_reals,
+    the_reals]));
+  ef_exponentiate_ri : RETURN (make_listed_product_space ([the_reals, the_integers]));
+  ef_eq_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_ne_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_gt_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_lt_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_ge_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_le_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_abs_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_acos_r : RETURN (make_uniform_product_space (the_neg1_one_interval, 1));
+  ef_asin_r : RETURN (make_uniform_product_space (the_neg1_one_interval, 1));
+  ef_atan2_r : RETURN (make_uniform_product_space (the_reals, 2));
+  ef_cos_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_exp_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_ln_r : RETURN (make_uniform_product_space (the_nonnegative_reals, 1));
+  ef_log2_r : RETURN (make_uniform_product_space (the_nonnegative_reals, 1));
+  ef_log10_r : RETURN (make_uniform_product_space (the_nonnegative_reals, 1));
+  ef_sin_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_sqrt_r : RETURN (make_uniform_product_space (the_nonnegative_reals, 1));
+  ef_tan_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_if_r : RETURN (make_listed_product_space ([the_logicals, the_reals, the_reals]));
+  ef_negate_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_reciprocal_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_add_c : RETURN (make_uniform_product_space (the_complex_numbers, 2));
+  ef_subtract_c : RETURN (make_uniform_product_space (the_complex_numbers, 2));
+  ef_multiply_c : RETURN (make_uniform_product_space (the_complex_numbers, 2));
+  ef_divide_c : RETURN (make_uniform_product_space (the_complex_numbers, 2));
+  ef_exponentiate_c : RETURN (make_uniform_product_space (the_complex_numbers, 2));
+  ef_exponentiate_ci : RETURN (make_listed_product_space ([the_complex_numbers,
+    the_integers]));
+  ef_eq_c : RETURN (make_uniform_product_space (the_complex_numbers, 2));
+  ef_ne_c : RETURN (make_uniform_product_space (the_complex_numbers, 2));
+  ef_conjugate_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_abs_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_cos_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_exp_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_ln_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_sin_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_sqrt_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_tan_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_if_c : RETURN (make_listed_product_space ([the_logicals, the_complex_numbers,
+    the_complex_numbers]));
+  ef_subscript_s : RETURN (make_listed_product_space ([the_strings, the_integers]));
+  ef_eq_s : RETURN (make_uniform_product_space (the_strings, 2));
+  ef_ne_s : RETURN (make_uniform_product_space (the_strings, 2));
+  ef_gt_s : RETURN (make_uniform_product_space (the_strings, 2));
+  ef_lt_s : RETURN (make_uniform_product_space (the_strings, 2));
+  ef_ge_s : RETURN (make_uniform_product_space (the_strings, 2));
+  ef_le_s : RETURN (make_uniform_product_space (the_strings, 2));
+  ef_subsequence_s : RETURN (make_listed_product_space ([the_strings, the_integers,
+    the_integers]));
+  ef_concat_s : RETURN (make_uniform_product_space (the_strings, 2));
+  ef_size_s : RETURN (make_uniform_product_space (the_strings, 1));
+  ef_format : RETURN (make_listed_product_space ([the_numbers, the_strings]));
+  ef_value : RETURN (make_uniform_product_space (the_strings, 1));
+  ef_like : RETURN (make_uniform_product_space (the_strings, 2));
+  ef_if_s : RETURN (make_listed_product_space ([the_logicals, the_strings,
+    the_strings]));
+  ef_subscript_b : RETURN (make_listed_product_space ([the_binarys, the_integers]));
+  ef_eq_b : RETURN (make_uniform_product_space (the_binarys, 2));
+  ef_ne_b : RETURN (make_uniform_product_space (the_binarys, 2));
+  ef_gt_b : RETURN (make_uniform_product_space (the_binarys, 2));
+  ef_lt_b : RETURN (make_uniform_product_space (the_binarys, 2));
+  ef_ge_b : RETURN (make_uniform_product_space (the_binarys, 2));
+  ef_le_b : RETURN (make_uniform_product_space (the_binarys, 2));
+  ef_subsequence_b : RETURN (make_listed_product_space ([the_binarys, the_integers,
+    the_integers]));
+  ef_concat_b : RETURN (make_uniform_product_space (the_binarys, 2));
+  ef_size_b : RETURN (make_uniform_product_space (the_binarys, 1));
+  ef_if_b : RETURN (make_listed_product_space ([the_logicals, the_binarys,
+    the_binarys]));
+  ef_subscript_t : RETURN (make_listed_product_space ([the_tuples, the_integers]));
+  ef_eq_t : RETURN (make_uniform_product_space (the_tuples, 2));
+  ef_ne_t : RETURN (make_uniform_product_space (the_tuples, 2));
+  ef_concat_t : RETURN (make_uniform_product_space (the_tuples, 2));
+  ef_size_t : RETURN (make_uniform_product_space (the_tuples, 1));
+  ef_entuple : RETURN (the_tuples);
+  ef_detuple : RETURN (make_uniform_product_space (the_generics, 1));
+  ef_insert : RETURN (make_listed_product_space ([the_tuples, the_generics,
+    the_integers]));
+  ef_remove : RETURN (make_listed_product_space ([the_tuples, the_integers]));
+  ef_if_t : RETURN (make_listed_product_space ([the_logicals, the_tuples,
+    the_tuples]));
+  ef_sum_it : RETURN (make_uniform_product_space (the_integer_tuples, 1));
+  ef_product_it : RETURN (make_uniform_product_space (the_integer_tuples, 1));
+  ef_add_it : RETURN (make_uniform_product_space (the_integer_tuples, 2));
+  ef_subtract_it : RETURN (make_uniform_product_space (the_integer_tuples, 2));
+  ef_scalar_mult_it : RETURN (make_listed_product_space ([the_integers,
+    the_integer_tuples]));
+  ef_dot_prod_it : RETURN (make_uniform_product_space (the_integer_tuples, 2));
+  ef_sum_rt : RETURN (make_uniform_product_space (the_real_tuples, 1));
+  ef_product_rt : RETURN (make_uniform_product_space (the_real_tuples, 1));
+  ef_add_rt : RETURN (make_uniform_product_space (the_real_tuples, 2));
+  ef_subtract_rt : RETURN (make_uniform_product_space (the_real_tuples, 2));
+  ef_scalar_mult_rt : RETURN (make_listed_product_space ([the_reals, the_real_tuples]));
+  ef_dot_prod_rt : RETURN (make_uniform_product_space (the_real_tuples, 2));
+  ef_norm_rt : RETURN (make_uniform_product_space (the_real_tuples, 1));
+  ef_sum_ct : RETURN (make_uniform_product_space (the_complex_tuples, 1));
+  ef_product_ct : RETURN (make_uniform_product_space (the_complex_tuples, 1));
+  ef_add_ct : RETURN (make_uniform_product_space (the_complex_tuples, 2));
+  ef_subtract_ct : RETURN (make_uniform_product_space (the_complex_tuples, 2));
+  ef_scalar_mult_ct : RETURN (make_listed_product_space ([the_complex_numbers,
+    the_complex_tuples]));
+  ef_dot_prod_ct : RETURN (make_uniform_product_space (the_complex_tuples, 2));
+  ef_norm_ct : RETURN (make_uniform_product_space (the_complex_tuples, 1));
+  ef_ensemble : RETURN (the_tuples);
+  ef_member_of : RETURN (make_listed_product_space ([the_generics, the_maths_spaces]));
+  OTHERWISE : RETURN (?);
+  END_CASE;
+END_FUNCTION;  -- derive_elementary_function_domain
+FUNCTION derive_elementary_function_range(ef_val : elementary_function_enumerators)
+                                         : tuple_space;
+  IF NOT EXISTS (ef_val) THEN
+    RETURN (?);
+  END_IF;
+  CASE ef_val OF
+  ef_and : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_or : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_not : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_xor : RETURN (make_uniform_product_space (the_logicals, 2));
+  ef_negate_i : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_add_i : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_subtract_i : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_multiply_i : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_divide_i : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_mod_i : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_exponentiate_i : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_eq_i : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_ne_i : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_gt_i : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_lt_i : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_ge_i : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_le_i : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_abs_i : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_if_i : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_negate_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_reciprocal_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_add_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_subtract_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_multiply_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_divide_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_mod_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_exponentiate_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_exponentiate_ri : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_eq_r : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_ne_r : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_gt_r : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_lt_r : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_ge_r : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_le_r : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_abs_r : RETURN (make_uniform_product_space (the_nonnegative_reals, 1));
+  ef_acos_r : RETURN (make_uniform_product_space (the_zero_pi_interval, 1));
+  ef_asin_r : RETURN (make_uniform_product_space (the_neghalfpi_halfpi_interval, 1));
+  ef_atan2_r : RETURN (make_uniform_product_space (the_negpi_pi_interval, 1));
+  ef_cos_r : RETURN (make_uniform_product_space (the_neg1_one_interval, 1));
+  ef_exp_r : RETURN (make_uniform_product_space (the_nonnegative_reals, 1));
+  ef_ln_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_log2_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_log10_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_sin_r : RETURN (make_uniform_product_space (the_neg1_one_interval, 1));
+  ef_sqrt_r : RETURN (make_uniform_product_space (the_nonnegative_reals, 1));
+  ef_tan_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_if_r : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_negate_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_reciprocal_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_add_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_subtract_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_multiply_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_divide_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_exponentiate_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_exponentiate_ci : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_eq_c : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_ne_c : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_conjugate_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_abs_c : RETURN (make_uniform_product_space (the_nonnegative_reals, 1));
+  ef_cos_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_exp_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_ln_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_sin_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_sqrt_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_tan_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_if_c : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_subscript_s : RETURN (make_uniform_product_space (the_strings, 1));
+  ef_eq_s : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_ne_s : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_gt_s : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_lt_s : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_ge_s : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_le_s : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_subsequence_s : RETURN (make_uniform_product_space (the_strings, 1));
+  ef_concat_s : RETURN (make_uniform_product_space (the_strings, 1));
+  ef_size_s : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_format : RETURN (make_uniform_product_space (the_strings, 1));
+  ef_value : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_like : RETURN (make_uniform_product_space (the_booleans, 1));
+  ef_if_s : RETURN (make_uniform_product_space (the_strings, 1));
+  ef_subscript_b : RETURN (make_uniform_product_space (the_binarys, 1));
+  ef_eq_b : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_ne_b : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_gt_b : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_lt_b : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_ge_b : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_le_b : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_subsequence_b : RETURN (make_uniform_product_space (the_binarys, 1));
+  ef_concat_b : RETURN (make_uniform_product_space (the_binarys, 1));
+  ef_size_b : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_if_b : RETURN (make_uniform_product_space (the_binarys, 1));
+  ef_subscript_t : RETURN (make_uniform_product_space (the_generics, 1));
+  ef_eq_t : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_ne_t : RETURN (make_uniform_product_space (the_logicals, 1));
+  ef_concat_t : RETURN (make_uniform_product_space (the_tuples, 1));
+  ef_size_t : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_entuple : RETURN (make_uniform_product_space (the_tuples, 1));
+  ef_detuple : RETURN (the_tuples);
+  ef_insert : RETURN (make_uniform_product_space (the_tuples, 1));
+  ef_remove : RETURN (make_uniform_product_space (the_tuples, 1));
+  ef_if_t : RETURN (make_uniform_product_space (the_tuples, 1));
+  ef_sum_it : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_product_it : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_add_it : RETURN (make_uniform_product_space (the_integer_tuples, 1));
+  ef_subtract_it : RETURN (make_uniform_product_space (the_integer_tuples, 1));
+  ef_scalar_mult_it : RETURN (make_uniform_product_space (the_integer_tuples, 1));
+  ef_dot_prod_it : RETURN (make_uniform_product_space (the_integers, 1));
+  ef_sum_rt : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_product_rt : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_add_rt : RETURN (make_uniform_product_space (the_real_tuples, 1));
+  ef_subtract_rt : RETURN (make_uniform_product_space (the_real_tuples, 1));
+  ef_scalar_mult_rt : RETURN (make_uniform_product_space (the_real_tuples, 1));
+  ef_dot_prod_rt : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_norm_rt : RETURN (make_uniform_product_space (the_reals, 1));
+  ef_sum_ct : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_product_ct : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_add_ct : RETURN (make_uniform_product_space (the_complex_tuples, 1));
+  ef_subtract_ct : RETURN (make_uniform_product_space (the_complex_tuples, 1));
+  ef_scalar_mult_ct : RETURN (make_uniform_product_space (the_complex_tuples, 1));
+  ef_dot_prod_ct : RETURN (make_uniform_product_space (the_complex_numbers, 1));
+  ef_norm_ct : RETURN (make_uniform_product_space (the_nonnegative_reals, 1));
+  ef_ensemble : RETURN (make_uniform_product_space (the_maths_spaces, 1));
+  ef_member_of : RETURN (make_uniform_product_space (the_logicals, 1));
+  OTHERWISE : RETURN (?);
+  END_CASE;
+END_FUNCTION;  -- derive_elementary_function_range
+FUNCTION derive_finite_function_domain(pairs : SET [1:?] OF LIST [2:2] OF maths_value)
+                                      : tuple_space;
+  LOCAL
+    result : SET OF maths_value := [];
+  END_LOCAL;
+-- An ambiguity in ISO 10303-11:1994 pages 99-101 leaves the result of the following
+-- three lines ambiguous in those cases where an operand is simultaneously a member
+-- of the base type and the aggregate type.
+-- REPEAT i := 1 TO SIZEOF (pairs);
+--   result := result + pairs[i][1];
+-- END_REPEAT;
+-- The next line unions an empty set and the desired list to get the desired set.
+  result := result + list_selected_components (pairs, 1);
+  RETURN (one_tuples_of (make_finite_space (result)));
+END_FUNCTION;  -- derive_finite_function_domain
+FUNCTION derive_finite_function_range(pairs : SET [1:?] OF LIST [2:2] OF maths_value)
+                                     : tuple_space;
+  LOCAL
+    result : SET OF maths_value := [];
+  END_LOCAL;
+-- An ambiguity in ISO 10303-11:1994 pages 99-101 leaves the result of the following
+-- three lines ambiguous in those cases where an operand is simultaneously a member
+-- of the base type and the aggregate type.
+-- REPEAT i := 1 TO SIZEOF (pairs);
+--   result := result + pairs[i][2];
+-- END_REPEAT;
+-- The next line unions an empty set and the desired list to get the desired set.
+  result := result + list_selected_components (pairs, 2);
+  RETURN (one_tuples_of (make_finite_space (result)));
+END_FUNCTION;  -- derive_finite_function_range
+FUNCTION derive_function_domain(func : maths_function) : tuple_space;
+  LOCAL
+    typenames : SET OF STRING := TYPEOF (func);
+    tspace : tuple_space := make_listed_product_space ([]);
+  END_LOCAL;
+  IF (schema_prefix + 'FINITE_FUNCTION') IN typenames THEN
+    RETURN (derive_finite_function_domain (func\finite_function.pairs));
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_FUNCTION') IN typenames THEN
+    RETURN (derive_elementary_function_domain (func\elementary_function.func_id));
+  END_IF;
+  IF (schema_prefix + 'RESTRICTION_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of (func\restriction_function.operand));
+  END_IF;
+  IF (schema_prefix + 'REPACKAGING_FUNCTION') IN typenames THEN
+    IF func\repackaging_function.input_repack = ro_nochange THEN
+      RETURN (func\repackaging_function.operand.domain);
+    END_IF;
+    IF func\repackaging_function.input_repack = ro_wrap_as_tuple THEN
+      RETURN (factor1 (func\repackaging_function.operand.domain));
+    END_IF;
+    IF func\repackaging_function.input_repack = ro_unwrap_tuple THEN
+      RETURN (one_tuples_of (func\repackaging_function.operand.domain));
+    END_IF;
+    -- Unreachable, as there is no other possible value for input_repack.
+    RETURN (?);
+  END_IF;
+  IF (schema_prefix + 'SERIES_COMPOSED_FUNCTION') IN typenames THEN
+    RETURN (func\series_composed_function.operands[1].domain);
+  END_IF;
+  IF (schema_prefix + 'PARALLEL_COMPOSED_FUNCTION') IN typenames THEN
+    RETURN (func\parallel_composed_function.common_domain);
+  END_IF;
+  IF (schema_prefix + 'EXPLICIT_TABLE_FUNCTION') IN typenames THEN
+    RETURN (derive_table_domain (func\explicit_table_function.index_base,
+      func\explicit_table_function.shape));
+  END_IF;
+  IF (schema_prefix + 'HOMOGENEOUS_LINEAR_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of (make_uniform_product_space
+      (factor1 (func\homogeneous_linear_function.mat.range),
+      func\homogeneous_linear_function.mat\explicit_table_function.shape
+      [func\homogeneous_linear_function.sum_index])));
+  END_IF;
+  IF (schema_prefix + 'GENERAL_LINEAR_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of (make_uniform_product_space
+      (factor1 (func\general_linear_function.mat.range),
+      func\general_linear_function.mat\explicit_table_function.shape
+      [func\general_linear_function.sum_index] - 1)));
+  END_IF;
+  IF (schema_prefix + 'B_SPLINE_BASIS') IN typenames THEN
+    RETURN (one_tuples_of (make_finite_real_interval
+      (func\b_spline_basis.repeated_knots[func\b_spline_basis.order], closed,
+      func\b_spline_basis.repeated_knots[func\b_spline_basis.num_basis+1], closed)));
+  END_IF;
+  IF (schema_prefix + 'B_SPLINE_FUNCTION') IN typenames THEN
+    REPEAT i := 1 TO SIZEOF (func\b_spline_function.basis);
+      tspace := assoc_product_space (tspace, func\b_spline_function.basis[i].domain);
+    END_REPEAT;
+    RETURN (one_tuples_of (tspace));
+  END_IF;
+  IF (schema_prefix + 'RATIONALIZE_FUNCTION') IN typenames THEN
+    RETURN (func\rationalize_function.fun.domain);
+  END_IF;
+  IF (schema_prefix + 'ABSTRACTED_EXPRESSION_FUNCTION') IN typenames THEN
+    REPEAT i := 1 TO SIZEOF (func\abstracted_expression_function.variables);
+      tspace := assoc_product_space (tspace, one_tuples_of (values_space_of
+        (func\abstracted_expression_function.variables[i])));
+    END_REPEAT;
+    RETURN (tspace);
+  END_IF;
+  IF (schema_prefix + 'EXPRESSION_DENOTED_FUNCTION') IN typenames THEN
+    RETURN (values_space_of (func\expression_denoted_function.expr)\function_space.
+      domain_argument);
+  END_IF;
+  IF (schema_prefix + 'IMPORTED_POINT_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of (make_listed_product_space ([])));
+  END_IF;
+  IF (schema_prefix + 'IMPORTED_CURVE_FUNCTION') IN typenames THEN
+    RETURN (func\imported_curve_function.parametric_domain);
+  END_IF;
+  IF (schema_prefix + 'IMPORTED_SURFACE_FUNCTION') IN typenames THEN
+    RETURN (func\imported_surface_function.parametric_domain);
+  END_IF;
+  IF (schema_prefix + 'IMPORTED_VOLUME_FUNCTION') IN typenames THEN
+    RETURN (func\imported_volume_function.parametric_domain);
+  END_IF;
+  IF (schema_prefix + 'APPLICATION_DEFINED_FUNCTION') IN typenames THEN
+    RETURN (func\application_defined_function.explicit_domain);
+  END_IF;
+  -- Unreachable, as no other subtypes of maths_function are permissible without
+  -- first modifying this function to account for them.
+  RETURN (?);
+END_FUNCTION;  -- derive_function_domain
+FUNCTION derive_function_range(func : maths_function) : tuple_space;
+  LOCAL
+    typenames : SET OF STRING := TYPEOF (func);
+    tspace : tuple_space := make_listed_product_space ([]);
+    m, n : nonnegative := 0;
+  END_LOCAL;
+  IF (schema_prefix + 'FINITE_FUNCTION') IN typenames THEN
+    RETURN (derive_finite_function_range (func\finite_function.pairs));
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_FUNCTION') IN typenames THEN
+    RETURN (derive_elementary_function_range (func\elementary_function.func_id));
+  END_IF;
+  IF (schema_prefix + 'RESTRICTION_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of (func\restriction_function.operand));
+  END_IF;
+  IF (schema_prefix + 'REPACKAGING_FUNCTION') IN typenames THEN
+    tspace := func\repackaging_function.operand.range;
+    IF func\repackaging_function.output_repack = ro_wrap_as_tuple THEN
+      tspace := one_tuples_of (tspace);
+    END_IF;
+    IF func\repackaging_function.output_repack = ro_unwrap_tuple THEN
+      tspace := factor1 (tspace);
+    END_IF;
+    IF func\repackaging_function.selected_output > 0 THEN
+      tspace := one_tuples_of (factor_space (tspace,
+        func\repackaging_function.selected_output));
+    END_IF;
+    RETURN (tspace);
+  END_IF;
+  IF (schema_prefix + 'SERIES_COMPOSED_FUNCTION') IN typenames THEN
+    RETURN (func\series_composed_function.operands[SIZEOF
+      (func\series_composed_function.operands)].range);
+  END_IF;
+  IF (schema_prefix + 'PARALLEL_COMPOSED_FUNCTION') IN typenames THEN
+    RETURN (func\parallel_composed_function.final_function.range);
+  END_IF;
+  IF (schema_prefix + 'EXPLICIT_TABLE_FUNCTION') IN typenames THEN
+    IF (schema_prefix + 'LISTED_REAL_DATA') IN typenames THEN
+      RETURN (one_tuples_of (the_reals));
+    END_IF;
+    IF (schema_prefix + 'LISTED_INTEGER_DATA') IN typenames THEN
+      RETURN (one_tuples_of (the_integers));
+    END_IF;
+    IF (schema_prefix + 'LISTED_LOGICAL_DATA') IN typenames THEN
+      RETURN (one_tuples_of (the_logicals));
+    END_IF;
+    IF (schema_prefix + 'LISTED_STRING_DATA') IN typenames THEN
+      RETURN (one_tuples_of (the_strings));
+    END_IF;
+    IF (schema_prefix + 'LISTED_DATA') IN typenames THEN
+      RETURN (one_tuples_of (func\listed_data.value_range));
+    END_IF;
+    IF (schema_prefix + 'LINEARIZED_TABLE_FUNCTION') IN typenames THEN
+      RETURN (func\linearized_table_function.source.range);
+    END_IF;
+    IF (schema_prefix + 'BASIC_SPARSE_MATRIX') IN typenames THEN
+      RETURN (func\basic_sparse_matrix.val.range);
+    END_IF;
+    -- Unreachable, as no other subtypes of explicit_table_function are permissible
+    -- without first modifying this function to account for them.
+    RETURN (?);
+  END_IF;
+  IF (schema_prefix + 'HOMOGENEOUS_LINEAR_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of (make_uniform_product_space
+      (factor1 (func\homogeneous_linear_function.mat.range),
+      func\homogeneous_linear_function.mat\explicit_table_function.shape
+      [3 - func\homogeneous_linear_function.sum_index])));
+  END_IF;
+  IF (schema_prefix + 'GENERAL_LINEAR_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of (make_uniform_product_space
+      (factor1 (func\general_linear_function.mat.range),
+      func\general_linear_function.mat\explicit_table_function.shape
+      [3 - func\general_linear_function.sum_index])));
+  END_IF;
+  IF (schema_prefix + 'B_SPLINE_BASIS') IN typenames THEN
+    RETURN (one_tuples_of (make_uniform_product_space (the_reals,
+      func\b_spline_basis.num_basis)));
+  END_IF;
+  IF (schema_prefix + 'B_SPLINE_FUNCTION') IN typenames THEN
+    tspace := factor1 (func\b_spline_function.coef.domain);
+    m := SIZEOF (func\b_spline_function.basis);
+    n := space_dimension (tspace);
+    IF m = n THEN
+      RETURN (one_tuples_of (the_reals));
+    END_IF;
+    IF m = n - 1 THEN
+      RETURN (one_tuples_of (make_uniform_product_space (the_reals,
+        factor_space (tspace, n)\finite_integer_interval.size)));
+    END_IF;
+    tspace := extract_factors (tspace, m+1, n);
+    RETURN (one_tuples_of (make_function_space (sc_equal, tspace, sc_subspace,
+      number_superspace_of (func\b_spline_function.coef.range))));
+  END_IF;
+  IF (schema_prefix + 'RATIONALIZE_FUNCTION') IN typenames THEN
+    tspace := factor1 (func\rationalize_function.fun.range);
+    n := space_dimension (tspace);
+    RETURN (one_tuples_of (make_uniform_product_space (number_superspace_of (
+      factor1 (tspace)), n-1)));
+  END_IF;
+  IF (schema_prefix + 'ABSTRACTED_EXPRESSION_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of(values_space_of(func\abstracted_expression_function.expr)));
+  END_IF;
+  IF (schema_prefix + 'EXPRESSION_DENOTED_FUNCTION') IN typenames THEN
+    RETURN (values_space_of (func\expression_denoted_function.expr)\function_space.
+      range_argument);
+  END_IF;
+  IF (schema_prefix + 'IMPORTED_POINT_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of (make_uniform_product_space (the_reals,
+      dimension_of (func\imported_point_function.geometry))));
+  END_IF;
+  IF (schema_prefix + 'IMPORTED_CURVE_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of (make_uniform_product_space (the_reals,
+      dimension_of (func\imported_curve_function.geometry))));
+  END_IF;
+  IF (schema_prefix + 'IMPORTED_SURFACE_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of (make_uniform_product_space (the_reals,
+      dimension_of (func\imported_surface_function.geometry))));
+  END_IF;
+  IF (schema_prefix + 'IMPORTED_VOLUME_FUNCTION') IN typenames THEN
+    RETURN (one_tuples_of (make_uniform_product_space (the_reals,
+      dimension_of (func\imported_volume_function.geometry))));
+  END_IF;
+  IF (schema_prefix + 'APPLICATION_DEFINED_FUNCTION') IN typenames THEN
+    RETURN (func\application_defined_function.explicit_range);
+  END_IF;
+  -- Unreachable, as no other subtypes of maths_function are permissible without
+  -- first modifying this function to account for them.
+  RETURN (?);
+END_FUNCTION;  -- derive_function_range
+FUNCTION derive_table_domain(index_base : zero_or_one;
+                             shape      : LIST [1:?] OF positive) : tuple_space;
+  LOCAL
+    factors : LIST OF finite_integer_interval := [];
+    common_size : positive := shape[1];
+    is_uniform : BOOLEAN := TRUE;
+  END_LOCAL;
+  REPEAT i := 1 TO SIZEOF (shape);
+    INSERT (factors, make_finite_integer_interval (index_base, index_base+shape[i]-1),
+      i-1);
+    IF shape[i] <> common_size THEN
+      is_uniform := FALSE;
+    END_IF;
+  END_REPEAT;
+  IF is_uniform THEN
+    RETURN (make_uniform_product_space (factors[1], SIZEOF (shape)));
+  END_IF;
+  RETURN (make_listed_product_space (factors));
+END_FUNCTION;  -- derive_table_domain
+FUNCTION dot_count(str : STRING) : INTEGER;
+  LOCAL
+    n : INTEGER := 0;
+  END_LOCAL;
+  REPEAT i := 1 TO LENGTH (str);
+    IF str[i] = '.' THEN
+      n := n + 1;
+    END_IF;
+  END_REPEAT;
+  RETURN (n);
+END_FUNCTION;  -- dot_count
+FUNCTION dotted_identifiers_syntax(str : STRING) : BOOLEAN;
+  LOCAL
+    k : positive;
+    m : positive;
+  END_LOCAL;
+  IF NOT EXISTS (str) THEN
+    RETURN (FALSE);
+  END_IF;
+  k := parse_express_identifier (str, 1);
+  IF k = 1 THEN
+    RETURN (FALSE);
+  END_IF;
+  REPEAT WHILE k <= LENGTH (str);
+    IF (str[k] <> '.') OR (k = LENGTH (str)) THEN
+      RETURN (FALSE);
+    END_IF;
+    m := parse_express_identifier (str, k+1);
+    IF m = k + 1 THEN
+      RETURN (FALSE);
+    END_IF;
+    k := m;
+  END_REPEAT;
+  RETURN (TRUE);
+END_FUNCTION;  -- dotted_identifiers_syntax
+FUNCTION expression_is_constant(expr : generic_expression) : BOOLEAN;
+  RETURN (bool(SIZEOF (free_variables_of (expr)) = 0));
+END_FUNCTION;  -- expression_is_constant
+FUNCTION extract_factors(tspace : tuple_space;
+                         m, n   : INTEGER) : tuple_space;
+  LOCAL
+    tsp : tuple_space := the_zero_tuple_space;
+  END_LOCAL;
+  REPEAT i := m TO n;
+    tsp := assoc_product_space (tsp, factor_space (tspace, i));
+  END_REPEAT;
+  RETURN (tsp);
+END_FUNCTION;  -- extract_factors
+FUNCTION extremal_position_check(fun : linearized_table_function) : BOOLEAN;
+  LOCAL
+    source_domain : maths_space;
+    source_interval : finite_integer_interval;
+    index : INTEGER := 1;
+    base : INTEGER;
+    shape : LIST OF positive;
+    ndim : positive;
+    slo, shi : INTEGER;
+    sublo : LIST OF INTEGER := [];
+    subhi : LIST OF INTEGER := [];
+  END_LOCAL;
+  IF NOT EXISTS (fun) THEN
+    RETURN (FALSE);
+  END_IF;
+  source_domain := factor1 (fun.source.domain);
+  IF (schema_prefix + 'TUPLE_SPACE') IN TYPEOF (source_domain) THEN
+    source_domain := factor1 (source_domain);
+  END_IF;
+  IF NOT ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN TYPEOF (source_domain)) THEN
+    RETURN (FALSE);
+  END_IF;
+  source_interval := source_domain;
+  base := fun\explicit_table_function.index_base;
+  shape := fun\explicit_table_function.shape;
+  IF (schema_prefix + 'STANDARD_TABLE_FUNCTION') IN TYPEOF (fun) THEN
+    REPEAT j := 1 TO SIZEOF (shape);
+      index := index * shape[j];
+    END_REPEAT;
+    index := fun.first + index - 1;
+    RETURN (bool({source_interval.min <= index <= source_interval.max}));
+  END_IF;
+  IF (schema_prefix + 'REGULAR_TABLE_FUNCTION') IN TYPEOF (fun) THEN
+    ndim := SIZEOF (fun\explicit_table_function.shape);
+    REPEAT j:= 1 TO ndim;
+      slo := base;
+      shi := base + shape[j] - 1;
+      IF fun\regular_table_function.increments[j] >= 0 THEN
+        INSERT (sublo, slo, j-1);
+        INSERT (subhi, shi, j-1);
+      ELSE
+        INSERT (sublo, shi, j-1);
+        INSERT (subhi, slo, j-1);
+      END_IF;
+    END_REPEAT;
+    index := regular_indexing (sublo, base, shape,
+      fun\regular_table_function.increments, fun.first);
+    IF NOT ({source_interval.min <= index <= source_interval.max}) THEN
+      RETURN (FALSE);
+    END_IF;
+    index := regular_indexing (subhi, base, shape,
+      fun\regular_table_function.increments, fun.first);
+    IF NOT ({source_interval.min <= index <= source_interval.max}) THEN
+      RETURN (FALSE);
+    END_IF;
+    RETURN (TRUE);
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- extremal_position_check
+FUNCTION factor1(tspace : tuple_space) : maths_space;
+  LOCAL
+    typenames : SET OF STRING := TYPEOF (tspace);
+  END_LOCAL;
+  IF (schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN typenames THEN
+    RETURN (tspace\uniform_product_space.base);
+  END_IF;
+  IF (schema_prefix + 'LISTED_PRODUCT_SPACE') IN typenames THEN
+    RETURN (tspace\listed_product_space.factors[1]);
+    -- This path could return the indeterminate value if the list is empty.
+    -- This is the correct result for this case.
+  END_IF;
+  IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN typenames THEN
+    RETURN (factor1 (tspace\extended_tuple_space.base));
+  END_IF;
+  -- Should not be reachable.
+  RETURN (?);
+END_FUNCTION;  -- factor1
+FUNCTION factor_space(tspace : tuple_space;
+                      idx    : positive) : maths_space;
+  LOCAL
+    typenames : SET OF STRING := TYPEOF (tspace);
+  END_LOCAL;
+  IF (schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN typenames THEN
+    IF idx <= tspace\uniform_product_space.exponent THEN
+      RETURN (tspace\uniform_product_space.base);
+    END_IF;
+    RETURN (?);
+  END_IF;
+  IF (schema_prefix + 'LISTED_PRODUCT_SPACE') IN typenames THEN
+    IF idx <= SIZEOF (tspace\listed_product_space.factors) THEN
+      RETURN (tspace\listed_product_space.factors[idx]);
+    END_IF;
+    RETURN (?);
+  END_IF;
+  IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN typenames THEN
+    IF idx <= space_dimension (tspace\extended_tuple_space.base) THEN
+      RETURN (factor_space (tspace\extended_tuple_space.base, idx));
+    END_IF;
+    RETURN (tspace\extended_tuple_space.extender);
+  END_IF;
+  -- Should not be reachable.
+  RETURN (?);
+END_FUNCTION;  -- factor_space
+FUNCTION floor(rval : REAL) : INTEGER;
+  LOCAL
+    ival : INTEGER := rval DIV 1;
+  END_LOCAL;
+  IF (rval < 0.0) AND (ival <> rval) THEN
+    ival := ival - 1;
+  END_IF;
+  RETURN (ival);
+END_FUNCTION;  -- floor
+FUNCTION free_variables_of(expr : generic_expression) : SET OF generic_variable;
+  LOCAL
+    prefix : STRING := 'ISO13584_GENERIC_EXPRESSIONS_SCHEMA.';
+    typenames : SET OF STRING := TYPEOF (expr);
+    result : SET OF generic_variable := [];
+    exprs : LIST OF generic_expression := [];
+  END_LOCAL;
+  IF (prefix + 'GENERIC_LITERAL') IN typenames THEN
+    RETURN (result);
+  END_IF;
+  IF (prefix + 'GENERIC_VARIABLE') IN typenames THEN
+    result := result + expr;
+    RETURN (result);
+  END_IF;
+  IF (prefix + 'QUANTIFIER_EXPRESSION') IN typenames THEN
+    exprs := QUERY (ge <* expr\multiple_arity_generic_expression.operands |
+      NOT (ge IN expr\quantifier_expression.variables));
+    REPEAT i := 1 TO SIZEOF (exprs);
+      result := result + free_variables_of (exprs[i]);
+    END_REPEAT;
+    REPEAT i := 1 TO SIZEOF (expr\quantifier_expression.variables);
+      result := result - expr\quantifier_expression.variables[i];
+    END_REPEAT;
+    RETURN (result);
+  END_IF;
+  IF (prefix + 'UNARY_GENERIC_EXPRESSION') IN typenames THEN
+    RETURN (free_variables_of (expr\unary_generic_expression.operand));
+  END_IF;
+  IF (prefix + 'BINARY_GENERIC_EXPRESSION') IN typenames THEN
+    result := free_variables_of (expr\binary_generic_expression.operands[1]);
+    RETURN (result + free_variables_of (expr\binary_generic_expression.operands[2]));
+  END_IF;
+  IF (prefix + 'MULTIPLE_ARITY_GENERIC_EXPRESSION') IN typenames THEN
+    REPEAT i := 1 TO SIZEOF (expr\multiple_arity_generic_expression.operands);
+      result := result + free_variables_of (
+        expr\multiple_arity_generic_expression.operands[i]);
+    END_REPEAT;
+    RETURN (result);
+  END_IF;
+  -- In this case the subtype shall not contain any variable (see IP1 in
+  -- generic_expression).
+  RETURN (result);
+END_FUNCTION;  -- free_variables_of
+FUNCTION function_applicability(func      : maths_function_select;
+                                arguments : LIST [1:?] OF maths_value) : BOOLEAN;
+  LOCAL
+    domain : tuple_space := convert_to_maths_function(func).domain;
+    domain_types : SET OF STRING := TYPEOF (domain);
+    narg : positive := SIZEOF (arguments);
+    arg : generic_expression;
+  END_LOCAL;
+  IF (schema_prefix + 'PRODUCT_SPACE') IN domain_types THEN
+    IF space_dimension (domain) <> narg THEN
+      RETURN (FALSE);
+    END_IF;
+  ELSE
+    IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN domain_types THEN
+      IF space_dimension (domain) > narg THEN
+        RETURN (FALSE);
+      END_IF;
+    ELSE
+      -- Should be unreachable
+      RETURN (FALSE);
+    END_IF;
+  END_IF;
+  REPEAT i := 1 TO narg;
+    arg := convert_to_operand (arguments[i]);
+    IF NOT has_values_space (arg) THEN
+      RETURN (FALSE);
+    END_IF;
+    IF NOT compatible_spaces (factor_space (domain, i), values_space_of (arg)) THEN
+      RETURN (FALSE);
+    END_IF;
+  END_REPEAT;
+  RETURN (TRUE);
+END_FUNCTION;  -- function_applicability
+FUNCTION function_is_1d_array(func : maths_function) : BOOLEAN;
+  LOCAL
+    temp : maths_space;
+  END_LOCAL;
+  IF NOT EXISTS (func) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF space_dimension (func.domain) <> 1 THEN
+    RETURN (FALSE);
+  END_IF;
+  temp := factor1 (func.domain);
+  IF (schema_prefix + 'PRODUCT_SPACE') IN TYPEOF (temp) THEN
+    IF space_dimension (temp) <> 1 THEN
+      RETURN (FALSE);
+    END_IF;
+    temp := factor1 (temp);
+  END_IF;
+  IF (schema_prefix + 'FINITE_INTEGER_INTERVAL') IN TYPEOF (temp) THEN
+    RETURN (TRUE);
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- function_is_1d_array
+FUNCTION function_is_1d_table(func : maths_function) : BOOLEAN;
+  LOCAL
+    temp : maths_space;
+    itvl : finite_integer_interval;
+  END_LOCAL;
+  IF NOT EXISTS (func) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF space_dimension (func.domain) <> 1 THEN
+    RETURN (FALSE);
+  END_IF;
+  temp := factor1 (func.domain);
+  IF (schema_prefix + 'PRODUCT_SPACE') IN TYPEOF (temp) THEN
+    IF space_dimension (temp) <> 1 THEN
+      RETURN (FALSE);
+    END_IF;
+    temp := factor1 (temp);
+  END_IF;
+  IF (schema_prefix + 'FINITE_INTEGER_INTERVAL') IN TYPEOF (temp) THEN
+    itvl := temp;
+    RETURN (bool((itvl.min = 0) OR (itvl.min = 1)));
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- function_is_1d_table
+FUNCTION function_is_2d_table(func : maths_function) : BOOLEAN;
+  LOCAL
+    temp : maths_space;
+    pspace : product_space;
+    itvl1, itvl2 : finite_integer_interval;
+  END_LOCAL;
+  IF NOT EXISTS (func) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF space_dimension (func.domain) <> 1 THEN
+    RETURN (FALSE);
+  END_IF;
+  temp := factor1 (func.domain);
+  IF NOT ((schema_prefix + 'PRODUCT_SPACE') IN TYPEOF (temp)) THEN
+    RETURN (FALSE);
+  END_IF;
+  pspace := temp;
+  IF space_dimension (pspace) <> 2 THEN
+    RETURN (FALSE);
+  END_IF;
+  temp := factor1 (pspace);
+  IF NOT ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN TYPEOF (temp)) THEN
+    RETURN (FALSE);
+  END_IF;
+  itvl1 := temp;
+  temp := factor_space (pspace, 2);
+  IF NOT ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN TYPEOF (temp)) THEN
+    RETURN (FALSE);
+  END_IF;
+  itvl2 := temp;
+  RETURN (bool((itvl1.min = itvl2.min) AND ((itvl1.min = 0) OR (itvl1.min = 1))));
+END_FUNCTION;  -- function_is_2d_table
+FUNCTION function_is_table(func : maths_function) : BOOLEAN;
+  LOCAL
+    tspace : tuple_space;
+    temp : maths_space;
+    base : INTEGER;
+  END_LOCAL;
+  IF NOT EXISTS (func) THEN
+    RETURN (FALSE);
+  END_IF;
+  tspace := func.domain;
+  IF (space_dimension (tspace) = 1) AND ((schema_prefix + 'TUPLE_SPACE') IN
+    TYPEOF (factor1 (tspace))) THEN
+    tspace := factor1 (tspace);
+  END_IF;
+  IF NOT ((schema_prefix + 'PRODUCT_SPACE') IN TYPEOF (tspace)) THEN
+    RETURN (FALSE);
+  END_IF;
+  temp := factor1 (tspace);
+  IF NOT ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN TYPEOF (temp)) THEN
+    RETURN (FALSE);
+  END_IF;
+  base := temp\finite_integer_interval.min;
+  IF (base <> 0) AND (base <> 1) THEN
+    RETURN (FALSE);
+  END_IF;
+  REPEAT i := 2 TO space_dimension (tspace);
+    temp := factor_space (tspace, i);
+    IF NOT ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN TYPEOF (temp)) THEN
+      RETURN (FALSE);
+    END_IF;
+    IF temp\finite_integer_interval.min <> base THEN
+      RETURN (FALSE);
+    END_IF;
+  END_REPEAT;
+  RETURN (TRUE);
+END_FUNCTION;  -- function_is_table
+FUNCTION has_values_space(expr : generic_expression) : BOOLEAN;
+  LOCAL
+    typenames : SET OF STRING := TYPEOF (expr);
+  END_LOCAL;
+  IF 'ISO13584_EXPRESSIONS_SCHEMA.EXPRESSION' IN typenames THEN
+    IF ('ISO13584_EXPRESSIONS_SCHEMA.NUMERIC_EXPRESSION' IN typenames) OR
+      ('ISO13584_EXPRESSIONS_SCHEMA.STRING_EXPRESSION' IN typenames) OR
+      ('ISO13584_EXPRESSIONS_SCHEMA.BOOLEAN_EXPRESSION' IN typenames) THEN
+      RETURN (TRUE);
+    ELSE
+      RETURN (FALSE);
+    END_IF;
+  END_IF;
+  IF (schema_prefix + 'MATHS_FUNCTION') IN typenames THEN
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'FUNCTION_APPLICATION') IN typenames THEN
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'MATHS_SPACE') IN typenames THEN
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'MATHS_VARIABLE') IN typenames THEN
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'DEPENDENT_VARIABLE_DEFINITION') IN typenames THEN
+    RETURN (has_values_space (expr\unary_generic_expression.operand));
+  END_IF;
+  IF (schema_prefix + 'LOGICAL_LITERAL') IN typenames THEN
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'BINARY_LITERAL') IN typenames THEN
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'MATHS_ENUM_LITERAL') IN typenames THEN
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'REAL_TUPLE_LITERAL') IN typenames THEN
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'INTEGER_TUPLE_LITERAL') IN typenames THEN
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'ATOM_BASED_LITERAL') IN typenames THEN
+    RETURN (TRUE);
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- has_values_space
+FUNCTION list_selected_components(aggr : AGGREGATE OF LIST OF maths_value;
+                                  k    : positive) : LIST OF maths_value;
+  LOCAL
+    result : LIST OF maths_value := [];
+    j : INTEGER := 0;
+  END_LOCAL;
+  REPEAT i := LOINDEX (aggr) TO HIINDEX (aggr);
+    IF k <= SIZEOF (aggr[i]) THEN
+      INSERT (result, aggr[i][k], j);
+      j := j + 1;
+    END_IF;
+  END_REPEAT;
+  RETURN (result);
+END_FUNCTION;  -- list_selected_components
+FUNCTION make_abstracted_expression_function(
+                                    operands : LIST [2:?] OF generic_expression)
+                                   : abstracted_expression_function;
+  RETURN (abstracted_expression_function()
+    || maths_function()
+      || generic_expression()
+    || quantifier_expression (remove_first (operands))  -- derived
+      || multiple_arity_generic_expression (operands) );
+END_FUNCTION;  -- make_abstracted_expression_function
+FUNCTION make_atom_based_literal(lit_value : atom_based_value) : atom_based_literal;
+  RETURN (atom_based_literal (lit_value)
+    || generic_literal()
+      || simple_generic_expression()
+        || generic_expression() );
+END_FUNCTION;  -- make_atom_based_literal
+FUNCTION make_b_spline_basis(degree         : nonnegative;
+                             repeated_knots : LIST [2:?] OF REAL) : b_spline_basis;
+  RETURN (b_spline_basis (degree, repeated_knots)
+    || maths_function()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_b_spline_basis
+FUNCTION make_b_spline_function(coef  : maths_function;
+                                bases : LIST [1:?] OF b_spline_basis)
+                               : b_spline_function;
+  RETURN (b_spline_function (bases)
+    || maths_function()
+      || generic_expression()
+    || unary_generic_expression (coef) );
+END_FUNCTION;  -- make_b_spline_function
+FUNCTION make_banded_matrix(index_base    : zero_or_one;
+                            shape         : LIST [1:?] OF positive;
+                            source        : maths_function;
+                            first         : INTEGER;
+                            default_entry : maths_value;
+                            below         : INTEGER;
+                            above         : INTEGER;
+                            order         : ordering_type) : banded_matrix;
+  RETURN (banded_matrix (default_entry, below, above, order)
+    || linearized_table_function (first)
+      || explicit_table_function (index_base, shape)
+        || maths_function()
+          || generic_expression()
+      || unary_generic_expression (source) );
+END_FUNCTION;  -- make_banded_matrix
+FUNCTION make_basic_sparse_matrix(index_base    : zero_or_one;
+                                  shape         : LIST [1:?] OF positive;
+                                  operands      : LIST [3:3] OF maths_function;
+                                  default_entry : maths_value;
+                                  order         : ordering_type)
+                                 : basic_sparse_matrix;
+  RETURN (basic_sparse_matrix (default_entry, order)
+    || explicit_table_function (index_base, shape)
+      || maths_function()
+        || generic_expression()
+    || multiple_arity_generic_expression (operands) );
+END_FUNCTION;  -- make_basic_sparse_matrix
+FUNCTION make_binary_literal(lit_value : BINARY) : binary_literal;
+  RETURN (binary_literal (lit_value)
+    || generic_literal()
+      || simple_generic_expression()
+        || generic_expression() );
+END_FUNCTION;  -- make_binary_literal
+FUNCTION make_boolean_literal(lit_value : BOOLEAN) : boolean_literal;
+  RETURN (boolean_literal (lit_value)
+    || simple_boolean_expression()
+      || boolean_expression()
+        || expression()
+          || generic_expression()
+      || simple_generic_expression()
+    || generic_literal() );
+END_FUNCTION;  -- make_boolean_literal
+FUNCTION make_cos_expression(operand : numeric_expression) : cos_expression;
+  RETURN (cos_expression()
+    || unary_numeric_call_expression()
+      || unary_numeric_expression()
+        || numeric_expression()
+          || expression()
+            || generic_expression()
+        || unary_generic_expression (operand) );
+END_FUNCTION;  -- make_cos_expression
+FUNCTION make_elementary_function(func_id : elementary_function_enumerators)
+                                 : elementary_function;
+  RETURN (elementary_function (func_id)
+    || maths_function()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_elementary_function
+FUNCTION make_elementary_space(space_id : elementary_space_enumerators)
+                              : elementary_space;
+  RETURN (elementary_space (space_id)
+    || maths_space()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_elementary_space
+FUNCTION make_expression_denoted_function(expression : generic_expression)
+                                         : expression_denoted_function;
+  RETURN (expression_denoted_function()
+    || maths_function()
+      || generic_expression()
+    || unary_generic_expression (expression) );
+END_FUNCTION;  -- make_expression_denoted_function
+FUNCTION make_extended_tuple_space(base     : product_space;
+                                   extender : maths_space) : extended_tuple_space;
+  RETURN (extended_tuple_space (base, extender)
+    || maths_space ()
+      || generic_expression()
+    || generic_literal ()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_extended_tuple_space
+FUNCTION make_finite_function(pairs : SET [1:?] OF LIST [2:2] OF maths_value)
+                             : finite_function;
+  RETURN (finite_function (pairs)
+    || maths_function()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_finite_function
+FUNCTION make_finite_integer_interval(min : INTEGER;
+                                      max : INTEGER) : finite_integer_interval;
+  RETURN (finite_integer_interval (min, max)
+    || maths_space()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_finite_integer_interval
+FUNCTION make_finite_real_interval(min    : REAL;
+                                   minclo : open_closed;
+                                   max    : REAL;
+                                   maxclo : open_closed) : finite_real_interval;
+  RETURN (finite_real_interval (min, minclo, max, maxclo)
+    || maths_space()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_finite_real_interval
+FUNCTION make_finite_space(members : SET OF maths_value) : finite_space;
+  RETURN (finite_space (members)
+    || maths_space()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_finite_space
+FUNCTION make_function_application(afunction : maths_function_select;
+                                   arguments : LIST [1:?] OF maths_value)
+                                  : function_application;
+  RETURN (function_application (afunction, arguments)
+    || multiple_arity_generic_expression (convert_to_maths_function (afunction) +
+      convert_to_operands (arguments))  -- derived
+      || generic_expression() );
+END_FUNCTION;  -- make_function_application
+FUNCTION make_function_space(domain_constraint : space_constraint_type;
+                             domain_argument   : maths_space;
+                             range_constraint  : space_constraint_type;
+                             range_argument    : maths_space) : function_space;
+  RETURN (function_space (domain_constraint, domain_argument, range_constraint,
+    range_argument)
+    || maths_space()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_function_space
+FUNCTION make_general_linear_function(mat       : maths_function;
+                                      sum_index : one_or_two)
+                                     : general_linear_function;
+  RETURN (general_linear_function (sum_index)
+    || maths_function()
+      || generic_expression()
+    || unary_generic_expression (mat) );
+END_FUNCTION;  -- make_general_linear_function
+FUNCTION make_int_literal(lit_value : INTEGER) : int_literal;
+  RETURN (int_literal ()
+    || literal_number(lit_value)
+      || simple_numeric_expression()
+        || numeric_expression()
+          || expression()
+            || generic_expression()
+        || simple_generic_expression()
+      || generic_literal() );
+END_FUNCTION;  -- make_int_literal
+FUNCTION make_integer_interval_from_min(min : INTEGER)
+  : integer_interval_from_min;
+  RETURN (integer_interval_from_min (min)
+    || maths_space()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_integer_interval_from_min
+FUNCTION make_listed_data(index_base  : zero_or_one;
+                          values      : LIST [2:?] OF maths_value;
+                          value_range : maths_space) : listed_data;
+  RETURN (listed_data (values, value_range)
+    || explicit_table_function (index_base, [SIZEOF (values)])  -- 2nd derived
+      || maths_function()
+        || generic_expression()
+    || multiple_arity_generic_expression (convert_to_operands (values)) );  -- derived
+END_FUNCTION;  -- make_listed_data
+FUNCTION make_listed_integer_data(index_base : zero_or_one;
+                                  values     : LIST [1:?] OF INTEGER)
+                                 : listed_integer_data;
+  RETURN (listed_integer_data (values)
+    || explicit_table_function (index_base, [SIZEOF (values)])  -- 2nd derived
+      || maths_function()
+        || generic_expression()
+    || generic_literal() );
+END_FUNCTION;  -- make_listed_integer_data
+FUNCTION make_listed_product_space(factors : LIST OF maths_space)
+                                  : listed_product_space;
+  RETURN (listed_product_space (factors)
+    || maths_space()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_listed_product_space
+FUNCTION make_listed_real_data(index_base : zero_or_one;
+                               values     : LIST [1:?] OF REAL)
+                              : listed_real_data;
+  RETURN (listed_real_data (values)
+    || explicit_table_function (index_base, [SIZEOF (values)])  -- 2nd derived
+      || maths_function()
+        || generic_expression()
+    || generic_literal() );
+END_FUNCTION;  -- make_listed_real_data
+FUNCTION make_logical_literal(lit_value : LOGICAL) : logical_literal;
+  RETURN (logical_literal (lit_value)
+    || generic_literal()
+      || simple_generic_expression()
+        || generic_expression() );
+END_FUNCTION;  -- make_logical_literal
+FUNCTION make_maths_enum_literal(lit_value : maths_enum_atom) : maths_enum_literal;
+  RETURN (maths_enum_literal (lit_value)
+    || generic_literal()
+      || simple_generic_expression()
+        || generic_expression() );
+END_FUNCTION;  -- make_maths_enum_literal
+FUNCTION make_maths_real_variable(values_space : maths_space;
+                                  name         : label) : maths_real_variable;
+  RETURN (maths_real_variable()
+    || maths_variable (values_space, name)
+      || generic_variable()
+        || simple_generic_expression()
+          || generic_expression()
+    || real_numeric_variable()
+      || numeric_variable()
+        || variable() );
+END_FUNCTION;  -- make_maths_real_variable
+FUNCTION make_parallel_composed_function(comdom    : tuple_space;
+                                         prepfuncs : LIST [2:?] OF prep_function_select;
+                                         finfunc   : maths_function_select)
+                                        : parallel_composed_function;
+  RETURN (parallel_composed_function (comdom, prepfuncs, finfunc)
+    || maths_function()
+      || generic_expression()
+    || multiple_arity_generic_expression (convert_to_operands_prcmfn (
+      comdom, prepfuncs, finfunc)) );  -- derived
+END_FUNCTION;  -- make_parallel_composed_function
+FUNCTION make_rationalize_function(fun : maths_function) : rationalize_function;
+  RETURN (rationalize_function()
+    || maths_function()
+      || generic_expression()
+    || unary_generic_expression (fun) );
+END_FUNCTION;  -- make_rationalize_function
+FUNCTION make_real_interval_from_min(min    : REAL;
+                                     minclo : open_closed) : real_interval_from_min;
+  RETURN (real_interval_from_min (min, minclo)
+    || maths_space()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_real_interval_from_min
+FUNCTION make_real_literal(lit_value : REAL) : real_literal;
+  RETURN (real_literal ()
+    || literal_number(lit_value)
+      || simple_numeric_expression()
+        || numeric_expression()
+          || expression()
+            || generic_expression()
+        || simple_generic_expression()
+      || generic_literal() );
+END_FUNCTION;  -- make_real_literal
+FUNCTION make_regular_table_function(index_base : zero_or_one;
+                                     shape      : LIST [1:?] OF positive;
+                                     operand    : maths_function;
+                                     first      : INTEGER;
+                                     increments : LIST [1:?] OF INTEGER)
+                                    : regular_table_function;
+  RETURN (regular_table_function (increments)
+    || linearized_table_function (first)
+      || explicit_table_function (index_base, shape)
+        || maths_function()
+          || generic_expression()
+      || unary_generic_expression (operand) );
+END_FUNCTION;  -- make_regular_table_function
+FUNCTION make_repackaging_function(operand         : maths_function;
+                                   input_repack    : repackage_options;
+                                   output_repack   : repackage_options;
+                                   selected_output : nonnegative)
+                                  : repackaging_function;
+  RETURN (repackaging_function (input_repack, output_repack, selected_output)
+    || maths_function()
+      || generic_expression()
+    || unary_generic_expression (operand) );
+END_FUNCTION;  -- make_repackaging_function
+FUNCTION make_series_composed_function(functions : LIST [2:?] OF maths_function)
+                                      : series_composed_function;
+  RETURN (series_composed_function()
+    || maths_function()
+      || generic_expression()
+    || multiple_arity_generic_expression (functions) );
+END_FUNCTION;  -- make_series_composed_function
+FUNCTION make_sin_expression(operand : numeric_expression) : sin_expression;
+  RETURN (sin_expression()
+    || unary_numeric_call_expression()
+      || unary_numeric_expression()
+        || numeric_expression()
+          || expression()
+            || generic_expression()
+        || unary_generic_expression (operand) );
+END_FUNCTION;  -- make_sin_expression
+FUNCTION make_standard_table_function(index_base : zero_or_one;
+                                      shape      : LIST [1:?] OF positive;
+                                      operand    : maths_function;
+                                      first      : INTEGER;
+                                      order      : ordering_type)
+                                     : standard_table_function;
+  RETURN (standard_table_function (order)
+    || linearized_table_function (first)
+      || explicit_table_function (index_base, shape)
+        || maths_function()
+          || generic_expression()
+      || unary_generic_expression (operand) );
+END_FUNCTION;  -- make_standard_table_function
+FUNCTION make_strict_triangular_matrix(index_base    : zero_or_one;
+                                       shape         : LIST [1:?] OF positive;
+                                       source        : maths_function;
+                                       first         : INTEGER;
+                                       default_entry : maths_value;
+                                       lo_up         : lower_upper;
+                                       order         : ordering_type;
+                                       main_diagonal_value : maths_value)
+                                      : strict_triangular_matrix;
+  RETURN (strict_triangular_matrix (main_diagonal_value)
+    || triangular_matrix (default_entry, lo_up, order)
+      || linearized_table_function (first)
+        || explicit_table_function (index_base, shape)
+          || maths_function()
+            || generic_expression()
+        || unary_generic_expression (source) );
+END_FUNCTION;  -- make_strict_triangular_matrix
+FUNCTION make_string_literal(lit_value : STRING) : string_literal;
+  RETURN (string_literal (lit_value)
+    || simple_string_expression()
+      || string_expression()
+        || expression()
+          || generic_expression()
+      || simple_generic_expression()
+    || generic_literal() );
+END_FUNCTION;  -- make_string_literal
+FUNCTION make_unary_minus_expression(operand : numeric_expression)
+  : unary_minus_expression;
+  RETURN (unary_minus_expression()
+    || unary_numeric_call_expression()
+      || unary_numeric_expression()
+        || numeric_expression()
+          || expression()
+            || generic_expression()
+        || unary_generic_expression (operand) );
+END_FUNCTION;  -- make_unary_minus_expression
+FUNCTION make_uniform_product_space(base     : maths_space;
+                                    exponent : positive) : uniform_product_space;
+  RETURN (uniform_product_space (base, exponent)
+    || maths_space()
+      || generic_expression()
+    || generic_literal()
+      || simple_generic_expression() );
+END_FUNCTION;  -- make_uniform_product_space
+FUNCTION max_exists(spc : maths_space) : BOOLEAN;
+  LOCAL
+    types : SET OF STRING := TYPEOF (spc);
+  END_LOCAL;
+  RETURN (bool(((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN types) OR
+    ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types) OR
+    ((schema_prefix + 'REAL_INTERVAL_TO_MAX') IN types)));
+END_FUNCTION;  -- max_exists
+FUNCTION max_included(spc : maths_space) : BOOLEAN;
+  LOCAL
+    types : SET OF STRING := TYPEOF (spc);
+  END_LOCAL;
+  IF ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN types) THEN
+    RETURN (TRUE);
+  END_IF;
+  IF ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types) THEN
+    RETURN (bool(spc\finite_real_interval.max_closure = closed));
+  END_IF;
+  IF ((schema_prefix + 'REAL_INTERVAL_TO_MAX') IN types) THEN
+    RETURN (bool(spc\real_interval_to_max.max_closure = closed));
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- max_included
+FUNCTION fedex(val : AGGREGATE OF GENERIC:G;
+               i   : INTEGER) : GENERIC:G;
+  -- Trivial function introduced to avoid NIST Fedex compiler error
+  RETURN (val[i]);
+END_FUNCTION;  -- fedex
+
+FUNCTION member_of(val : GENERIC:G;
+                   spc : maths_space) : LOGICAL;
+  LOCAL
+    vtypes : SET OF STRING := TYPEOF (val);
+    stypes : SET OF STRING := TYPEOF (spc);
+    tmp_int : INTEGER;
+    tmp_real : REAL;
+    lgcl, cum : LOGICAL;
+    vspc, sspc : maths_space;
+  END_LOCAL;
+  IF NOT EXISTS (spc) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF NOT EXISTS (val) THEN
+    RETURN (spc = the_generics);
+  END_IF;
+  IF ('ISO13584_GENERIC_EXPRESSIONS_SCHEMA.GENERIC_EXPRESSION' IN vtypes) AND
+    NOT ((schema_prefix + 'MATHS_SPACE') IN vtypes) AND
+    NOT ((schema_prefix + 'MATHS_FUNCTION') IN vtypes) THEN
+    IF has_values_space (val) THEN
+      RETURN (subspace_of (values_space_of (val), spc));
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'FINITE_SPACE') IN stypes THEN
+    IF (schema_prefix + 'MATHS_VALUE') IN vtypes THEN
+      RETURN (value_in (spc\finite_space.members, val));
+    END_IF;
+    RETURN (UNKNOWN);  -- Could be value equal to a maths_value but no easy way to
+                 -- dissect it.
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_SPACE') IN stypes THEN
+    CASE spc\elementary_space.space_id OF
+    es_numbers :  RETURN ('NUMBER' IN vtypes);
+    es_complex_numbers :  RETURN ('NUMBER' IN vtypes);
+    es_reals :  RETURN (value_is_real (val));
+    es_integers :  RETURN (value_is_integer (val));
+    es_logicals :  RETURN ('LOGICAL' IN vtypes);
+    es_booleans :  RETURN ('BOOLEAN' IN vtypes);
+    es_strings :  RETURN ('STRING' IN vtypes);
+    es_binarys :  RETURN ('BINARY' IN vtypes);
+    es_maths_spaces :  RETURN (((schema_prefix + 'MATHS_SPACE') IN vtypes) OR
+      ('SET' IN vtypes));
+    es_maths_functions :  RETURN ((schema_prefix + 'MATHS_FUNCTION') IN vtypes);
+    es_generics :  RETURN (TRUE);
+    END_CASE;
+  END_IF;
+  IF (schema_prefix + 'FINITE_INTEGER_INTERVAL') IN stypes THEN
+    IF value_is_integer (val) THEN
+      tmp_int := val;
+      RETURN ({spc\finite_integer_interval.min <= tmp_int <=
+        spc\finite_integer_interval.max});
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN stypes THEN
+    IF value_is_integer (val) THEN
+      tmp_int := val;
+      RETURN (spc\integer_interval_from_min.min <= tmp_int);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN stypes THEN
+    IF value_is_integer (val) THEN
+      tmp_int := val;
+      RETURN (tmp_int <= spc\integer_interval_to_max.max);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'FINITE_REAL_INTERVAL') IN stypes THEN
+    IF value_is_real (val) THEN
+      tmp_real := val;
+      RETURN ({spc\finite_real_interval.min <= tmp_real <=
+        spc\finite_real_interval.max});
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN stypes THEN
+    IF value_is_real (val) THEN
+      tmp_real := val;
+      RETURN (spc\real_interval_from_min.min <= tmp_real);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'REAL_INTERVAL_TO_MAX') IN stypes THEN
+    IF value_is_real (val) THEN
+      tmp_real := val;
+      RETURN (tmp_real <= spc\real_interval_to_max.max);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN stypes THEN
+    IF 'LIST' IN vtypes THEN
+      IF SIZEOF (val) = spc\uniform_product_space.exponent THEN
+        cum := TRUE;
+        REPEAT i := 1 TO SIZEOF (val);
+          lgcl := member_of (fedex (val, i), spc\uniform_product_space.base);
+            -- See note above for explanation of fedex()
+          IF lgcl = FALSE THEN
+            RETURN (FALSE);
+          END_IF;
+          IF lgcl = UNKNOWN THEN
+            cum := UNKNOWN;
+          END_IF;
+        END_REPEAT;
+        RETURN (cum);
+      END_IF;
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'LISTED_PRODUCT_SPACE') IN stypes THEN
+    IF 'LIST' IN vtypes THEN
+      IF SIZEOF (val) = SIZEOF (spc\listed_product_space.factors) THEN
+        cum := TRUE;
+        REPEAT i := 1 TO SIZEOF (val);
+          lgcl := member_of (fedex (val, i), spc\listed_product_space.factors[i]);
+            -- See note above for explanation of fedex()
+          IF lgcl = FALSE THEN
+            RETURN (FALSE);
+          END_IF;
+          IF lgcl = UNKNOWN THEN
+            cum := UNKNOWN;
+          END_IF;
+        END_REPEAT;
+        RETURN (cum);
+      END_IF;
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN stypes THEN
+    IF 'LIST' IN vtypes THEN
+      IF SIZEOF (val) >= space_dimension (spc\extended_tuple_space.base) THEN
+        cum := TRUE;
+        REPEAT i := 1 TO SIZEOF (val);
+          lgcl := member_of (fedex (val, i), factor_space (spc, i));
+            -- See note above for explanation of fedex()
+          IF lgcl = FALSE THEN
+            RETURN (FALSE);
+          END_IF;
+          IF lgcl = UNKNOWN THEN
+            cum := UNKNOWN;
+          END_IF;
+        END_REPEAT;
+        RETURN (cum);
+      END_IF;
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'FUNCTION_SPACE') IN stypes THEN
+    IF (schema_prefix + 'MATHS_FUNCTION') IN vtypes THEN
+      cum := TRUE;
+      vspc := val\maths_function.domain;
+      sspc := spc\function_space.domain_argument;
+      CASE spc\function_space.domain_constraint OF
+      sc_equal : cum := cum AND (subspace_of (vspc, sspc) AND subspace_of (sspc, vspc));
+      sc_subspace : cum := cum AND (subspace_of (vspc, sspc));
+      sc_member : cum := cum AND (member_of (vspc, sspc));
+      END_CASE;
+      IF cum = FALSE THEN
+        RETURN (FALSE);
+      END_IF;
+      vspc := val\maths_function.range;
+      sspc := spc\function_space.range_argument;
+      CASE spc\function_space.range_constraint OF
+      sc_equal : cum := cum AND (subspace_of (vspc, sspc) AND subspace_of (sspc, vspc));
+      sc_subspace : cum := cum AND (subspace_of (vspc, sspc));
+      sc_member : cum := cum AND (member_of (vspc, sspc));
+      END_CASE;
+      RETURN (cum);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  -- Should be unreachable
+  RETURN (UNKNOWN);
+END_FUNCTION;  -- member_of
+FUNCTION min_exists(spc : maths_space) : BOOLEAN;
+  LOCAL
+    types : SET OF STRING := TYPEOF (spc);
+  END_LOCAL;
+  RETURN (bool(((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN types) OR
+    ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types) OR
+    ((schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN types)));
+END_FUNCTION;  -- min_exists
+FUNCTION min_included(spc : maths_space) : BOOLEAN;
+  LOCAL
+    types : SET OF STRING := TYPEOF (spc);
+  END_LOCAL;
+  IF ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN types) THEN
+    RETURN (TRUE);
+  END_IF;
+  IF ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types) THEN
+    RETURN (bool(spc\finite_real_interval.min_closure = closed));
+  END_IF;
+  IF ((schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN types) THEN
+    RETURN (bool(spc\real_interval_from_min.min_closure = closed));
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- min_included
+FUNCTION no_cyclic_space_reference(spc : maths_space;
+                                   refs : SET OF maths_space) : BOOLEAN;
+  LOCAL
+    types : SET OF STRING;
+    refs_plus : SET OF maths_space;
+  END_LOCAL;
+  IF (spc IN refs) THEN
+    RETURN (FALSE);
+  END_IF;
+  types := TYPEOF (spc);
+  refs_plus := refs + spc;
+  IF (schema_prefix + 'FINITE_SPACE') IN types THEN
+    RETURN (bool(SIZEOF (QUERY (sp <* QUERY (mem <* spc\finite_space.members |
+      (schema_prefix + 'MATHS_SPACE') IN TYPEOF (mem)) |
+      NOT no_cyclic_space_reference (sp, refs_plus))) = 0));
+  END_IF;
+  IF (schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN types THEN
+    RETURN (no_cyclic_space_reference (spc\uniform_product_space.base, refs_plus));
+  END_IF;
+  IF (schema_prefix + 'LISTED_PRODUCT_SPACE') IN types THEN
+    RETURN (bool(SIZEOF (QUERY (fac <* spc\listed_product_space.factors |
+      NOT no_cyclic_space_reference (fac, refs_plus))) = 0));
+  END_IF;
+  IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN types THEN
+    RETURN (no_cyclic_space_reference (spc\extended_tuple_space.base, refs_plus)
+      AND no_cyclic_space_reference (spc\extended_tuple_space.extender, refs_plus));
+  END_IF;
+  -- spc contains no references to other spaces
+  RETURN (TRUE);
+END_FUNCTION;  -- no_cyclic_space_reference
+FUNCTION nondecreasing(lr : LIST OF REAL) : BOOLEAN;
+  IF NOT EXISTS (lr) THEN
+    RETURN (FALSE);
+  END_IF;
+  REPEAT j := 2 TO SIZEOF (lr);
+    IF lr[j] < lr[j-1] THEN
+      RETURN (FALSE);
+    END_IF;
+  END_REPEAT;
+  RETURN (TRUE);
+END_FUNCTION;
+FUNCTION number_superspace_of(spc : maths_space) : elementary_space;
+  LOCAL
+    types : SET OF STRING := TYPEOF (spc);
+    es_val : elementary_space_enumerators;
+  END_LOCAL;
+  IF (schema_prefix + 'ELEMENTARY_SPACE') IN types THEN
+    es_val := spc\elementary_space.space_id;
+    IF (es_val >= es_numbers) AND (es_val <= es_integers) THEN
+      RETURN (spc);
+    END_IF;
+  END_IF;
+  IF ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN types) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN types) THEN
+    RETURN (the_integers);
+  END_IF;
+  IF ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types) OR
+    ((schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN types) OR
+    ((schema_prefix + 'REAL_INTERVAL_TO_MAX') IN types) THEN
+    RETURN (the_reals);
+  END_IF;
+  IF (schema_prefix + 'FINITE_SPACE') IN types THEN
+    es_val := es_integers;
+    REPEAT i := 1 TO SIZEOF (spc\finite_space.members);
+      IF value_is_integer (spc\finite_space.members[i]) THEN
+        SKIP;
+      END_IF;
+      IF value_is_real (spc\finite_space.members[i]) THEN
+        IF es_val = es_integers THEN
+          es_val := es_reals;
+        END_IF;
+        SKIP;
+      END_IF;
+      -- Deal with complex numbers when available
+      IF 'NUMBER' IN types THEN
+        IF es_val <> es_numbers THEN
+          es_val := es_numbers;
+        END_IF;
+        SKIP;
+      END_IF;
+      -- Member is not numeric
+      RETURN (?);
+    END_REPEAT;
+    RETURN (make_elementary_space (es_val));
+  END_IF;
+  RETURN (?);
+END_FUNCTION;
+FUNCTION number_tuple_subspace_check(spc : maths_space) : BOOLEAN;
+  IF NOT EXISTS (spc) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN TYPEOF (spc) THEN
+    RETURN (subspace_of_numbers (spc\uniform_product_space.base));
+  END_IF;
+  IF (schema_prefix + 'LISTED_PRODUCT_SPACE') IN TYPEOF (spc) THEN
+    REPEAT j := 1 TO SIZEOF (spc\listed_product_space.factors);
+      IF NOT subspace_of_numbers (spc\listed_product_space.factors[j]) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_REPEAT;
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN TYPEOF (spc) THEN
+    IF NOT subspace_of_numbers (spc\extended_tuple_space.extender) THEN
+      RETURN (FALSE);
+    END_IF;
+    RETURN (number_tuple_subspace_check (spc\extended_tuple_space.base));
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;
+FUNCTION one_tuples_of(spc : maths_space) : tuple_space;
+  RETURN (make_uniform_product_space (spc, 1));
+END_FUNCTION;  -- one_tuples_of
+FUNCTION parallel_composed_function_composability_check(
+                                      comdom : tuple_space;
+                                      funcs  : LIST OF prep_function_select;
+                                      final  : maths_function_select) : BOOLEAN;
+  LOCAL
+    tplsp : tuple_space := the_zero_tuple_space;
+    pftypes : SET OF STRING;
+    mthspc : maths_space;
+    mthfun : maths_function;
+    encsel : encoded_selector;
+    enccon : encoded_constant;
+    range  : tuple_space;
+    finfun : maths_function := convert_to_maths_function (final);
+  END_LOCAL;
+  REPEAT i := 1 TO SIZEOF (funcs);
+    -- Use intermediate variables with appropriate declared types to try to
+    -- make things easier on the compilers.
+    pftypes := TYPEOF (funcs[i]);
+    IF (schema_prefix + 'MATHS_FUNCION') IN pftypes THEN
+      mthfun := funcs[i];
+      range := mthfun.range;
+    ELSE
+      IF 'INTEGER' IN pftypes THEN
+        encsel := funcs[i];  -- _domain_check ensures value is in range
+        IF encsel < 0 THEN
+          mthspc := factor1 (comdom);
+          range := mthspc;  -- _domain_check ensures this is tuple_space
+          encsel := -encsel;
+        ELSE
+          range := comdom;
+        END_IF;
+        mthspc := factor_space (range, encsel);
+        range := one_tuples_of (mthspc);
+      ELSE
+        enccon := funcs[i];
+        mthspc := make_finite_space ([enccon[1]]);
+        range := one_tuples_of (mthspc);
+      END_IF;
+    END_IF;
+    tplsp := assoc_product_space (tplsp, range);
+  END_REPEAT;
+  RETURN (compatible_spaces (tplsp, finfun.domain));
+END_FUNCTION;  -- parallel_composed_function_composability_check
+FUNCTION parallel_composed_function_domain_check(
+                                tsp   : tuple_space;
+                                funcs : LIST OF prep_function_select) : BOOLEAN;
+  LOCAL
+    pftypes : SET OF STRING;
+    mthfun : maths_function;
+    encsel : encoded_selector;
+    dim : INTEGER;
+    mthspc : maths_space;
+  END_LOCAL;
+  REPEAT i := 1 TO SIZEOF (funcs);
+    pftypes := TYPEOF (funcs[i]);
+    IF (schema_prefix + 'MATHS_FUNCTION') IN pftypes THEN
+      mthfun := funcs[i];
+      IF NOT (compatible_spaces (tsp, mthfun.domain)) THEN
+        RETURN (FALSE);
+      END_IF;
+    ELSE
+      IF 'INTEGER' IN pftypes THEN
+        encsel := funcs[i];
+        dim := space_dimension (tsp);
+        IF encsel < 0 THEN
+          mthspc := factor1 (tsp);
+          IF (schema_prefix + 'TUPLE_SPACE') IN TYPEOF (mthspc) THEN
+            encsel := -encsel;
+            dim := space_dimension (mthspc);
+          END_IF;
+        END_IF;
+        IF (encsel <= 0) OR (encsel > dim) THEN
+          RETURN (FALSE);
+        END_IF;
+      END_IF;
+    END_IF;
+  END_REPEAT;
+  RETURN (TRUE);
+END_FUNCTION;  -- parallel_composed_function_domain_check
+FUNCTION parse_express_identifier(s : STRING;
+                                  i : positive) : positive;
+  LOCAL
+    k : positive;
+  END_LOCAL;
+  k := i;
+  IF i <= LENGTH (s) THEN
+    IF (s[i] LIKE '@') THEN
+      REPEAT UNTIL (k > LENGTH (s)) OR
+        ((s[k] <> '_') AND NOT (s[k] LIKE '@') AND NOT (s[k] LIKE '#'));
+        k := k + 1;
+      END_REPEAT;
+    END_IF;
+  END_IF;
+  RETURN (k);
+END_FUNCTION;  -- parse_express_identifier
+FUNCTION real_max(spc : maths_space) : REAL;
+  LOCAL
+    types : SET OF STRING := TYPEOF (spc);
+  END_LOCAL;
+  IF ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types) THEN
+    RETURN (spc\finite_integer_interval.max);
+  END_IF;
+  IF ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN types) THEN
+    RETURN (spc\integer_interval_to_max.max);
+  END_IF;
+  IF ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types) THEN
+    RETURN (spc\finite_real_interval.max);
+  END_IF;
+  IF ((schema_prefix + 'REAL_INTERVAL_TO_MAX') IN types) THEN
+    RETURN (spc\real_interval_to_max.max);
+  END_IF;
+  RETURN (?);
+END_FUNCTION;  -- real_max
+FUNCTION real_min(spc : maths_space) : REAL;
+  LOCAL
+    types : SET OF STRING := TYPEOF (spc);
+  END_LOCAL;
+  IF ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types) THEN
+    RETURN (spc\finite_integer_interval.min);
+  END_IF;
+  IF ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN types) THEN
+    RETURN (spc\integer_interval_from_min.min);
+  END_IF;
+  IF ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types) THEN
+    RETURN (spc\finite_real_interval.min);
+  END_IF;
+  IF ((schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN types) THEN
+    RETURN (spc\real_interval_from_min.min);
+  END_IF;
+  RETURN (?);
+END_FUNCTION;  -- real_min
+FUNCTION regular_indexing(sub   : LIST OF INTEGER;
+                          base  : zero_or_one;
+                          shape : LIST [1:?] OF positive;
+                          inc   : LIST [1:?] OF INTEGER;
+                          first : INTEGER) : INTEGER;
+  LOCAL
+    k : INTEGER;
+    index : INTEGER;
+  END_LOCAL;
+  IF NOT EXISTS (sub) OR NOT EXISTS (base) OR NOT EXISTS (shape) OR
+    NOT EXISTS (inc) OR NOT EXISTS (first) THEN
+    RETURN (?);
+  END_IF;
+  IF (SIZEOF (sub) <> SIZEOF (inc)) OR (SIZEOF (sub) <> SIZEOF (shape)) THEN
+    RETURN (?);
+  END_IF;
+  index := first;
+  REPEAT j := 1 TO SIZEOF (sub);
+    IF NOT EXISTS (sub[j]) OR NOT EXISTS (inc[j]) THEN
+      RETURN (?);
+    END_IF;
+    k := sub[j] - base;
+    IF NOT ({0 <= k < shape[j]}) THEN
+      RETURN (?);
+    END_IF;
+    index := index + k*inc[j];
+  END_REPEAT;
+  RETURN (index);
+END_FUNCTION;
+FUNCTION remove_first(alist : LIST OF GENERIC:GEN) : LIST OF GENERIC:GEN;
+  LOCAL
+    blist : LIST OF GENERIC:GEN := alist;
+  END_LOCAL;
+  IF SIZEOF (blist) > 0 THEN
+    REMOVE (blist, 1);
+  END_IF;
+  RETURN (blist);
+END_FUNCTION;  -- remove_first
+FUNCTION repackage(tspace : tuple_space;
+                   repckg : repackage_options) : tuple_space;
+  CASE repckg OF
+  ro_nochange : RETURN (tspace);
+  ro_wrap_as_tuple : RETURN (one_tuples_of (tspace));
+  ro_unwrap_tuple : RETURN (factor1 (tspace));
+  OTHERWISE : RETURN (?);
+  END_CASE;
+END_FUNCTION;  -- repackage
+FUNCTION shape_of_array(func : maths_function) : LIST OF positive;
+  LOCAL
+    tspace : tuple_space;
+    temp : maths_space;
+    result : LIST OF positive := [];
+  END_LOCAL;
+  IF (schema_prefix + 'EXPLICIT_TABLE_FUNCTION') IN TYPEOF (func) THEN
+    RETURN (func\explicit_table_function.shape);
+  END_IF;
+  tspace := func.domain;
+  IF (space_dimension (tspace) = 1) AND ((schema_prefix + 'TUPLE_SPACE') IN
+    TYPEOF (factor1 (tspace))) THEN
+    tspace := factor1 (tspace);
+  END_IF;
+  IF space_dimension (tspace) = 0 THEN
+    RETURN (?);
+  END_IF;
+  REPEAT i := 1 TO space_dimension (tspace);
+    temp := factor_space (tspace, i);
+    IF NOT ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN TYPEOF (temp)) THEN
+      RETURN (?);
+    END_IF;
+    INSERT (result, temp\finite_integer_interval.size, i-1);
+  END_REPEAT;
+  RETURN (result);
+END_FUNCTION;  -- shape_of_array
+FUNCTION space_dimension(tspace : tuple_space) : nonnegative;
+  LOCAL
+    types : SET OF STRING := TYPEOF (tspace);
+  END_LOCAL;
+  IF (schema_prefix + 'UNIFORM_PRODUCT_SPACE') IN types THEN
+    RETURN (tspace\uniform_product_space.exponent);
+  END_IF;
+  IF (schema_prefix + 'LISTED_PRODUCT_SPACE') IN types THEN
+    RETURN (SIZEOF (tspace\listed_product_space.factors));
+  END_IF;
+  IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN types THEN
+    -- In the case of an extended_tuple_space, the minimum dimension is returned.
+    RETURN (space_dimension (tspace\extended_tuple_space.base));
+  END_IF;
+  -- Should be unreachable
+  RETURN (?);
+END_FUNCTION;  -- space_dimension
+FUNCTION subspace_of(spc1, spc2 : maths_space) : LOGICAL;
+  LOCAL
+    types1 : SET OF STRING := TYPEOF (spc1);
+    types2 : SET OF STRING := TYPEOF (spc2);
+    lgcl, cum : LOGICAL;
+    es_val : elementary_space_enumerators;
+    bnd1, bnd2 : REAL;
+    n : INTEGER;
+    sp1, sp2 : maths_space;
+  END_LOCAL;
+  IF NOT EXISTS (spc1) OR NOT EXISTS (spc2) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF spc2 = the_generics THEN
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'FINITE_SPACE') IN types1 THEN
+    cum := TRUE;
+    REPEAT i := 1 TO SIZEOF (spc1\finite_space.members);
+      lgcl := member_of (spc1\finite_space.members[i], spc2);
+      IF lgcl = FALSE THEN
+        RETURN (FALSE);
+      END_IF;
+      IF lgcl = UNKNOWN THEN
+        cum := UNKNOWN;
+      END_IF;
+    END_REPEAT;
+    RETURN (cum);
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_SPACE') IN types1 THEN
+    IF NOT ((schema_prefix + 'ELEMENTARY_SPACE') IN types2) THEN
+      RETURN (FALSE);
+    END_IF;
+    es_val := spc2\elementary_space.space_id;
+    IF spc1\elementary_space.space_id = es_val THEN
+      RETURN (TRUE);
+    END_IF;
+    CASE spc1\elementary_space.space_id OF
+    es_numbers :  RETURN (es_val = es_complex_numbers);
+    es_complex_numbers :  RETURN (es_val = es_numbers);
+    es_reals :  RETURN ((es_val = es_complex_numbers) OR (es_val = es_numbers));
+    es_integers :  RETURN ((es_val >= es_numbers) AND (es_val <= es_reals));
+    es_logicals :  RETURN (FALSE);
+    es_booleans :  RETURN (es_val = es_logicals);
+    es_strings :  RETURN (FALSE);
+    es_binarys :  RETURN (FALSE);
+    es_maths_spaces :  RETURN (FALSE);
+    es_maths_functions :  RETURN (FALSE);
+    es_generics :  RETURN (FALSE);
+    END_CASE;
+    -- Should be unreachable.
+    RETURN (UNKNOWN);
+  END_IF;
+  IF (schema_prefix + 'FINITE_INTEGER_INTERVAL') IN types1 THEN
+    cum := TRUE;
+    REPEAT i := spc1\finite_integer_interval.min TO spc1\finite_integer_interval.max;
+      lgcl := member_of (i, spc2);
+      IF lgcl = FALSE THEN
+        RETURN (FALSE);
+      END_IF;
+      IF lgcl = UNKNOWN THEN
+        cum := UNKNOWN;
+      END_IF;
+    END_REPEAT;
+    RETURN (cum);
+  END_IF;
+  IF (schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN types1 THEN
+    IF (schema_prefix + 'ELEMENTARY_SPACE') IN types2 THEN
+      es_val := spc2\elementary_space.space_id;
+      RETURN ((es_val >= es_numbers) AND (es_val <= es_integers));
+    END_IF;
+    IF (schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN types2 THEN
+      RETURN (spc1\integer_interval_from_min.min>=spc2\integer_interval_from_min.min);
+    END_IF;
+    IF (schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN types2 THEN
+      bnd1 := spc1\integer_interval_from_min.min;
+      bnd2 := spc2\real_interval_from_min.min;
+      RETURN ((bnd2 < bnd1) OR ((bnd2 = bnd1) AND min_included (spc2)));
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN types1 THEN
+    IF (schema_prefix + 'ELEMENTARY_SPACE') IN types2 THEN
+      es_val := spc2\elementary_space.space_id;
+      RETURN ((es_val >= es_numbers) AND (es_val <= es_integers));
+    END_IF;
+    IF (schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN types2 THEN
+      RETURN (spc1\integer_interval_to_max.max <= spc2\integer_interval_to_max.max);
+    END_IF;
+    IF (schema_prefix + 'REAL_INTERVAL_TO_MAX') IN types2 THEN
+      bnd1 := spc1\integer_interval_to_max.max;
+      bnd2 := spc2\real_interval_to_max.max;
+      RETURN ((bnd2 > bnd1) OR ((bnd2 = bnd1) AND max_included (spc2)));
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'FINITE_REAL_INTERVAL') IN types1 THEN
+    IF (schema_prefix + 'ELEMENTARY_SPACE') IN types2 THEN
+      es_val := spc2\elementary_space.space_id;
+      RETURN ((es_val >= es_numbers) AND (es_val <= es_reals));
+    END_IF;
+    IF ((schema_prefix + 'FINITE_REAL_INTERVAL') IN types2) OR
+      ((schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN types2) OR
+      ((schema_prefix + 'REAL_INTERVAL_TO_MAX') IN types2) THEN
+      IF min_exists (spc2) THEN
+        bnd1 := spc1\finite_real_interval.min;
+        bnd2 := real_min (spc2);
+        IF (bnd1 < bnd2) OR ((bnd1 = bnd2) AND min_included (spc1) AND NOT
+          min_included (spc2)) THEN
+          RETURN (FALSE);
+        END_IF;
+      END_IF;
+      IF max_exists (spc2) THEN
+        bnd1 := spc1\finite_real_interval.max;
+        bnd2 := real_max (spc2);
+        IF (bnd1 > bnd2) OR ((bnd1 = bnd2) AND max_included (spc1) AND NOT
+          max_included (spc2)) THEN
+          RETURN (FALSE);
+        END_IF;
+      END_IF;
+      RETURN (TRUE);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN types1 THEN
+    IF (schema_prefix + 'ELEMENTARY_SPACE') IN types2 THEN
+      es_val := spc2\elementary_space.space_id;
+      RETURN ((es_val >= es_numbers) AND (es_val <= es_reals));
+    END_IF;
+    IF (schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN types2 THEN
+      bnd1 := spc1\real_interval_from_min.min;
+      bnd2 := spc2\real_interval_from_min.min;
+      RETURN ((bnd2 < bnd1) OR ((bnd2 = bnd1) AND (min_included (spc2) OR
+        NOT min_included (spc1))));
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'REAL_INTERVAL_TO_MAX') IN types1 THEN
+    IF (schema_prefix + 'ELEMENTARY_SPACE') IN types2 THEN
+      es_val := spc2\elementary_space.space_id;
+      RETURN ((es_val >= es_numbers) AND (es_val <= es_reals));
+    END_IF;
+    IF (schema_prefix + 'REAL_INTERVAL_TO_MAX') IN types2 THEN
+      bnd1 := spc1\real_interval_to_max.max;
+      bnd2 := spc2\real_interval_to_max.max;
+      RETURN ((bnd2 > bnd1) OR ((bnd2 = bnd1) AND (max_included (spc2) OR
+        NOT max_included (spc1))));
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'PRODUCT_SPACE') IN types1 THEN
+    IF (schema_prefix + 'PRODUCT_SPACE') In types2 THEN
+      IF space_dimension (spc1) = space_dimension (spc2) THEN
+        cum := TRUE;
+        REPEAT i := 1 TO space_dimension (spc1);
+          lgcl := subspace_of (factor_space (spc1, i), factor_space (spc2, i));
+          IF lgcl = FALSE THEN
+            RETURN (FALSE);
+          END_IF;
+          IF lgcl = UNKNOWN THEN
+            cum := UNKNOWN;
+          END_IF;
+        END_REPEAT;
+        RETURN (cum);
+      END_IF;
+    END_IF;
+    IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN types2 THEN
+      IF space_dimension (spc1) >= space_dimension (spc2) THEN
+        cum := TRUE;
+        REPEAT i := 1 TO space_dimension (spc1);
+          lgcl := subspace_of (factor_space (spc1, i), factor_space (spc2, i));
+          IF lgcl = FALSE THEN
+            RETURN (FALSE);
+          END_IF;
+          IF lgcl = UNKNOWN THEN
+            cum := UNKNOWN;
+          END_IF;
+        END_REPEAT;
+        RETURN (cum);
+      END_IF;
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN types1 THEN
+    IF (schema_prefix + 'EXTENDED_TUPLE_SPACE') IN types2 THEN
+      n := space_dimension (spc1);
+      IF n < space_dimension (spc2) THEN
+        n := space_dimension (spc2);
+      END_IF;
+      cum := TRUE;
+      REPEAT i := 1 TO n+1;
+        lgcl := subspace_of (factor_space (spc1, i), factor_space (spc2, i));
+        IF lgcl = FALSE THEN
+          RETURN (FALSE);
+        END_IF;
+        IF lgcl = UNKNOWN THEN
+          cum := UNKNOWN;
+        END_IF;
+      END_REPEAT;
+      RETURN (cum);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'FUNCTION_SPACE') IN types1 THEN
+    IF (schema_prefix + 'ELEMENTARY_SPACE') IN types2 THEN
+      RETURN (spc2\elementary_space.space_id = es_maths_functions);
+    END_IF;
+    IF (schema_prefix + 'FUNCTION_SPACE') IN types2 THEN
+      cum := TRUE;
+      sp1 := spc1\function_space.domain_argument;
+      sp2 := spc2\function_space.domain_argument;
+      CASE spc1\function_space.domain_constraint OF
+      sc_equal : BEGIN
+        CASE spc2\function_space.domain_constraint OF
+        sc_equal : cum := cum AND (subspace_of (sp1, sp2) AND subspace_of (sp2, sp1));
+        sc_subspace : cum := cum AND (subspace_of (sp1, sp2));
+        sc_member : cum := cum AND (member_of (sp1, sp2));
+        END_CASE;
+        END;
+      sc_subspace : BEGIN
+        CASE spc2\function_space.domain_constraint OF
+        sc_equal : RETURN (FALSE);
+        sc_subspace : cum := cum AND (subspace_of (sp1, sp2));
+        sc_member : BEGIN
+          IF NOT member_of (sp1, sp2) THEN
+            RETURN (FALSE);
+          END_IF;
+          cum := UNKNOWN;
+          END;
+        END_CASE;
+        END;
+      sc_member : BEGIN
+        CASE spc2\function_space.domain_constraint OF
+        sc_equal : cum := cum AND (member_of (sp2, sp1));
+        sc_subspace : BEGIN
+          IF NOT member_of (sp2, sp1) THEN
+            RETURN (FALSE);
+          END_IF;
+          cum := UNKNOWN;
+          END;
+        sc_member : cum := cum AND (subspace_of (sp1, sp2));
+        END_CASE;
+        END;
+      END_CASE;
+      IF cum = FALSE THEN
+        RETURN (FALSE);
+      END_IF;
+      sp1 := spc1\function_space.range_argument;
+      sp2 := spc2\function_space.range_argument;
+      CASE spc1\function_space.range_constraint OF
+      sc_equal : BEGIN
+        CASE spc2\function_space.range_constraint OF
+        sc_equal : cum := cum AND (subspace_of (sp1, sp2) AND subspace_of (sp2, sp1));
+        sc_subspace : cum := cum AND (subspace_of (sp1, sp2));
+        sc_member : cum := cum AND (member_of (sp1, sp2));
+        END_CASE;
+        END;
+      sc_subspace : BEGIN
+        CASE spc2\function_space.domain_constraint OF
+        sc_equal : RETURN (FALSE);
+        sc_subspace : cum := cum AND (subspace_of (sp1, sp2));
+        sc_member : BEGIN
+          IF NOT member_of (sp1, sp2) THEN
+            RETURN (FALSE);
+          END_IF;
+          cum := UNKNOWN;
+          END;
+        END_CASE;
+        END;
+      sc_member : BEGIN
+        CASE spc2\function_space.domain_constraint OF
+        sc_equal : cum := cum AND (member_of (sp2, sp1));
+        sc_subspace : BEGIN
+          IF NOT member_of (sp2, sp1) THEN
+            RETURN (FALSE);
+          END_IF;
+          cum := UNKNOWN;
+          END;
+        sc_member : cum := cum AND (subspace_of (sp1, sp2));
+        END_CASE;
+        END;
+      END_CASE;
+      RETURN (cum);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  -- Should be unreachable
+  RETURN (UNKNOWN);
+END_FUNCTION;  -- subspace_of
+FUNCTION subspace_of_booleans(spc : maths_space) : BOOLEAN;
+  IF NOT EXISTS (spc) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'FINITE_SPACE') IN TYPEOF (spc) THEN
+    REPEAT i := 1 TO SIZEOF (spc\finite_space.members);
+      IF NOT ('BOOLEAN' IN TYPEOF (spc\finite_space.members[i])) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_REPEAT;
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_SPACE') IN TYPEOF (spc) THEN
+    IF spc\elementary_space.space_id = es_booleans THEN
+      RETURN (TRUE);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- subspace_of_booleans
+FUNCTION subspace_of_integers(spc : maths_space) : BOOLEAN;
+  LOCAL
+    typenames : SET OF STRING := TYPEOF (spc);
+    tmp_int : INTEGER;
+    tmp_real : REAL;
+  END_LOCAL;
+  IF NOT EXISTS (spc) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'FINITE_SPACE') IN typenames THEN
+    REPEAT i := 1 TO SIZEOF (spc\finite_space.members);
+      IF NOT value_is_integer (spc\finite_space.members[i]) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_REPEAT;
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_SPACE') IN typenames THEN
+    IF spc\elementary_space.space_id = es_integers THEN
+      RETURN (TRUE);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN typenames) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN typenames) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN typenames) THEN
+    RETURN (TRUE);
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- subspace_of_integers
+FUNCTION subspace_of_numbers(spc : maths_space) : BOOLEAN;
+  LOCAL
+    typenames : SET OF STRING := TYPEOF (spc);
+    es_val : elementary_space_enumerators;
+  END_LOCAL;
+  IF NOT EXISTS (spc) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'FINITE_SPACE') IN typenames THEN
+    REPEAT i := 1 TO SIZEOF (spc\finite_space.members);
+      IF NOT ('NUMBER' IN TYPEOF (spc\finite_space.members[i])) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_REPEAT;
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_SPACE') IN typenames THEN
+    es_val := spc\elementary_space.space_id;
+    IF (es_val >= es_numbers) AND (es_val <= es_integers) THEN
+      RETURN (TRUE);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN typenames) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN typenames) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN typenames) OR
+    ((schema_prefix + 'FINITE_REAL_INTERVAL') IN typenames) OR
+    ((schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN typenames) OR
+    ((schema_prefix + 'REAL_INTERVAL_TO_MAX') IN typenames) THEN
+    RETURN (TRUE);
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- subspace_of_numbers
+FUNCTION subspace_of_reals(spc : maths_space) : BOOLEAN;
+  LOCAL
+    typenames : SET OF STRING := TYPEOF (spc);
+    es_val : elementary_space_enumerators;
+  END_LOCAL;
+  IF NOT EXISTS (spc) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'FINITE_SPACE') IN typenames THEN
+    REPEAT i := 1 TO SIZEOF (spc\finite_space.members);
+      IF NOT ('REAL' IN TYPEOF (spc\finite_space.members[i])) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_REPEAT;
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_SPACE') IN typenames THEN
+    es_val := spc\elementary_space.space_id;
+    IF (es_val = es_reals) AND (es_val = es_integers) THEN
+      RETURN (TRUE);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  IF ((schema_prefix + 'FINITE_INTEGER_INTERVAL') IN typenames) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_FROM_MIN') IN typenames) OR
+    ((schema_prefix + 'INTEGER_INTERVAL_TO_MAX') IN typenames) OR
+    ((schema_prefix + 'FINITE_REAL_INTERVAL') IN typenames) OR
+    ((schema_prefix + 'REAL_INTERVAL_FROM_MIN') IN typenames) OR
+    ((schema_prefix + 'REAL_INTERVAL_TO_MAX') IN typenames) THEN
+    RETURN (TRUE);
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- subspace_of_reals
+FUNCTION subspace_of_strings(spc : maths_space) : BOOLEAN;
+  LOCAL
+    typenames : SET OF STRING := TYPEOF (spc);
+  END_LOCAL;
+  IF NOT EXISTS (spc) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF (schema_prefix + 'FINITE_SPACE') IN typenames THEN
+    REPEAT i := 1 TO SIZEOF (spc\finite_space.members);
+      IF NOT ('STRING' IN TYPEOF (spc\finite_space.members[i])) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_REPEAT;
+    RETURN (TRUE);
+  END_IF;
+  IF (schema_prefix + 'ELEMENTARY_SPACE') IN typenames THEN
+    IF spc\elementary_space.space_id = es_strings THEN
+      RETURN (TRUE);
+    END_IF;
+    RETURN (FALSE);
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;  -- subspace_of_strings
+FUNCTION value_is_integer(val : GENERIC) : BOOLEAN;
+  LOCAL
+    types : SET OF STRING := TYPEOF (val);
+    tmp_int : INTEGER;
+    tmp_real : REAL;
+  END_LOCAL;
+  IF NOT ('NUMBER' IN types) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF 'INTEGER' IN types THEN
+    RETURN (TRUE);
+  END_IF;
+  IF 'REAL' IN types THEN
+    tmp_real := val;
+    tmp_int := floor(tmp_real);
+    RETURN (bool(tmp_real = tmp_int));
+  END_IF;
+  -- Adjust for complex numbers when available.
+  -- Should be unreachable?
+  RETURN (FALSE);
+END_FUNCTION;  -- value_is_integer
+FUNCTION value_is_real(val : GENERIC) : BOOLEAN;
+  LOCAL
+    types : SET OF STRING := TYPEOF (val);
+  END_LOCAL;
+  IF NOT ('NUMBER' IN types) THEN
+    RETURN (FALSE);
+  END_IF;
+  IF 'REAL' IN types THEN
+    RETURN (TRUE);
+  END_IF;
+  -- Adjust for complex numbers when available.
+  -- Should be unreachable?
+  RETURN (FALSE);
+END_FUNCTION;  -- value_is_real
+FUNCTION values_space_of(expr : generic_expression) : maths_space;
+  LOCAL
+    e_prefix : STRING := 'ISO13584_EXPRESSIONS_SCHEMA.';
+    typenames : SET OF STRING := TYPEOF (expr);
+  END_LOCAL;
+  IF (e_prefix + 'EXPRESSION') IN typenames THEN
+    IF (e_prefix + 'NUMERIC_EXPRESSION') IN typenames THEN
+      IF expr\numeric_expression.is_int THEN
+        IF (e_prefix + 'INT_LITERAL') IN typenames THEN
+          RETURN (make_finite_space ([expr\int_literal.the_value]));
+        ELSE
+          RETURN (the_integers);
+        END_IF;
+      ELSE
+        IF (e_prefix + 'REAL_LITERAL') IN typenames THEN
+          RETURN (make_finite_space ([expr\real_literal.the_value]));
+        ELSE
+          RETURN (the_reals);
+        END_IF;
+      END_IF;
+    END_IF;
+    IF (e_prefix + 'BOOLEAN_EXPRESSION') IN typenames THEN
+      IF (e_prefix + 'BOOLEAN_LITERAL') IN typenames THEN
+        RETURN (make_finite_space ([expr\boolean_literal.the_value]));
+      ELSE
+        RETURN (the_booleans);
+      END_IF;
+    END_IF;
+    IF (e_prefix + 'STRING_EXPRESSION') IN typenames THEN
+      IF (e_prefix + 'STRING_LITERAL') IN typenames THEN
+        RETURN (make_finite_space ([expr\string_literal.the_value]));
+      ELSE
+        RETURN (the_strings);
+      END_IF;
+    END_IF;
+    RETURN (?);  -- unknown subtype of expression
+  END_IF;
+  IF (schema_prefix + 'MATHS_FUNCTION') IN typenames THEN
+    IF expression_is_constant (expr) THEN
+      RETURN (make_finite_space ([expr]));
+    ELSE
+      RETURN (make_function_space (sc_equal, expr\maths_function.domain,
+        sc_equal, expr\maths_function.range));
+    END_IF;
+  END_IF;
+  IF (schema_prefix + 'FUNCTION_APPLICATION') IN typenames THEN
+    RETURN (expr\function_application.func.range);
+  END_IF;
+  IF (schema_prefix + 'MATHS_SPACE') IN typenames THEN
+    IF expression_is_constant (expr) THEN
+      RETURN (make_finite_space ([expr]));
+    ELSE
+      -- This case cannot occur in this version of the schema.
+      -- When it becomes possible, the subtypes should be analyzed and
+      -- more finely defined spaces returned.
+      RETURN (make_elementary_space (es_maths_spaces));
+    END_IF;
+  END_IF;
+  IF (schema_prefix + 'MATHS_VARIABLE') IN typenames THEN
+    RETURN (expr\maths_variable.values_space);
+  END_IF;
+  IF (schema_prefix + 'DEPENDENT_VARIABLE_DEFINITION') IN typenames THEN
+    RETURN (values_space_of (expr\unary_generic_expression.operand));
+  END_IF;
+  IF (schema_prefix + 'LOGICAL_LITERAL') IN typenames THEN
+    RETURN (make_finite_space ([expr\logical_literal.lit_value]));
+  END_IF;
+  IF (schema_prefix + 'BINARY_LITERAL') IN typenames THEN
+    RETURN (make_finite_space ([expr\binary_literal.lit_value]));
+  END_IF;
+  IF (schema_prefix + 'MATHS_ENUM_LITERAL') IN typenames THEN
+    RETURN (make_finite_space ([expr\maths_enum_literal.lit_value]));
+  END_IF;
+  IF (schema_prefix + 'REAL_TUPLE_LITERAL') IN typenames THEN
+    RETURN (make_finite_space ([expr\real_tuple_literal.lit_value]));
+  END_IF;
+  IF (schema_prefix + 'INTEGER_TUPLE_LITERAL') IN typenames THEN
+    RETURN (make_finite_space ([expr\integer_tuple_literal.lit_value]));
+  END_IF;
+  IF (schema_prefix + 'ATOM_BASED_LITERAL') IN typenames THEN
+    RETURN (make_finite_space ([expr\atom_based_literal.lit_value]));
+  END_IF;
+  RETURN (?);  -- not recognized as a mathematical expression
+END_FUNCTION;  -- values_space_of
+END_SCHEMA;  -- mathematical_functions_schema
