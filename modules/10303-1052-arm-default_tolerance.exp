@@ -1,12 +1,13 @@
 (*  
 $Id$ 
-ISO TC184/SC4/WG12 N1544 - ISO/WD 10303-1052 Default tolerance - EXPRESS ARM
+ISO TC184/SC4/WG12 N2870 - ISO/TS 10303-1052 Default tolerance - EXPRESS ARM
+Supersedes ISO TC184/SC4/WG12 N1544
 *) 
 
 
-SCHEMA Default_tolerance_arm; 
+SCHEMA Default_tolerance_arm;
 
-USE FROM Foundation_representation_arm;    -- ISO/CD-TS 10303-1006
+USE FROM Foundation_representation_arm;    -- ISO/TS 10303-1006
 
 USE FROM Measure_representation_arm;    -- ISO/TS 10303-1118
 
