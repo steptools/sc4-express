@@ -1,23 +1,23 @@
-(* N820 - ISO/CD TS - 10303-1128 External item identification assignment - EXPRESS ARM *)
-   
+(* 
+ $Id$
+ ISO/TC184/SC4 WG12N1207 - ISO/TS 10303-1128 External item identification assignment - EXPRESS ARM 
+ *)
+ 
 SCHEMA External_item_identification_assignment_arm;
 
-   
-USE FROM Identification_assignment_arm; -- ISO/CD TS 10303-1021
-
-   
-TYPE external_identification_item = EXTENSIBLE SELECT
-  BASED_ON identification_item WITH
-  (File, Document_definition);
+TYPE external_identification_item = EXTENSIBLE GENERIC_ENTITY SELECT;
 END_TYPE;
 
-   
-ENTITY External_item_identification_assignment
-  SUBTYPE OF (Identification_assignment);
-  location_name : STRING;
+ENTITY External_item_identification
+SUBTYPE OF (External_source_identification);
+  external_id : STRING;
 END_ENTITY;
 
-   
-END_SCHEMA;
+ENTITY External_source_identification;
+  source_id	  : STRING;
+  source_type : STRING;
+  item 	  : external_identification_item;
+  description : OPTIONAL STRING;
+END_ENTITY;
 
-(* Last update -  15 Aug 2001 *)
+END_SCHEMA;

@@ -1,7 +1,11 @@
-(* N709 - ISO/CD TS - 10303-1011 Person organisation - EXPRESS ARM *)
+(* $Id$
+ISO/TC184/SC4 WG12N1084 - ISO/TS - ISO 10303-1011 Person organization - EXPRESS ARM 
+*)
    
 SCHEMA Person_organization_arm;
 
+TYPE organization_or_person_in_organization_select = SELECT (Organization, Person_in_organization);
+END_TYPE;
    
 ENTITY Address;
   street_number           : OPTIONAL STRING;
@@ -16,6 +20,9 @@ ENTITY Address;
   telephone_number        : OPTIONAL STRING;
   electronic_mail_address : OPTIONAL STRING;
   telex_number            : OPTIONAL STRING;
+  url				  : OPTIONAL STRING;
+  name			  : OPTIONAL STRING;
+
 WHERE
   WR1 : (EXISTS (street_number) OR
          EXISTS (street) OR
@@ -25,37 +32,44 @@ WHERE
          EXISTS (postal_code) OR
          EXISTS (country) OR
          EXISTS (internal_location) OR
-         EXISTS (facsimile_number) OR
-         EXISTS (telephone_number) OR
+         EXISTS (facsimile_number) OR 
+	   EXISTS (telephone_number) OR
          EXISTS (electronic_mail_address) OR
          EXISTS (telex_number));
 END_ENTITY;
 
-   
-ENTITY Organisation;
-  id            : STRING;
-  short_name    : OPTIONAL STRING;
-  long_name     : OPTIONAL STRING;
-  address       : OPTIONAL Address;
-UNIQUE
-  organisations_are_unique : id;
+ENTITY Address_assignment;
+  assigned_address	: Address;
+  address_type		: OPTIONAL STRING;
+  located_person_organizations: SET[1:?] OF organization_or_person_in_organization_select;
+END_ENTITY;
+ 
+ENTITY Organization;
+  id          : STRING;
+  name        : STRING;
 END_ENTITY;
 
-   
-ENTITY Person_in_organisation;
-  id            : STRING;
-  id_org        : Organisation;
-  last_name     : OPTIONAL STRING;
+ENTITY Organization_relationship;
+  relation_type : STRING;
+  description   : OPTIONAL STRING;
+  relating_organization : Organization;
+  related_organization  : Organization;
+END_ENTITY;
+
+ENTITY Person;
+  last_name     : STRING;
   first_name    : OPTIONAL STRING;
   middle_names  : OPTIONAL LIST [1:?] OF STRING;
   prefix_titles : OPTIONAL LIST [1:?] OF STRING;
   suffix_titles : OPTIONAL LIST [1:?] OF STRING;
-  address       : OPTIONAL Address;
+END_ENTITY;
+ 
+ENTITY Person_in_organization;
+  concerned_person  	 : Person;
+  containing_organization: Organization;
+  role			 : STRING;
 UNIQUE
-  person_is_unique: id, id_org;
+  person_is_unique_in_organization: concerned_person, containing_organization;
 END_ENTITY;
 
-   
 END_SCHEMA;
-
-(* Last update -  15 Aug 2001 *)

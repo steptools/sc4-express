@@ -1,4 +1,4 @@
-(* N745 - ISO/CD TS - 10303-1025 Alias identification - EXPRESS ARM *)
+(* ISO/TC184/SC4 WG12N1120 ISO/TS - 10303-1025 Alias identification - EXPRESS ARM *)
    
 SCHEMA Alias_identification_arm;
 
@@ -6,19 +6,18 @@ SCHEMA Alias_identification_arm;
 USE FROM Identification_assignment_arm; -- ISO/TS 10303-1021
 
    
-TYPE alias_identification_item = EXTENSIBLE SELECT
-  BASED_ON identification_item WITH
-  ();
+TYPE alias_identification_item = EXTENSIBLE GENERIC_ENTITY SELECT;
 END_TYPE;
 
    
 ENTITY Alias_identification
   SUBTYPE OF (Identification_assignment);
+DERIVE
+  SELF\Identification_assignment.role: STRING :='alias';
 WHERE
-  alias_must_have_scope : (EXISTS(owner) OR EXISTS(role));
+WR1: SIZEOF (QUERY( item <* SELF\Identification_assignment.items |
+NOT ('ALIAS_IDENTIFICATION_ARM.ALIAS_IDENTIFICATION_ITEM' IN TYPEOF(item) ) )) = 0;
 END_ENTITY;
-
-   
+  
 END_SCHEMA;
 
-(* Last update -  15 Aug 2001 *)

@@ -1,51 +1,30 @@
-(* N778 - ISO/CD TS - 10303-1056 End item identification - EXPRESS ARM *)
+(* ISO/TC184/SC4 WG12N1165 - ISO/TS - 10303-1056 Configuration item  - EXPRESS ARM *)
    
-SCHEMA End_item_identification_arm;
+SCHEMA Configuration_item_arm;
 
    
-USE FROM Approval_arm; -- ISO/TS 10303-1012
-USE FROM Person_organisation_assignment_arm; -- ISO/TS 10303-1013
-USE FROM Alias_identification_arm; -- ISO/TS 10303-1025
 USE FROM Product_version_arm; -- ISO/TS 10303-1018
 USE FROM Product_view_definition_arm; -- ISO/TS 10303-1019
 USE FROM Product_concept_identification_arm; -- ISO/TS 10303-1060
 
-   
-TYPE configuration_item_organisation_or_person_in_organisation_item = SELECT
-  BASED_ON organisation_or_person_in_organisation_item WITH
-  (Configuration_item);
+TYPE version_or_definition = SELECT (Product_version, Product_view_definition);
 END_TYPE;
 
-   
-TYPE configuration_item_approval_item = SELECT
-  BASED_ON approval_item WITH 
-  (Configuration_item);
-END_TYPE;
-
-   
-TYPE configuration_item_alias_identification_item = EXTENSIBLE SELECT
-  BASED_ON alias_identification_item WITH
-  (Configuration_item);
-END_TYPE;
-
-   
-ENTITY Configuration_item;
+ENTITY Configuration_watched_item;
   id                        : STRING;
   name                      : STRING;
   description               : OPTIONAL STRING;
-  concept                   : Product_concept;
-  classification         : OPTIONAL master_definition_select;
+  item_context              : Product_concept;
 INVERSE
-  identifier                : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
-  idalias                   : SET [0:?] OF Alias_identification FOR items;
-  approval                  : SET [0:?] OF Approval_assignment FOR items;
-UNIQUE
-  UR1: id, identifier;
-WHERE
-  WR1: SELF.identifer.role = 'item owner';
+  corresponding_design      : SET [0:1] OF Item_design_association FOR watched_item;
 END_ENTITY;
 
-   
+ENTITY Item_design_association;
+  watched_item: Configuration_watched_item;
+  proposed_design: version_or_definition;
+UNIQUE
+  UR1: watched_item, proposed_design;
+END_ENTITY;
+
 END_SCHEMA;
 
-(* Last update -  15 Aug 2001 *)

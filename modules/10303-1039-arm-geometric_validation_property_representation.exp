@@ -1,18 +1,26 @@
-(* N823 - ISO/CD TS - 10303-1039 Geometric validation property representation - EXPRESS ARM *)
-   
+(*ISO/TC184/SC4 WG12N1210   ISO/TS 10303-1032:2002  Geometric validation property representation arm *)
+(*  $Id$ *) 
+
 SCHEMA Geometric_validation_property_representation_arm;
 
-   
-USE FROM Shape_property_representation_arm;
+USE FROM Elemental_geometric_shape_arm;
 
-   
-ENTITY Geometric_validation_property_representation SUBTYPE OF (
-Shape_dependent_property_representation);
-	property_type : String;
-	property_value : Representation_item;
+USE FROM Foundation_representation_arm;
+
+USE FROM Measure_representation_arm;
+
+TYPE point_or_measure = SELECT (Cartesian_point, Measure_item);
+END_TYPE;
+
+ENTITY Geometric_validation_property;
+  property_representation: Representation;
+  property_value  : point_or_measure;
+  validated_model : Geometric_model;
+WHERE
+WR1: 'GEOMETRIC_VALIDATION_PROPERTY_REPRESENTATION_ARM.NUMERICAL_REPRESENTATION_CONTEXT' IN TYPEOF(property_representation\Representation.context_of_items) ;
+WR2: property_representation.name IN ['centroid', 'volume', 'surface area'];
+WR3: property_value in property_representation\Representation.items;
 END_ENTITY;
 
-   
 END_SCHEMA;
 
-(* Last update -  15 Aug 2001 *)

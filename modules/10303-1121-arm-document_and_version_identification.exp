@@ -1,26 +1,23 @@
-(* N799 - ISO/CD TS - 10303-1121 Document and version identification - EXPRESS ARM *)
+(* 
+ $Id$
+ ISO/TC184/SC4 WG12N1186 - ISO/TS - 10303-1121 Document and version identification - EXPRESS ARM 
+*)
+
    
 SCHEMA Document_and_version_identification_arm;
 
-   
-USE FROM Product_version_arm; -- ISO/TS 10303-1018.
-USE FROM Product_identification_arm; -- ISO/TS 10303-1017.
+USE FROM Product_identification_arm;    -- ISO/TS 10303-1017
 
-   
+USE FROM Product_version_arm;    -- ISO/TS 10303-1018
+
 ENTITY Document
-  SUBTYPE OF (Product);
-WHERE
-  WR1: SELF.product_type IN ['document']; 
+SUBTYPE OF (Product);
 END_ENTITY;
 
-   
-ENTITY Document_version;
-  SUBTYPE OF (Product_version);
-WHERE
-  WR1: SELF.of_product.product_type.name IN ['document']; 
+ENTITY Document_version
+SUBTYPE OF (Product_version);
+  SELF\Product_version.of_product : Document;
 END_ENTITY;
 
-   
 END_SCHEMA;
 
-(* Last update -  15 Aug 2001 *)

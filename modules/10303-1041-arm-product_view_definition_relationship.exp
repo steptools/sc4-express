@@ -1,45 +1,22 @@
-(* N766 - ISO/CD TS - 10303-1041 Product view definition structure - EXPRESS ARM *)
+(* ISO/TC184/SC4 WG12N1141 - ISO/TS - 10303-1041 Product view definition relationship - EXPRESS ARM *)
    
-SCHEMA Product_view_definition_structure_arm;
+SCHEMA Product_view_definition_relationship_arm;
 
    
-USE FROM Product_view_definition_arm; -- ISO/CD TS 10303-1019
-USE FROM Security_classification_arm; -- ISO/CD TS 10303-1015
-
-   
-TYPE view_definition_usage_security_classification_item = SELECT
-  BASED_ON security_classification_item WITH 
-  (View_definition_usage);
-END_TYPE;
-
+USE FROM Product_view_definition_arm; -- ISO/TS 10303-1019
    
 ENTITY View_definition_relationship;
-  view1 : Product_view_definition;
-  view2 : Product_view_definition;
+  id: STRING;
+  relating_view : Product_view_definition;
+  related_view : Product_view_definition;
+  relation_type: OPTIONAL STRING;  -- relation_type is not required in subtypes of this entity 
+					     -- that specify the meaning of the relationship
+  description: OPTIONAL STRING;
 END_ENTITY;
 
    
 ENTITY View_definition_usage
   SUBTYPE OF (View_definition_relationship);
-INVERSE
-  security : SET [0:1] OF Security_classification_assignment FOR items; 
 END_ENTITY;
-
-   
-ENTITY Assembly_component
-  SUBTYPE OF (View_definition_usage);
-  quantity           : OPTIONAL STRING;
-  location_indicator : OPTIONAL STRING;
-END_ENTITY;
-
-   
-ENTITY Make_from
-  SUBTYPE OF (View_definition_usage);
-  quantity  : OPTIONAL STRING;
-  priority  : OPTIONAL STRING;
-END_ENTITY;
-
    
 END_SCHEMA;
-
-(* Last update -  15 Aug 2001 *)

@@ -1,29 +1,39 @@
-(* N853 - ISO/CD TS - 10303-1040 Process property assignment - EXPRESS ARM *)
-   
+(* $Id$
+ISO/TC184/SC4 WG12N1246 -  ISO/TS 10303-1040 Process property assignment EXPRESS ARM  *)
+
 SCHEMA Process_property_assignment_arm;
 
-   
-USE FROM Foundation_representation_arm;   -- ISO/TS 10303-1006
-USE FROM Independent_property_usage_arm;  -- ISO/TS 10303-1037
-USE FROM Work_order_arm;                  -- ISO/TS 10303-1043
-   
-TYPE independent_process_property_assignment = SELECT
-	BASED_ON independent_property_usage_select WITH
-	(Activity_property);
-	END_TYPE;
+USE FROM Activity_arm;
 
-   
+USE FROM Activity_method_arm;
+
+USE FROM Foundation_representation_arm;
+
+USE FROM Independent_property_arm;
+
+TYPE activity_or_activity_method_select = SELECT 
+  (Activity,
+   Activity_method);
+END_TYPE;
+
 ENTITY Activity_property;
-  name              : STRING;
-  described_element : Activity;  
-  description       : STRING;
+  described_element : activity_or_activity_method_select;
+  name : STRING;
+  description : STRING;
 END_ENTITY;
 
-   
 ENTITY Activity_property_representation;
-  item           : Activity_property;
-  representation : Representation;
+  description : OPTIONAL STRING;
+  property : Activity_property;
+  rep : Representation;
+  role : STRING;
 END_ENTITY;
 
-   END_SCHEMA;
-(* Last update -  15 Aug 2001 *)
+ENTITY Applied_independent_activity_property
+SUBTYPE OF (Activity_property);
+  base_element_property : Independent_property;
+DERIVE
+  SELF\Activity_property.name : STRING := base_element_property.property_type;
+END_ENTITY;
+
+END_SCHEMA;

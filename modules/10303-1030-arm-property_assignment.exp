@@ -1,18 +1,34 @@
-(* N826 - ISO/CD TS - 10303-1030 Property assignment - EXPRESS ARM *)
-   
+(* ISO/TC184/SC4 WG12N1219 - ISO/TS - 10303-1030 Property assigment - EXPRESS ARM
+$Id$ *)
+
 SCHEMA Property_assignment_arm;
 
-   
-TYPE property_assignment_select  = EXTENSIBLE SELECT
-    ();
+USE FROM Foundation_representation_arm;
+
+USE FROM Independent_property_arm;
+
+TYPE property_assignment_select = EXTENSIBLE SELECT ;
 END_TYPE;
 
-   
-ENTITY Element_property;
-  name              : OPTIONAL STRING;
-  description       : OPTIONAL STRING;
-  described_element : property_assignment_select;
+ENTITY Applied_independent_property
+SUBTYPE OF (Assigned_property);
+  base_independent_property : Independent_property;
+DERIVE
+  SELF\Assigned_property.name : STRING := base_independent_property.property_type;
 END_ENTITY;
 
-   END_SCHEMA;
-(* Last update -  15 Aug 2001 *)
+ENTITY Assigned_property;
+  described_element : property_assignment_select;
+  description : OPTIONAL STRING;
+  id : OPTIONAL STRING;
+  name : STRING;
+END_ENTITY;
+
+ENTITY Property_representation;
+  description : OPTIONAL STRING;
+  property : Assigned_property;
+  rep : Representation;
+  role : OPTIONAL STRING;
+END_ENTITY;
+
+END_SCHEMA;

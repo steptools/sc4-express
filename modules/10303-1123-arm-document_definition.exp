@@ -1,32 +1,42 @@
-(* N805 - ISO/CD TS - 10303-1123 Document definition - EXPRESS ARM *)
-   
-SCHEMA Document_definition_arm;
+(* 
+ $Id$
+ ISO/TC184/SC4 WG12N1192 - ISO/TS - 10303-1123 Document definition - EXPRESS ARM 
+*)
+SCHEMA Document_definition_arm; 
 
-   
-USE FROM Document_and_version_identification_arm; -- ISO/TS 10303-1121
-USE FROM File_identification_arm;                 -- ISO/TS 10303-1127
+USE FROM Document_and_version_identification_arm;    -- ISO/TS 10303-1121
 
-   
-ENTITY Document_definition;
-ABSTRACT SUPERTYPE OF (ONEOF(Physical_document_definition, Digital_document_definition));
-  id                          : STRING;
-  description                 : OPTIONAL STRING;
+USE FROM External_item_identification_assignment_arm;    -- ISO/TS 10303-1128
+
+USE FROM File_identification_arm;    -- ISO/TS 10303-1127
+
+
+TYPE document_location_select = SELECT BASED_ON external_identification_item WITH 
+   (Document_definition);
+END_TYPE; 
+
+ENTITY Digital_document_definition
+  SUBTYPE OF (Document_definition);
+  files : SET[0:?] OF Digital_file;
+END_ENTITY;
+
+ENTITY Document_definition
+  ABSTRACT SUPERTYPE OF (ONEOF (Digital_document_definition,
+                                Physical_document_definition));
+  id : STRING;
+  description : OPTIONAL STRING;
   associated_document_version : Document_version;
 END_ENTITY;
 
-   
-ENTITY Digital_document_definition;
-  SUBTYPE OF (Document_definition);
-  file : SET[0:?] OF digital_file;
+ENTITY Document_location_identification
+  SUBTYPE OF (External_source_identification);
+WHERE
+  WR1: 'DOCUMENT_DEFINITION_ARM.DOCUMENT_DEFINITION' IN TYPEOF(SELF\External_source_identification.item);
 END_ENTITY;
 
-   
 ENTITY Physical_document_definition
   SUBTYPE OF (Document_definition);
-  component : SET[0:?] OF hardcopy;
+  components : SET[0:?] OF Hardcopy;
 END_ENTITY;
 
-   
-END_SCHEMA;
-
-(* Last update -  15 Aug 2001 *)
+END_SCHEMA;  -- Document_definition_arm

@@ -1,22 +1,11 @@
-(* N895 - ISO/CD TS - 10303-1514 Advanced boundary representation - EXPRESS ARM *)
-   
-SCHEMA Advanced_boundary_representation_arm; 
+(* ISO/TC184/SC4 WG12N1287  $Id$ *) 
 
-   
-USE FROM Boundary_representation_model_arm; -- ISO/CD TS 10303-1029
+SCHEMA Advanced_boundary_representation_arm;
 
-   
+USE FROM Elemental_geometric_shape_arm;
+
 ENTITY Advanced_brep_shape_representation
-  SUBTYPE OF (Geometric_model);
-WHERE
-  WR1: (SIZEOF(QUERY ( it <* SELF.items | (NOT (SIZEOF([
-        'ADVANCED_BREP_SHAPE_REPRESENTATION_ARM.BREP_MODEL',
-        'ADVANCED_BREP_SHAPE_REPRESENTATION_ARM.FACETED_MODEL',
-        'ADVANCED_BREP_SHAPE_REPRESENTATION_ARM.TEMPLATE_INSTANCE'] * TYPEOF(it)) =
-        1)) )) = 0);
+	SUBTYPE OF (Geometric_model);
 END_ENTITY;
-
-   
 END_SCHEMA;
 
-(* Last update -  15 Aug 2001 *)

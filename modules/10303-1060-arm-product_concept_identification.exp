@@ -1,28 +1,10 @@
-(* N790 - ISO/CD TS - 10303-1060 Product concept identification - EXPRESS ARM *)
+(* ISO/TC184/SC4 WG12N1177 - ISO/TS - 10303-1060 Product concept identification - EXPRESS ARM *)
    
 SCHEMA Product_concept_identification_arm;
-
-   
-USE FROM Person_organisation_assignment_arm; -- ISO/TS 10303-1013
-USE FROM Project_arm; -- ISO/TS 10303-1061
-
-   
-TYPE product_concept_organisation_or_person_in_organisation_item = SELECT
-  BASED_ON organisation_or_person_in_organisation_item WITH
-  (Product_concept);
-END_TYPE;
-
-   
-TYPE product_concept_project_item = SELECT
-  BASED_ON project_item WITH
-  (Product_concept);
-END_TYPE;
-
    
 ENTITY Market;
   name                      : STRING;
-  description               : OPTIONAL STRING;
-  type                      : OPTIONAL STRING;
+  market_segment_type       : OPTIONAL STRING;
 END_ENTITY;
 
    
@@ -30,17 +12,11 @@ ENTITY Product_concept;
   id                        : STRING;
   name                      : STRING;
   description               : OPTIONAL STRING;
-  target_market             : Market;
-INVERSE
-  identifier                : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
-  projects                  : SET [0:?] OF Project_assignment FOR items;
+  target_market             : OPTIONAL Market;
 UNIQUE
-  UR1: id, identifier;
-WHERE
-  WR1: SELF.identifer.role = 'concept owner';
+  UR1: id;
 END_ENTITY;
 
    
 END_SCHEMA;
 
-(* Last update -  15 Aug 2001 *)

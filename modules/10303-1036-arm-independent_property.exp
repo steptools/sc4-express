@@ -1,34 +1,19 @@
-(* N844 - ISO/CD TS - 10303-1036 Independent property - EXPRESS ARM *)
-   
+(* ISO/TC184/SC4 WG12N1237 - ISO/TS - 10303-1036  Independent Property - EXPRESS ARM *)
+
 SCHEMA Independent_property_arm;
 
-   
-TYPE property_source_select = EXTENSIBLE SELECT
-    (External_library_reference);
-END_TYPE; -- property_source_select
-
-   
-ENTITY External_library_reference;
-  description     : OPTIONAL STRING;
-  external_id     : STRING;
-  library_type    : STRING;
-END_ENTITY; -- External_library_reference
-
-   
 ENTITY Independent_property;
-  allowed_unit     : SET [0:?] OF STRING;
-  description      : OPTIONAL STRING;
-  id               : STRING;
-  property_source  : OPTIONAL property_source_select;
-END_ENTITY; -- Independent_property
+  id : STRING;
+  property_type : STRING;
+  description : OPTIONAL STRING;
+END_ENTITY;
 
-   
 ENTITY Independent_property_relationship;
-  description     : OPTIONAL STRING;
-  related         : Independent_property;
-  relating        : Independent_property;
-  relation_type   : STRING;
-END_ENTITY; -- Independent_property_relationship
+  relation_type : STRING;
+  related : Independent_property;
+  relating : Independent_property;
+  description : OPTIONAL STRING;
+END_ENTITY;
 
-   END_SCHEMA;
-(* Last update -  15 Aug 2001 *)
+END_SCHEMA;
+

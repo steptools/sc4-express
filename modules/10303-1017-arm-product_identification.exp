@@ -1,35 +1,41 @@
-(* N727 - ISO/CD TS - 10303-1017 Product identification - EXPRESS ARM *)
+(* ISO/TC184/SC4 WG12N1102 - ISO/TS - 10303-1017 Product identification - EXPRESS ARM *)
    
 SCHEMA Product_identification_arm;
 
    
-USE FROM Person_organisation_assignment_arm; -- Person organisation assignment
-USE FROM Product_categorisation_arm; -- Product categorisation
+USE FROM Product_categorization_arm; -- Product categorization
 
-   
-TYPE product_organisation_or_person_in_organisation_item = SELECT
-  BASED_ON organisation_or_person_in_organisation_item WITH
-  (Product);
-END_TYPE;
-
-   
 ENTITY Product;
-  id                        : STRING;
-  name                      : STRING;
-  description               : OPTIONAL STRING;
-  product_type              : Product_category;
-  categories                : SET [1:?] OF Product_category;
-INVERSE
-  identifier                : Organisation_or_person_in_organisation_assignment FOR items;
-UNIQUE
-  UR1: id, identifier, product_type;
-WHERE
-  WR1: SELF.identifer.role = 'id owner';
-  WR2: SELF.product_type.name IN ['part', 'raw material',
-       'document', 'functionality', 'requirement']; 
+  id         : STRING;
+  name       : STRING;
+  description: OPTIONAL STRING;
 END_ENTITY;
 
+ENTITY Product_category_assignment; 
+  category : Product_category;
+  products : SET[1:?] OF Product;
+END_ENTITY;
+
+
+FUNCTION types_of_product(obj:Product):SET OF STRING;
+LOCAL
+	category_assignments: BAG OF Product_category_assignment;
+	categories: SET OF STRING:=[];
+	i: INTEGER;
+END_LOCAL;
+
+category_assignments := USEDIN(obj,'PRODUCT_IDENTIFICATION_ARM.' + 'PRODUCT_CATEGORY_ASSIGNMENT.PRODUCTS');
    
+REPEAT i := LOINDEX(category_assignments) TO HIINDEX(category_assignments) BY 1;
+      categories := categories + category_assignments[i].category.name;
+END_REPEAT;
+
+RETURN(categories);
+END_FUNCTION;   
+
 END_SCHEMA;
 
-(* Last update -  15 Aug 2001 *)
+
+
+
+

@@ -1,110 +1,102 @@
-(* N868 - ISO/CD TS - 10303-1068 Constructive solid geometry 3d - EXPRESS ARM *)
-   
+(* $Id$
+ ISO/TC184/SC4 WG12N1261  ISO/TS 10303-1068 Constructive_solid_geometry_3d  - EXPRESS ARM *)
+
 SCHEMA Constructive_solid_geometry_3d_arm;
 
-   
-USE FROM Constructive_solid_geometry_arm; -- ISO/CD TS 10303-1066
-USE FROM Boundary_representation_model_arm; -- ISO/CD TS 10303-1512
-USE FROM Faceted_boundary_representation_model_arm; -- ISO/CD TS 10303-1069
+USE FROM Elemental_geometric_shape_arm;
 
-   
-TYPE boolean_operand_3d = SELECT
-  BASED_ON boolean_operand WITH
-  (Half_space_solid);
+TYPE boolean_operand_3d = SELECT 
+  (Boolean_result_3d,
+   Csg_item_3d,
+   Half_space_3d,
+   Solid_model);
 END_TYPE;
 
-   
-TYPE csg_primitive_3d = SELECT
-  BASED_ON csg_primitive WITH
-  (Sphere,
-   Ellipsoid,
-   Block,
-   Right_angular_wedge,
-   Faceted_primitive,
-   Rectangular_pyramid,
-   torus,
-   Right_circular_cone,
-   Eccentric_cone,
-   Right_circular_cylinder,
-   Cyclide_segment_solid);
+TYPE boolean_operator_3d = ENUMERATION OF 
+  (union,
+   difference,
+   intersection);
 END_TYPE;
 
-   
-ENTITY CSG_shape_representation_3d
-  SUBTYPE OF (CSG_shape_representation);
+TYPE csg_primitive_3d = EXTENSIBLE ENUMERATION OF 
+  (block,
+   convex_hexahedron,
+   cyclide_segment_solid,
+   eccentric_cone,
+   ellipsoid,
+   faceted_primitive,
+   rectangular_pyramid,
+   right_angular_wedge,
+   right_circular_cone,
+   right_circular_cylinder,
+   sphere,
+   tetrahedron,
+   torus);
+END_TYPE;
+
+TYPE csg_select_3d = SELECT 
+  (Boolean_result_3d,
+   Csg_item_3d);
+END_TYPE;
+
+TYPE swept_area_solid_type = EXTENSIBLE ENUMERATION OF 
+  (revolved_area_solid,
+   surface_curve_swept_area_solid,
+   extruded_area_solid);
+END_TYPE;
+
+TYPE swept_face_solid_type = EXTENSIBLE ENUMERATION OF 
+  (revolved_face_solid,
+   surface_curve_swept_face_solid,
+   extruded_face_solid);
+END_TYPE;
+
+ENTITY Boolean_result_3d
+SUBTYPE OF (Detailed_geometric_model_element);
+  operator : boolean_operator_3d;
+  first_operand : boolean_operand_3d;
+  second_operand : boolean_operand_3d;
 END_ENTITY;
 
-   
-ENTITY Block
-  SUBTYPE OF (detailed_geometric_model_element);
+ENTITY Csg_item_3d
+SUBTYPE OF (Detailed_geometric_model_element);
+  kind : csg_primitive_3d;
 END_ENTITY;
 
-   
-ENTITY Ellipsoid
-  SUBTYPE OF (Detailed_geometric_model_element);
+ENTITY Csg_model
+SUBTYPE OF (Solid_model);
+  tree_root_expression : csg_select_3d;
 END_ENTITY;
 
-   
-ENTITY Sphere
-  SUBTYPE OF (Detailed_geometric_model_element);
+ENTITY Half_space_3d
+SUBTYPE OF (Detailed_geometric_model_element);
 END_ENTITY;
 
-   
-ENTITY Torus
-  SUBTYPE OF (Detailed_geometric_model_element);
+ENTITY Manifold_solid_brep
+SUBTYPE OF (Solid_model);
+  faceted : BOOLEAN;
 END_ENTITY;
 
-   
-ENTITY Eccentric_cone
-  SUBTYPE OF (Detailed_geometric_model_element);
+ENTITY Solid_model
+ABSTRACT SUPERTYPE OF (ONEOF(Csg_model, Manifold_solid_brep, Solid_replica, Swept_area_solid, Swept_face_solid))
+SUBTYPE OF (Detailed_geometric_model_element);
 END_ENTITY;
 
-   
-ENTITY Right_circular_cylinder
-  SUBTYPE OF (Detailed_geometric_model_element);
+ENTITY Solid_replica
+SUBTYPE OF (Solid_model);
+  parent_solid : Solid_model;
+  transformation : Cartesian_transformation_3d;
 END_ENTITY;
 
-   
-ENTITY Right_angular_wedge
-  SUBTYPE OF (Detailed_geometric_model_element);
+ENTITY Swept_area_solid
+SUBTYPE OF (Solid_model);
+  kind : swept_area_solid_type;
 END_ENTITY;
 
-   
-ENTITY Rectangular_pyramid
-  SUBTYPE OF (Detailed_geometric_model_element);
+ENTITY Swept_face_solid
+SUBTYPE OF (Solid_model);
+  kind : swept_face_solid_type;
 END_ENTITY;
 
-   
-ENTITY Right_circular_cone
-  SUBTYPE OF (Detailed_geometric_model_element);
-END_ENTITY;
-
-   
-ENTITY Cyclide_segment_solid
-  SUBTYPE OF (Detailed_geometric_model_element);
-END_ENTITY;
-
-   
-ENTITY Faceted_primitive
-  SUBTYPE OF (Detailed_geometric_model_element);
-END_ENTITY;
-
-   
-ENTITY Tetrahedron 
-  SUBTYPE OF (Faceted_primitive);
-END_ENTITY;
-
-   
-ENTITY Convex_hexahedron 
-  SUBTYPE OF (Faceted_primitive);
-END_ENTITY;
-
-   
-ENTITY Half_space_solid
-  SUBTYPE OF (Detailed_geometric_model_element);
-END_ENTITY;
-
-   
 END_SCHEMA;
 
-(* Last update -  15 Aug 2001 *)

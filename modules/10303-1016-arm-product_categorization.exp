@@ -1,33 +1,17 @@
-(* N724 - ISO/CD TS - 10303-1016 Product categorisation - EXPRESS ARM *)
-   
-SCHEMA Product_categorisation_arm;
 
-   
-USE FROM Person_organisation_assignment_arm; -- Person organisation assignment
+(* ISO/TC184/SC4 WG12N1099 - ISO/TS - 10303-1016 Product categorization - EXPRESS ARM *)
 
-   
-TYPE product_categorisation_organisation_or_person_in_organisation_item = SELECT
-  BASED_ON organisation_or_person_in_organisation_item WITH
-  (Product_category);
-END_TYPE;
+SCHEMA Product_categorization_arm;   
 
-   
-ENTITY Product_category;
-  name                : STRING;
-  description         : OPTIONAL STRING;
-INVERSE
-  owner               : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
-WHERE
-  WR1: SELF.owner.role = 'category owner';
-END_ENTITY;
+ENTITY Product_category;  
+  id		: OPTIONAL STRING;
+  name	: STRING;
+  description : OPTIONAL STRING;  
+END_ENTITY;   
 
-   
-ENTITY Product_category_hierarchy;
-  super_category : Product_category;
+ENTITY Product_category_hierarchy;  
+  super_category : Product_category;  
   sub_category   : Product_category;
-END_ENTITY;
+END_ENTITY;   
 
-   
 END_SCHEMA;
-
-(* Last update -  15 Aug 2001 *)
