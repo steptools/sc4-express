@@ -1,6 +1,6 @@
 (* 
  $Id$
- ISO/TC184/SC4 WG12N1204 - ISO/TS 10303-1127 File identification - EXPRESS ARM 
+ ISO/TC184/SC4 WG12N1536 - ISO/TS 10303-1127 File identification - EXPRESS ARM 
 *)
 
 SCHEMA File_identification_arm;
@@ -28,7 +28,7 @@ END_ENTITY;
 ENTITY File_location_identification
 SUBTYPE OF (External_item_identification);
 WHERE
-WR1: 'FILE_IDENTIFICATION_ARM.FILE' IN TYPEOF(SELF\External_item_identification.item);
+WR1: 'FILE_IDENTIFICATION_ARM.FILE' IN TYPEOF(SELF\External_source_identification.item);
 END_ENTITY;
 
 END_SCHEMA;

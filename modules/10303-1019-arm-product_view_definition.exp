@@ -1,18 +1,20 @@
 (* 
   $Id$
-ISO/TC184/SC4 WG12N1108 - ISO/TS 10303-1019 Product view definition - EXPRESS ARM *)
+ISO/TC184/SC4 WG12N1532 - ISO/TS 10303-1019 Product view definition - EXPRESS ARM *)
    
 SCHEMA Product_view_definition_arm;
 
-USE FROM Product_version_arm; -- ISO/TS 10303-1018
+USE FROM Product_version_arm;
          
 ENTITY Product_view_definition;
   id              	: STRING;
   name  	      	: OPTIONAL STRING;
-  description	      : OPTIONAL STRING;
+  additional_characterization	      : OPTIONAL STRING;
   initial_context 	: View_definition_context;
   additional_contexts   : SET [0:?] OF View_definition_context;
   defined_version  	: Product_version;
+WHERE
+WR1: NOT (initial_context IN additional_contexts);
 END_ENTITY;
    
 ENTITY View_definition_context;

@@ -28,21 +28,20 @@ SUBTYPE OF (Assembly_component_relationship);
   upper_assembly_relationship : Assembly_component_relationship;
   sub_assembly_relationship  : Next_assembly_usage;
 UNIQUE
-  UR1 : upper_assembly_relationship , sub_assembly_relationship ;
+UR1 : upper_assembly_relationship , sub_assembly_relationship ;
 WHERE
-  WR1: SELF :<>: upper_assembly_relationship ;
-  WR2: SELF\view_definition_relationship.relating_view :=:
+WR1: SELF :<>: upper_assembly_relationship ;
+WR2: SELF\view_definition_relationship.relating_view :=:
        upper_assembly_relationship\view_definition_relationship.relating_view;
-  WR3: SELF\view_definition_relationship.related_view :=:
+WR3: SELF\view_definition_relationship.related_view :=:
        sub_assembly_relationship\view_definition_relationship.related_view;
-  WR4: (upper_assembly_relationship\view_definition_relationship.related_view :=:
+WR4: (upper_assembly_relationship\view_definition_relationship.related_view :=:
        sub_assembly_relationship\view_definition_relationship.relating_view) OR
 	(SIZEOF (QUERY (pdr <* USEDIN
 	(upper_assembly_relationship\view_definition_relationship.related_view ,
-	'ASSEMBLY_STRUCTURE_ARM.VIEW_DEFINITION_RELATIONSHIP.' +
-	'RELATED_VIEW') |
-	pdr.view1 :=: sub_assembly_relationship\view_definition_relationship.relating_view)) = 1);
-  WR5: SIZEOF (['ASSEMBLY_STRUCTURE_ARM.NEXT_ASSEMBLY_USAGE',
+	'ASSEMBLY_STRUCTURE_ARM.VIEW_DEFINITION_RELATIONSHIP.RELATED_VIEW') |
+	pdr.relating_view :=: sub_assembly_relationship\view_definition_relationship.relating_view)) = 1);
+WR5: SIZEOF (['ASSEMBLY_STRUCTURE_ARM.NEXT_ASSEMBLY_USAGE',
 	'ASSEMBLY_STRUCTURE_ARM.COMPONENT_UPPER_LEVEL_IDENTIFICATION'] * TYPEOF(upper_assembly_relationship)) = 1;
 END_ENTITY;
 

@@ -1,5 +1,7 @@
-(* ISO/TC184/SC4 WG12N1322 - ISO/CD-TS - 10303-1006 EXPRESS ARM
-$Id$ *)
+(* 
+$Id$
+ISO/TC184/SC4 WG12N1904 - ISO/TS 10303-1006 Foundation representation EXPRESS ARM
+*)
 
 SCHEMA Foundation_representation_arm;
 

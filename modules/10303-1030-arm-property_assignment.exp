@@ -1,5 +1,6 @@
-(* ISO/TC184/SC4 WG12N1219 - ISO/TS - 10303-1030 Property assigment - EXPRESS ARM
-$Id$ *)
+(* $Id$ 
+ISO/TC184/SC4 WG12N1219 - ISO/TS 10303-1030 Property assigment - EXPRESS ARM
+*)
 
 SCHEMA Property_assignment_arm;
 

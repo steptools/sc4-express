@@ -1,10 +1,13 @@
-(* ISO/TC184/SC4 WG12N1319 - ISO/CD-TS - 10303-1004 Elemental geometric shape - EXPRESS ARM *)
+(* 
+$Id$
+ISO/TC184/SC4 WG12N1901 - ISO/TS 10303-1004 Elemental geometric shape - EXPRESS ARM 
+*)
    
 SCHEMA Elemental_geometric_shape_arm;
  
 USE FROM Foundation_representation_arm;
 
-USE FROM Value_with_unit_arm;			-- ISO 10303-1054
+USE FROM Value_with_unit_arm;	
 
 TYPE cartesian_transformation = SELECT (Cartesian_transformation_2d, Cartesian_transformation_3d);
 END_TYPE;
