@@ -1,35 +1,42 @@
-(* THIS IS DOCUMENT ISO TC184/SC4/WG12 N1388 *)
+(* THIS DOCUMENT IS ISO TC184/SC4/WG12 N2657 *)
 
-SCHEMA assembly_feature_definition_arm;
+SCHEMA Assembly_feature_definition_arm;
 
-USE FROM product_property_feature_definition_arm
-   (product_property_instanced_feature) ; -- ISO 10303-1101
+USE FROM Product_property_feature_definition_arm
+   (Product_property_instanced_feature) ; -- ISO 10303-1101
 
-ENTITY instanced_assembly_feature
-  SUBTYPE OF ( product_property_instanced_feature );
-END_ENTITY; --instanced_assembly_feature
+ENTITY Instanced_assembly_feature
+  SUBTYPE OF ( Product_property_instanced_feature );
+WHERE
+(* JH: fixed below WR1: (SIZEOF (USEDIN (SELF, 'ASSMEMBLY_FEATURE_DEFINITION_ARM.INSTANCED_ASSEMBLY_FEATURE_RELATIONSHIP.' *)
+WR1: (SIZEOF (USEDIN (SELF, 'ASSEMBLY_FEATURE_DEFINITION_ARM.INSTANCED_ASSEMBLY_FEATURE_RELATIONSHIP.'
+      +'RELATING_ASSEMBLY_FEATURE')) > 0 ) OR
+(* JH: fixed below     (SIZEOF (USEDIN (SELF, 'ASSMEMBLY_FEATURE_DEFINITION_ARM.INSTANCED_ASSEMBLY_FEATURE_RELATIONSHIP.' *)
+     (SIZEOF (USEDIN (SELF, 'ASSEMBLY_FEATURE_DEFINITION_ARM.INSTANCED_ASSEMBLY_FEATURE_RELATIONSHIP.'
+      +'RELATED_ASSEMBLY_FEATURE')) > 0 );
+END_ENTITY; --Instanced_assembly_feature
 
-ENTITY instanced_assembly_feature_relationship;
-  relating_assembly_feature: instanced_assembly_feature;
-  related_assembly_feature: instanced_assebmly_feature;
-END_ENTITY; -- instanced_assembly_feature_relationship
+ENTITY Instanced_assembly_feature_definition_representation;
+  definition: Instanced_assembly_feature;
+  used_representation: Instanced_assembly_feature_representation;
+END_ENTITY; -- Instanced_assembly_feature_definition_representation
 
-ENTITY instanced_assembly_feature_representation;
-END_ENTITY; --instanced_assembly_feature_representation 
+ENTITY Instanced_assembly_feature_relationship;
+  relating_assembly_feature: Instanced_assembly_feature;
+  related_assembly_feature: Instanced_assembly_feature;
+END_ENTITY; -- Instanced_assembly_feature_relationship
 
-ENTITY instanced_assembly_feature_definition_representation;
-  definition: instanced_assembly_feature;
-  used_representation: instanced_assembly_feature_representation;
-END_ENTITY; -- instanced_assembly_feature_definition_representation
+ENTITY Instanced_assembly_feature_relationship_representation_association;
+  definition: Instanced_assembly_feature_relationship;
+  used_representation: Instanced_assembly_feature_representation_relationship;
+END_ENTITY; -- Instanced_assembly_feature_relationship_representation_association
 
-ENTITY instanced_assembly_feature_representation_relationship;
-  rep_1: instanced_assemlby_feature_representation;
-  rep_2: instanced_assembly_feature_representation;
-END_ENTITY; -- instanced_assembly_feature_representation_relationship
+ENTITY Instanced_assembly_feature_representation;
+END_ENTITY; --Instanced_assembly_feature_representation 
 
-ENTITY instanced_assembly_feature_relationship_representation_association;
-  definition: instanced_assembly_feature_relationship;
-  used_representation: instanced_assembly_feature_representation_relationship;
-END_ENTITY; -- instanced_assembly_feature_relationship_representation_association
+ENTITY Instanced_assembly_feature_representation_relationship;
+  rep_1: Instanced_assembly_feature_representation;
+  rep_2: Instanced_assembly_feature_representation;
+END_ENTITY; -- Instanced_assembly_feature_representation_relationship
 
 END_SCHEMA;
