@@ -1,11 +1,15 @@
 (*
 $Id$
-  WG12N2465 - ISO 10303-56 state_observed_schema
-*)
+ISO TC184/SC4/WG12 N3207 - ISO/IS 10303-56 State - EXPRESS
+Supersedes ISO TC184/SC4/WG12 N2465
+*) 
 
-SCHEMA state_observed_schema; 
+
+SCHEMA state_observed_schema;
 
 USE FROM state_type_schema;    -- ISO 10303-56
+
+USE FROM support_resource_schema;    -- ISO 10303-41
 
 
 ENTITY ascribable_state;
@@ -48,10 +52,12 @@ END_ENTITY;
 END_SCHEMA;  -- state_observed_schema
 (*
 $Id$
-  WG12N1821 - ISO 10303-56 state_type_schema
-*)
+ISO TC184/SC4/WG12 N3207 - ISO/IS 10303-56 State - EXPRESS
+Supersedes ISO TC184/SC4/WG12 N2465
+*) 
 
-SCHEMA state_type_schema; 
+
+SCHEMA state_type_schema;
 
 USE FROM support_resource_schema   -- ISO 10303-41
   (label,
