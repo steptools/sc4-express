@@ -1,0 +1,41 @@
+(*
+  $Id$
+  ISO/TC184/SC4 WG12N1370 - ISO/CD-TS - 10303-1164 Product as individual - EXPRESS ARM
+*)
+
+SCHEMA Product_as_individual_arm; 
+
+USE FROM Identification_assignment_arm;    -- ISO/TS 10303-1021
+
+USE FROM Product_version_arm;    -- ISO/TS 10303-1018
+
+
+TYPE product_as_individual_identification_item = SELECT BASED_ON identification_item WITH 
+   (Product_as_individual);
+END_TYPE; 
+
+ENTITY Product_as_individual
+  ABSTRACT SUPERTYPE OF (ONEOF (Product_as_planned,
+                                Product_as_realized))
+  SUBTYPE OF (Product_version);
+END_ENTITY;
+
+ENTITY Product_as_planned
+  SUBTYPE OF (Product_as_individual);
+END_ENTITY;
+
+ENTITY Product_as_realized
+  SUBTYPE OF (Product_as_individual);
+END_ENTITY;
+
+ENTITY Product_design_to_individual;
+  individual_product : Product_as_individual;
+  product_version : Product_version;
+END_ENTITY;
+
+ENTITY Product_planned_to_realized;
+  planned_product : Product_as_planned;
+  realized_product : Product_as_realized;
+END_ENTITY;
+
+END_SCHEMA;  -- Product_as_individual_arm
