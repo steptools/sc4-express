@@ -2,7 +2,7 @@
    $Id$
    ISO/TC184/SC4 WG12N1751 - ISO/CD-TS 10303-1105 Multi_linguism - Express ARM 
 *)
-
+   
 SCHEMA Multi_linguism_arm;
 
 TYPE string_select = EXTENSIBLE GENERIC_ENTITY SELECT;
