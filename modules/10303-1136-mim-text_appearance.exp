@@ -1,13 +1,13 @@
 (*
-ISO TC184/SC4/WG12 N1701 - ISO/CD-TS 10303-1136 Text appearance - EXPRESS MIM
+ISO TC184/SC4/WG12 N2697 - ISO/TS 10303-1136 Text appearance - EXPRESS MIM
 *) 
 
 
-SCHEMA Text_appearance_mim; 
+SCHEMA Text_appearance_mim;
 
 USE FROM Elemental_geometric_shape_mim;    -- ISO/TS 10303-1004
 
-USE FROM presentation_appearance_schema   -- ISO 10303-46
+USE FROM presentation_appearance_schema   -- 10303-46
   (box_height,
    box_width,
    box_slant_angle,
@@ -43,8 +43,8 @@ USE FROM aic_draughting_annotation;    -- ISO 10303-504
 RULE text_font_usage FOR 
 (externally_defined_text_font,pre_defined_text_font);
 WHERE
-  WR1: SIZEOF (QUERY (pdtf <* pre_defined_text_font | SIZEOF (USEDIN (pdtf, 'TEXT_APPEARANCE_MIM.TEXT_LITERAL.FONT')) = 0 )) = 0;
-  WR2: SIZEOF (QUERY (edtf <* externally_defined_text_font | SIZEOF (USEDIN (edtf, 'TEXT_APPEARANCE_MIM.TEXT_LITERAL.FONT')) = 0 )) = 0;
+  WR1: SIZEOF (QUERY (pdtf <* pre_defined_text_font | SIZEOF (USEDIN (pdtf, 'PRESENTATION_DEFINITION_SCHEMA.TEXT_LITERAL.FONT')) = 0 )) = 0;
+  WR2: SIZEOF (QUERY (edtf <* externally_defined_text_font | SIZEOF (USEDIN (edtf, 'PRESENTATION_DEFINITION_SCHEMA.TEXT_LITERAL.FONT')) = 0 )) = 0;
 END_RULE; 
 
 END_SCHEMA;  -- Text_appearance_mim
