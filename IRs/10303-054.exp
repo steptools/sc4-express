@@ -1,8 +1,8 @@
 (*
 
-  ISO/CD 10303-54, Set theory, 2002-14-19
+  ISO/DIS 10303-54, Set theory, 2002-12-19
 
-  WG12 N985
+  WG12 N1510
 
    This file contains the following schema:
       classification_schema;
@@ -17,8 +17,16 @@ SCHEMA classification_schema;
   REFERENCE FROM group_schema -- ISO 10303-41
     (group);
 
-TYPE classified_select = EXTENSIBLE SELECT;
+TYPE classification_select = EXTENSIBLE SELECT;
 END_TYPE; 
+
+TYPE complete_membership_select = EXTENSIBLE SELECT;
+END_TYPE; 
+
+ENTITY applied_classification_assignment
+  SUBTYPE OF (classification_assignment);
+  items : SET[1:?] OF classification_select;
+END_ENTITY;
 
 ENTITY class
   SUPERTYPE OF (ONEOF (
@@ -36,19 +44,24 @@ ENTITY class_by_intension
 END_ENTITY;
 
 ENTITY classification
-  SUBTYPE OF (classification_assignment);
-  classified  : classified_select;
+  SUBTYPE OF (applied_classification_assignment);
+  SELF\applied_classification_assignment.items : SET[1:1] OF classification_select;
 DERIVE
+  classified  : classification_select := SELF\applied_classification_assignment.items[1];
   classifier  : class := SELF\classification_assignment.assigned_class;
 END_ENTITY;
 
 ENTITY complete_membership
   SUBTYPE OF (classification_assignment);
-  members        : SET[1:?] OF classified_select;
+  members        : SET[0:?] OF complete_membership_select;
 DERIVE
   containing_set : class :=
                          SELF\classification_assignment.assigned_class;
 END_ENTITY;
+
+SUBTYPE_CONSTRAINT classification_or_complete_membership FOR classification_assignment;
+  ONEOF (applied_classification_assignment, complete_membership);
+END_SUBTYPE_CONSTRAINT;
 
 END_SCHEMA;
 
@@ -69,6 +82,8 @@ ENTITY complement;
   set_1       : class;
   set_2       : class;
   universe    : class;
+WHERE
+  complement_different : NOT identical_sets(set_1, set_2);
 END_ENTITY;
 
 ENTITY intersection;
@@ -85,14 +100,14 @@ ENTITY power_set;
   description : OPTIONAL text;
   base        : class;
   derived     : class;
+WHERE
+  derived_different : NOT identical_sets(base, derived);
 END_ENTITY;
 
-ENTITY proper_subset;
-  id          : identifier;
-  name        : label;
-  description : OPTIONAL text;
-  subset      : class;
-  superset    : class;
+ENTITY proper_subset
+  SUBTYPE OF (subset);
+WHERE
+  subset_different : NOT identical_sets(superset, subset);
 END_ENTITY;
 
 ENTITY same_membership;
@@ -119,5 +134,87 @@ ENTITY union;
   resultant   : class;
 END_ENTITY;
 
-END_SCHEMA;
+ENTITY union_of_all_members;
+  id          : identifier;
+  name        : label;
+  description : OPTIONAL text;
+  operand     : class;
+  resultant   : class;
+WHERE
+  resultant_different : NOT identical_sets(operand, resultant);
+END_ENTITY;
 
+FUNCTION identical_sets
+  (set_a : class;
+   set_b : class) : BOOLEAN;
+  
+  LOCAL
+    set_of_sets : SET OF class := [];
+  END_LOCAL;
+  
+  IF (set_a = set_b) THEN
+    RETURN (TRUE);
+  END_IF;
+  
+  set_of_sets := set_of_sets + set_b;
+  RETURN (identical_to_one_of_set_of_sets(set_a, set_of_sets));
+END_FUNCTION;
+
+FUNCTION identical_to_one_of_set_of_sets
+  (set_a       : class;
+   set_of_sets : SET OF class) : BOOLEAN;
+  
+  LOCAL
+    i                            : INTEGER;
+    initial_size                 : INTEGER;
+    augmented_size               : INTEGER;
+    set_of_forward_equivalences  : SET OF same_membership := [];
+    set_of_backward_equivalences : SET OF same_membership := [];
+    augmented_set_of_sets        : SET OF class := [];
+  END_LOCAL;
+  
+  --  test membership of the specified set of sets
+  
+  IF (set_a IN set_of_sets) THEN
+    RETURN (TRUE);
+  END_IF;
+  
+  --  extend the specified set to include all sets that have the same membership
+  --  as an existing member
+  
+  initial_size := SIZEOF(set_of_sets);
+  IF (initial_size = 0) THEN
+    RETURN (FALSE);
+  END_IF;
+  REPEAT i := 1 TO initial_size;
+    set_of_forward_equivalences := set_of_forward_equivalences +
+      USEDIN(set_of_sets[i], 'SET_THEORY_SCHEMA.SAME_MEMBERSHIP.SET_1');
+    set_of_backward_equivalences := set_of_forward_equivalences +
+      USEDIN(set_of_sets[i], 'SET_THEORY_SCHEMA.SAME_MEMBERSHIP.SET_2');
+  END_REPEAT;
+  
+  augmented_set_of_sets := set_of_sets;
+  IF (SIZEOF(set_of_forward_equivalences) > 0) THEN
+    REPEAT i := 1 to HIINDEX(set_of_forward_equivalences);
+      augmented_set_of_sets := augmented_set_of_sets +
+        set_of_forward_equivalences[i].set_2;
+    END_REPEAT;
+  END_IF;
+  IF (SIZEOF(set_of_backward_equivalences) > 0) THEN
+    REPEAT i := 1 to HIINDEX(set_of_backward_equivalences);
+      augmented_set_of_sets := augmented_set_of_sets +
+        set_of_backward_equivalences[i].set_1;
+    END_REPEAT;
+  END_IF;
+  
+  -- if the specified set of sets has been augmented, then test membership
+  
+  augmented_size := SIZEOF(augmented_set_of_sets);
+  IF augmented_size = initial_size THEN
+    RETURN (FALSE);
+  END_IF;
+  
+  RETURN (identical_to_one_of_set_of_sets(set_a, augmented_set_of_sets));
+END_FUNCTION;
+
+END_SCHEMA;
