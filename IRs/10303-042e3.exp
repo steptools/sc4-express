@@ -1,4 +1,4 @@
- (* Document WG12 N1046 date 2002-07-31. EXPRESS listing corresponding to part
+ (* Document WG12 N1046r date 2003-04-29. EXPRESS listing corresponding to part
  42  edition IS WG12 N536, as modified by TC1 WG12 N608 and
  by revision 1 (edition 3)  WG12 N1045 *)
  SCHEMA geometry_schema;
@@ -3223,4 +3223,3 @@ ENTITY revolved_face_solid
  END_FUNCTION;
 
  END_SCHEMA; -- end GEOMETRIC MODEL schema
-
