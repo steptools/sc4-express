@@ -1,0 +1,85 @@
+(*
+   $Id$
+   ISO TC184/SC4/WG12 N1668 - ISO/CD-TS 10303-1133 single_part_representation - EXPRESS MIM
+*)
+
+SCHEMA Single_part_representation_mim;
+
+USE FROM Document_assignment_mim;
+USE FROM Extended_measure_representation_mim;
+USE FROM External_model_mim;
+USE FROM Part_and_version_identification_mim ;
+USE FROM Part_view_definition_mim ;
+USE FROM Person_organization_assignment_mim;
+USE FROM Product_categorization_mim ;
+USE FROM Property_assignment_mim;
+USE FROM Shape_property_assignment_mim;
+
+TYPE spr_document_reference_item  = SELECT BASED_ON document_reference_item WITH
+  (product,
+   product_definition,
+   product_definition_formation);
+END_TYPE;
+
+TYPE spr_organization_item = EXTENSIBLE SELECT BASED_ON organization_item WITH 
+      (product,product_definition,product_definition_formation);
+END_TYPE;
+
+TYPE spr_person_and_organization_item = EXTENSIBLE SELECT BASED_ON person_and_organization_item WITH 
+      (product,product_definition,product_definition_formation);
+END_TYPE;
+
+FUNCTION categories_of_product(obj:product):SET OF STRING;
+LOCAL
+  category_assignments: BAG OF product_category;
+  categories: SET OF STRING:=[];
+  i: INTEGER;
+END_LOCAL;
+
+category_assignments := USEDIN(obj, 'SINGLE_PART_REPRESENTATION_MIM' + '.PRODUCT_RELATED_PRODUCT_CATEGORY.PRODUCTS');
+   
+REPEAT i := LOINDEX(category_assignments) TO HIINDEX(category_assignments) BY 1;
+  categories := categories + category_assignments[i].name;
+END_REPEAT;
+
+RETURN(categories);
+END_FUNCTION;   
+
+
+
+RULE product_requires_category FOR (product);
+WHERE
+WR1: SIZEOF(QUERY(p <* product | 
+  SIZEOF(USEDIN(p, 'SINGLE_PART_REPRESENTATION_MIM' + '.PRODUCT_RELATED_PRODUCT_CATEGORY.PRODUCTS')) = 0)) = 0;
+END_RULE; 
+
+RULE part_requires_version FOR (product);
+LOCAL
+  parts: SET OF product := [];
+END_LOCAL;
+  parts := QUERY ( prod <* product | 
+     SIZEOF(['part', 'raw material', 'tool']* categories_of_product(prod)) > 0) ;
+
+WHERE
+WR1: SIZEOF(QUERY(prod <* parts | 
+	SIZEOF(USEDIN(prod, 'SINGLE_PART_REPRESENTATION_MIM' + '.PRODUCT_DEFINITION_FORMATION.OF_PRODUCT')) = 0 )) = 0;
+END_RULE;
+
+RULE part_requires_id_owner FOR (product); 
+LOCAL
+  parts: SET OF product := [];
+END_LOCAL;
+  parts := QUERY ( prod <* product | 
+     SIZEOF(['part', 'raw material', 'tool']* categories_of_product(prod)) > 0) ;
+WHERE 
+WR1: SIZEOF ( QUERY ( prod <* parts | 
+  SIZEOF( QUERY (apoa <* USEDIN ( prod, 'SINGLE_PART_REPRESENTATION_MIM' + '.APPLIED_PERSON_AND_ORGANIZATION_ASSIGNMENT.ITEMS' ) | 
+   apoa\person_and_organization_assignment.role.name = 'id owner' )) + 
+  SIZEOF( QUERY (oa <* USEDIN ( prod, 'SINGLE_PART_REPRESENTATION_MIM' + '.APPLIED_ORGANIZATION_ASSIGNMENT.ITEMS' ) | 
+    oa\organization_assignment.role.name = 'id owner' )) <>  1 )) = 0; 
+END_RULE; 
+
+
+
+
+END_SCHEMA;

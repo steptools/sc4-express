@@ -1,0 +1,124 @@
+(*
+ISO TC184/SC4/WG12 N1171 - ISO/CD-TS 10303-1134 Product structure - EXPRESS MIM
+*) 
+
+
+SCHEMA Product_structure_mim; 
+
+USE FROM Assembly_structure_mim;    -- ISO/TS 10303-1026
+
+USE FROM Contextual_shape_positioning_mim;    -- ISO/TS 10303-1027
+
+USE FROM Part_and_version_identification_mim;    -- ISO/TS 10303-1022
+
+USE FROM Part_definition_relationship_mim;    -- ISO/TS 10303-1055
+
+USE FROM Product_replacement_mim;    -- ISO/TS 10303-1046
+
+USE FROM Product_version_relationship_mim;    -- ISO/TS 10303-1020
+
+USE FROM Product_view_definition_relationship_mim;    -- ISO/TS 10303-1041
+
+USE FROM Property_assignment_mim;    -- ISO/TS 10303-1030
+
+USE FROM Single_part_representation_mim;    -- ISO/CD-TS 10303-1133
+
+
+RULE coordinated_assembly_and_shape FOR 
+(next_assembly_usage_occurrence);
+WHERE
+  WR1: SIZEOF ( QUERY ( nauo <* next_assembly_usage_occurrence| NOT ( assembly_shape_is_defined ( nauo ) ) ) ) = 0;
+END_RULE; 
+
+FUNCTION assembly_shape_is_defined
+ (assy : next_assembly_usage_occurrence) : BOOLEAN; 
+  LOCAL
+   sdr_set : SET OF shape_definition_representation := [];
+   srr_set : SET OF shape_representation_relationship := [];
+   sdr1_set : SET OF shape_definition_representation := [];
+   pd_set : SET OF property_definition := [];
+   pdr_set : SET OF product_definition_relationship := [];
+   pds_set : SET OF product_definition_shape := [];
+   prop_set : SET OF property_definition := [];
+  END_LOCAL;
+-- Gather all instances of shape_definition_representation where the
+-- component part has a representation defined for it.
+  pd_set := bag_to_set(USEDIN(assy.related_product_definition,
+            'PRODUCT_STRUCTURE_MIM.PROPERTY_DEFINITION.DEFINITION'));
+  pdr_set := QUERY(pdr <* bag_to_set(USEDIN(assy.related_product_definition,
+            'PRODUCT_STRUCTURE_MIM.PRODUCT_DEFINITION_RELATIONSHIP.RELATED_PRODUCT_DEFINITION')) | 
+		SIZEOF(USEDIN(pdr,
+            'PRODUCT_STRUCTURE_MIM.PROPERTY_DEFINITION.DEFINITION')) > 0);
+
+  IF SIZEOF(pd_set) > 0 THEN
+    REPEAT i := 1 TO HIINDEX(pd_set);
+     sdr_set := sdr_set + QUERY(pdr <* USEDIN(pd_set[i],
+                'PRODUCT_STRUCTURE_MIM.PROPERTY_DEFINITION_REPRESENTATION.DEFINITION') | 
+                'PRODUCT_STRUCTURE_MIM.SHAPE_DEFINITION_REPRESENTATION' IN TYPEOF(pdr));
+    END_REPEAT;
+  END_IF;
+  IF SIZEOF(pdr_set) > 0 THEN
+    REPEAT i := 1 TO HIINDEX(pdr_set);
+     prop_set := prop_set + bag_to_set(USEDIN(pdr_set[i],
+                 'PRODUCT_STRUCTURE_MIM.PROPERTY_DEFINITION.DEFINITION'));
+    END_REPEAT;
+-- that are reps of the properties found
+    IF SIZEOF(prop_set) > 0 THEN
+      REPEAT i := 1 TO HIINDEX(prop_set);
+       sdr_set := sdr_set + QUERY(pdr <* USEDIN(prop_set[i],
+                  'PRODUCT_STRUCTURE_MIM.PROPERTY_DEFINITION_REPRESENTATION.DEFINITION') | 
+                  'PRODUCT_STRUCTURE_MIM.SHAPE_DEFINITION_REPRESENTATION' IN TYPEOF (pdr));
+      END_REPEAT;
+    END_IF;
+  END_IF;
+-- If there is a representation defined for the component part
+  IF SIZEOF(sdr_set) > 0 THEN
+    REPEAT i := 1 TO HIINDEX(sdr_set);
+     srr_set := QUERY(rr <* bag_to_set(USEDIN(sdr_set[i]\
+                property_definition_representation.used_representation,
+                'PRODUCT_STRUCTURE_MIM.REPRESENTATION_RELATIONSHIP.REP_2')) | 
+                'PRODUCT_STRUCTURE_MIM.SHAPE_REPRESENTATION_RELATIONSHIP' IN TYPEOF(rr));
+-- If there is a shape_representation_relationship where the component
+-- component part's shape_representation is related to another shape_representation.
+     pd_set := bag_to_set(USEDIN(assy.relating_product_definition,
+               'PRODUCT_STRUCTURE_MIM.PROPERTY_DEFINITION.DEFINITION'));
+     IF SIZEOF(pd_set) > 0 THEN
+       REPEAT i := 1 TO HIINDEX(pd_set);
+        sdr1_set := sdr1_set + QUERY(pdr <* USEDIN(pd_set[i],
+                    'PRODUCT_STRUCTURE_MIM.PROPERTY_DEFINITION_REPRESENTATION.DEFINITION') | 
+                    'PRODUCT_STRUCTURE_MIM.SHAPE_DEFINITION_REPRESENTATION' IN TYPEOF(pdr));
+       END_REPEAT;
+     END_IF;
+     IF ((SIZEOF(sdr_set) > 0) AND (SIZEOF(sdr1_set) > 0)) THEN
+       IF SIZEOF(srr_set) > 0 THEN
+         REPEAT j := 1 TO HIINDEX(srr_set);
+          IF SIZEOF(QUERY(pdr <* bag_to_set(USEDIN(srr_set[j]\representation_relationship.rep_1,
+             'PRODUCT_STRUCTURE_MIM.PROPERTY_DEFINITION_REPRESENTATION.USED_REPRESENTATION')) | 
+             'PRODUCT_STRUCTURE_MIM.SHAPE_DEFINITION_REPRESENTATION' IN TYPEOF(pdr)) * sdr1_set) >= 1
+           THEN
+            pds_set := QUERY(x <* bag_to_set(USEDIN(assy,
+             'PRODUCT_STRUCTURE_MIM.PROPERTY_DEFINITION.DEFINITION')) | 
+             'PRODUCT_STRUCTURE_MIM.PRODUCT_DEFINITION_SHAPE' IN TYPEOF(x ));
+            IF SIZEOF(pds_set) = 0 THEN
+              RETURN (FALSE);
+            END_IF;
+            REPEAT k := 1 TO HIINDEX(pds_set);
+             IF SIZEOF(QUERY(cdsr <* USEDIN(pds_set[k],
+             'PRODUCT_STRUCTURE_MIM.CONTEXT_DEPENDENT_SHAPE_REPRESENTATION.REPRESENTED_PRODUCT_RELATION') | 
+             (cdsr.representation_relation :=: srr_set[j]))) > 0
+              THEN
+               RETURN (FALSE);
+             END_IF;
+            END_REPEAT;
+          END_IF;
+         END_REPEAT;
+       END_IF;
+     END_IF;
+    END_REPEAT;
+  END_IF;
+-- If the shape of the component is not specified or there are no
+-- violations then return TRUE
+  RETURN (TRUE);
+      END_FUNCTION; 
+
+END_SCHEMA;  -- Product_structure_mim
