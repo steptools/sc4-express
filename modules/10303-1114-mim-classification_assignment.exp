@@ -1,0 +1,21 @@
+(* 
+   $Id$
+   ISO/TC184/SC4 WG12N1758 - ISO/CD-TS 10303-1114 Classification_assignment - Express MIM 
+*)
+
+SCHEMA Classification_assignment_mim;
+
+USE FROM Class_mim;
+
+USE FROM management_resources_schema (
+	classification_assignment);
+
+TYPE classification_item = EXTENSIBLE GENERIC_ENTITY SELECT;
+END_TYPE;
+
+ENTITY applied_classification_assignment
+SUBTYPE of (classification_assignment);
+   items : SET [1:?] OF classification_item; 
+END_ENTITY;
+
+END_SCHEMA;
