@@ -1,15 +1,16 @@
 (*  
-    The following EXPRESS is for ISO 10303-46:1994 Technical Corrigendum 1
+    The following EXPRESS is for ISO 10303-46:1994 Technical Corrigendum 2
 
-    This is document ISO TC184/SC4/WG12 N313
+    This is document ISO TC184/SC4/WG12 N953
 *)
 
 SCHEMA presentation_organization_schema;
- 
+
 REFERENCE FROM presentation_resource_schema
-    (colour,
-     planar_box,
-     presentation_scaled_placement);
+   (colour,
+    planar_box,
+    planar_extent,
+    presentation_scaled_placement);
 
 REFERENCE FROM presentation_definition_schema
     (annotation_occurrence,
@@ -43,8 +44,9 @@ REFERENCE FROM representation_schema
      representation_relationship_with_transformation);
  
 REFERENCE FROM measure_schema
-    (length_measure,
-     positive_plane_angle_measure);
+   (length_measure,
+    positive_ratio_measure,
+    positive_plane_angle_measure);
  
 REFERENCE FROM support_resource_schema
     (identifier,
@@ -366,6 +368,40 @@ WHERE
        IN TYPEOF (SELF\representation_map.mapping_origin);
 END_ENTITY;
 
+ENTITY camera_image_3d_with_scale
+  SUBTYPE OF (camera_image);
+DERIVE
+  scale: positive_ratio_measure := ((SELF\mapped_item.mapping_target\
+         planar_extent.size_in_x) / (SELF\mapped_item.mapping_source.
+         mapping_origin\camera_model_d3.perspective_of_volume.view_window.
+         size_in_x));
+WHERE
+  WR1: ('PRESENTATION_ORGANIZATION_SCHEMA.CAMERA_MODEL_D3'
+       IN TYPEOF (SELF\mapped_item.mapping_source.mapping_origin));
+  WR2: aspect_ratio(SELF\mapped_item.mapping_target) =
+       aspect_ratio(SELF\mapped_item.mapping_source.mapping_origin\
+       camera_model_d3.perspective_of_volume.view_window);
+  WR3: SELF\mapped_item.mapping_source.mapping_origin\camera_model_d3.
+       perspective_of_volume.front_plane_clipping
+       AND
+       SELF\mapped_item.mapping_source.mapping_origin\camera_model_d3.
+       perspective_of_volume.view_volume_sides_clipping;
+  WR4: (SELF\mapped_item.mapping_target\planar_extent.size_in_x > 0)
+       AND
+       (SELF\mapped_item.mapping_target\planar_extent.size_in_y > 0);
+  WR5: (SELF\mapped_item.mapping_source.mapping_origin\camera_model_d3.
+       perspective_of_volume.view_window.size_in_x > 0)
+       AND
+       (SELF\mapped_item.mapping_source.mapping_origin\camera_model_d3.
+       perspective_of_volume.view_window.size_in_y > 0);
+  WR6: ('GEOMETRY_SCHEMA.' +
+       'AXIS2_PLACEMENT_2D' IN TYPEOF (SELF\mapped_item.
+       mapping_target\planar_box.placement))
+       AND NOT ('GEOMETRY_SCHEMA.' +
+       'AXIS2_PLACEMENT_3D' IN TYPEOF (SELF\mapped_item.
+       mapping_target\planar_box.placement));
+END_ENTITY;
+
 ENTITY presentation_layer_assignment;
   name           : label;
   description    : text;
@@ -438,6 +474,16 @@ FUNCTION acyclic_presentation_representation_relationship
   RETURN (TRUE);
 
 END_FUNCTION;
+
+FUNCTION aspect_ratio (p : planar_box) : positive_ratio_measure;
+(* if the dimensions of the planar_box are greater than zero,
+      compute the aspect ratio and return the resulting value. *)
+   IF (p.size_in_x > 0.) AND (p.size_in_y > 0.) THEN
+      RETURN (p.size_in_x / p.size_in_y);
+   ELSE
+      RETURN (?);
+   END_IF;
+END_FUNCTION; 
 
 END_SCHEMA; -- presentation_organization_schema 
 
@@ -589,28 +635,37 @@ END_ENTITY;
 ENTITY table_record_representation
   SUBTYPE OF (symbol_representation);
 WHERE
-  WR1: (SIZEOF(USEDIN(SELF, 'REPRESENTATION_SCHEMA.'+
-                            'REPRESENTATION_RELATIONSHIP.REP_2')) > 0)
-                        OR
-       (SIZEOF( QUERY( map_item <* USEDIN(SELF, 'REPRESENTATION_SCHEMA.'+
-                                                'REPRESENTATION_MAP.'+
-                                                'MAPPED_REPRESENTATION') |
-         'PRESENTATION_DEFINITION_SCHEMA.TABLE_REPRESENTATION' IN
-         TYPEOF (using_representations (map_item)) )) > 0);
+  WR1: (SIZEOF(USEDIN(SELF, 'REPRESENTATION_SCHEMA.'+ 
+                            'REPRESENTATION_RELATIONSHIP.REP_2')) > 0) 
+                        OR 
+       (SIZEOF(QUERY( map_item <* USEDIN(SELF, 'REPRESENTATION_SCHEMA.'+ 
+                                               'REPRESENTATION_MAP.'+ 
+                                               'MAPPED_REPRESENTATION') | 
+         SIZEOF(QUERY( mi <* USEDIN(map_item, 'REPRESENTATION_SCHEMA.'+
+                                              'MAPPED_ITEM.'+
+                                              'MAPPING_SOURCE') |   
+                                              'PRESENTATION_DEFINITION_SCHEMA.'+
+                                              'TABLE_REPRESENTATION' IN 
+             TYPEOF (using_representations (mi)) )) > 0))  
+                    > 0);
 END_ENTITY;
 
 ENTITY table_record_field_representation
   SUBTYPE OF (symbol_representation);
 WHERE
-  WR1: (SIZEOF(USEDIN(SELF, 'REPRESENTATION_SCHEMA.'+
-                            'REPRESENTATION_RELATIONSHIP.REP_2')) > 0)
-                        OR
-       (SIZEOF( QUERY( map_item <* USEDIN(SELF, 'REPRESENTATION_SCHEMA.'+
-                                                'REPRESENTATION_MAP.'+
-                                                'MAPPED_REPRESENTATION') |
-                                                'PRESENTATION_DEFINITION_SCHEMA.' +
-                                                'TABLE_RECORD_REPRESENTATION' IN
-         TYPEOF (using_representations (map_item)) )) > 0);
+  WR1: (SIZEOF(USEDIN(SELF, 'REPRESENTATION_SCHEMA.'+ 
+                            'REPRESENTATION_RELATIONSHIP.REP_2')) > 0) 
+                        OR 
+       (SIZEOF(QUERY( map_item <* USEDIN(SELF, 'REPRESENTATION_SCHEMA.'+ 
+                                               'REPRESENTATION_MAP.'+ 
+                                               'MAPPED_REPRESENTATION') | 
+         SIZEOF(QUERY( mi <* USEDIN(map_item, 'REPRESENTATION_SCHEMA.'+
+                                              'MAPPED_ITEM.'+
+                                              'MAPPING_SOURCE') |   
+                                         'PRESENTATION_DEFINITION_SCHEMA.'+
+                                           'TABLE_RECORD_REPRESENTATION' IN 
+             TYPEOF (using_representations (mi)) )) > 0))  
+                    > 0);
 END_ENTITY;
 
 ENTITY table_record_field_representation_with_clipping_box
@@ -1492,6 +1547,17 @@ ENTITY curve_style_font_and_scaling;
   curve_font_scaling : REAL;
 END_ENTITY;
 
+ENTITY draughting_pre_defined_curve_font
+  SUBTYPE OF (pre_defined_curve_font);
+WHERE
+  WR1: SELF.name IN
+       ['continuous',
+        'chain',
+        'chain double dash',
+        'dashed',
+        'dotted'];
+END_ENTITY;
+
 ENTITY fill_area_style;
   name       : label;
   fill_styles : SET [1:?] OF fill_style_select;
@@ -1973,6 +2039,26 @@ ENTITY presentation_scaled_placement
   SUBTYPE OF (geometric_representation_item);
   placement : axis2_placement;
   scaling   : positive_ratio_measure;
+END_ENTITY;
+
+ENTITY draughting_pre_defined_colour
+  SUBTYPE OF (pre_defined_colour);
+WHERE
+  WR1: SELF.name IN
+      ['red',
+       'green',
+       'blue',
+       'yellow',
+       'magenta',
+       'cyan',
+       'black',
+       'white'];
+END_ENTITY;
+
+ENTITY draughting_pre_defined_text_font
+   SUBTYPE of (pre_defined_text_font);
+WHERE
+   WR1: SELF.name IN ['ISO 3098-1 font A', 'ISO 3098-1 font B'];
 END_ENTITY;
 
 END_SCHEMA; -- presentation_resource_schema
