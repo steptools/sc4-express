@@ -1,4 +1,11 @@
+(*
+  This is the EXPRESS for ISO 10303-43:1994
+    Technical Corrigendum 1:1999
+  This is ISO TC184/SC4/WG12/N291.
+  This document represents the Technical Changes
+     identified in ISO TC184/SC4/WG12/N290.
 
+*)
 SCHEMA representation_schema;
 
 REFERENCE FROM support_resource_schema
@@ -8,7 +15,13 @@ REFERENCE FROM support_resource_schema
      bag_to_set);
 
 REFERENCE FROM measure_schema
-    (measure_with_unit);
+    (measure_value,
+     measure_with_unit);
+
+TYPE founded_item_select = SELECT
+  (founded_item,
+   representation_item);
+END_TYPE;
 
 TYPE transformation = SELECT
   (item_defined_transformation,
@@ -20,9 +33,7 @@ ENTITY uncertainty_measure_with_unit
   name        : label;
   description : text;
 WHERE
-  WR1: (NOT ('NUMBER' IN TYPEOF
-       (SELF\measure_with_unit.value_component))) OR
-       (SELF\measure_with_unit.value_component >= 0);
+  WR1: valid_measure_value(SELF\measure_with_unit.value_component);
 END_ENTITY;
 
 ENTITY representation_context;
@@ -105,6 +116,9 @@ END_ENTITY;
 
 ENTITY parametric_representation_context
   SUBTYPE OF (representation_context);
+END_ENTITY;
+
+ENTITY founded_item;
 END_ENTITY;
 
 FUNCTION acyclic_mapped_representation
@@ -221,47 +235,89 @@ FUNCTION item_in_context
   RETURN (FALSE);
 END_FUNCTION;
 
-FUNCTION using_representations (item : representation_item)
+FUNCTION using_representations (item : founded_item_select)
   : SET OF representation;
   LOCAL
     results            : SET OF representation;
     result_bag         : BAG OF representation;
-    intermediate_items : SET OF representation_item;
-    i                  : INTEGER;
+    intermediate_items : SET OF founded_item_select;
   END_LOCAL;
-
-  -- Find the representations in which the item is used and add to the 
+  -- Find the representations in which the item is used and add to the
   -- results set.
-
-  result_bag := USEDIN(item,'REPRESENTATION_SCHEMA.REPRESENTATION.ITEMS');
-
+  results := [];
+  result_bag :=
+USEDIN(item,'REPRESENTATION_SCHEMA.REPRESENTATION.ITEMS');
   IF SIZEOF(result_bag) > 0 THEN
     REPEAT i := 1 TO HIINDEX(result_bag);
       results := results + result_bag[i];
     END_REPEAT;
   END_IF;
-
-  -- Find the set of representation_items in which item is used.
-
-  intermediate_items := QUERY(z <* bag_to_set( USEDIN(item , '')) |
-    'REPRESENTATION_SCHEMA.REPRESENTATION_ITEM' IN TYPEOF(z));
-
+  -- Find all representation_items or founded_items
+  -- by which item is referenced directly or indirectly.
+  intermediate_items := using_items(item,[]);
   -- If the set of intermediate items is not empty;
-
   IF SIZEOF(intermediate_items) > 0 THEN
-
-    -- For each element in the set, recursively add the 
-    -- using_representations of that element.
-
+    -- For each element in the set, add the
+    -- representations of that element.
     REPEAT i := 1 TO HIINDEX(intermediate_items);
-      results := results + using_representations(intermediate_items[i]);
+      result_bag := USEDIN(intermediate_items[i],
+                    'REPRESENTATION_SCHEMA.REPRESENTATION.ITEMS');
+      IF SIZEOF(result_bag) > 0 THEN
+        REPEAT j := 1 TO HIINDEX(result_bag);
+          results := results + result_bag[j];
+        END_REPEAT;
+      END_IF;
     END_REPEAT;
   END_IF;
-
   -- Return the set of representation in which the input item is
-  -- used directly and indirectly (through intervening representation_items).
-
+  -- used directly and indirectly (through intervening
+  -- representation_items or founded items).
   RETURN (results);
+END_FUNCTION;
+
+FUNCTION using_items (item : founded_item_select;
+                      checked_items: SET OF founded_item_select)
+                    : SET OF founded_item_select;
+  LOCAL
+    new_check_items    : SET OF founded_item_select;
+    result_items       : SET OF founded_item_select;
+    next_items         : SET OF founded_item_select;
+  END_LOCAL;
+  result_items := [];
+  new_check_items := checked_items + item;
+  -- Find the set of representation_items or founded_items
+  -- in which item is used directly.
+  next_items := QUERY(z <* bag_to_set( USEDIN(item , '')) |
+    ('REPRESENTATION_SCHEMA.REPRESENTATION_ITEM' IN TYPEOF(z)) OR
+    ('REPRESENTATION_SCHEMA.FOUNDED_ITEM'        IN TYPEOF(z)));
+  -- If the set of next_items is not empty;
+  IF SIZEOF(next_items) > 0 THEN
+    -- For each element in the set, find the using_items recursively
+    REPEAT i := 1 TO HIINDEX(next_items);
+      -- Check for loop in data model, i.e. one of the next_items
+      -- occurred earlier in the set of check_items;
+      IF NOT(next_items[i] IN new_check_items) THEN
+        result_items := result_items + next_items[i] +
+                        using_items(next_items[i],new_check_items);
+      END_IF;
+    END_REPEAT;
+  END_IF;
+  -- return the set of representation_items or founded_items
+  -- in which the input item is used directly and indirectly.
+  RETURN (result_items);
+END_FUNCTION;
+
+FUNCTION valid_measure_value
+  (m : measure_value) : BOOLEAN;
+  IF ('REAL' IN TYPEOF (m)) THEN
+  RETURN (m > 0.0);
+  ELSE
+    IF ('INTEGER' IN TYPEOF (m)) THEN
+    RETURN (m > 0);
+    ELSE
+      RETURN (TRUE);
+    END_IF;
+  END_IF;
 END_FUNCTION;
 
 END_SCHEMA; -- representation_schema
