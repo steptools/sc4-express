@@ -1,6 +1,6 @@
 (*
 2004-01-12
-ISO TC184/SC4/WG12 N2471 - ISO/DIS 10303-41 Fundamentals of product description and support - EXPRESS
+ISO TC184/SC4/WG12 N2887 - ISO/IS 10303-41 Fundamentals of product description and support - EXPRESS
 *)
 
 SCHEMA application_context_schema;
