@@ -1,45 +1,20 @@
 (* 
    $Id$
-   ISO/TC184/SC4 WG12N1802 - ISO/CD-TS 10303-1346 Numeric-function - Express ARM
+   ISO/TC184/SC4 WG12N2561 - ISO/TS 10303-1346 Numeric-function - Express ARM
+   Supersedes ISO TC184/SC4/WG12N1802
 *)
 
 SCHEMA Numeric_function_arm;
 
-USE FROM Generic_expression_arm;
+USE FROM Expression_arm;
 
-ENTITY Unary_function_call
-ABSTRACT SUPERTYPE OF (ONEOF (Abs_function,
-				Minus_function,
-				Sin_function,
-				Cos_function,
-				Tan_function,
-				Asin_function,
-				Acos_function,
-				Exp_function,
-				Log_function,
-				Log2_function,
-				Log10_function,
-				Square_root_function))
-	SUBTYPE OF (Unary_numeric_expression);
-END_ENTITY;
+REFERENCE FROM Expression_arm(is_int_expr);
 
 ENTITY Abs_function
 SUBTYPE OF (Unary_function_call);
 END_ENTITY;
 
-ENTITY Minus_function
-SUBTYPE OF (Unary_function_call);
-END_ENTITY;
-
-ENTITY Sin_function
-SUBTYPE OF (Unary_function_call);
-END_ENTITY;
-
-ENTITY Cos_function
-SUBTYPE OF (Unary_function_call);
-END_ENTITY;
-
-ENTITY Tan_function
+ENTITY Acos_function
 SUBTYPE OF (Unary_function_call);
 END_ENTITY;
 
@@ -47,32 +22,16 @@ ENTITY Asin_function
 	SUBTYPE OF (Unary_function_call);
 END_ENTITY;
 
-ENTITY Acos_function
+ENTITY Atan_function
+	SUBTYPE OF (Binary_function_call);
+END_ENTITY;
+
+ENTITY Cos_function
 SUBTYPE OF (Unary_function_call);
 END_ENTITY;
 
 ENTITY Exp_function
 SUBTYPE OF (Unary_function_call);
-END_ENTITY;
-
-ENTITY Log_function
-SUBTYPE OF (Unary_function_call);
-END_ENTITY;
-
-ENTITY Log2_function
-SUBTYPE OF (Unary_function_call);
-END_ENTITY;
-
-ENTITY Log10_function
-SUBTYPE OF (Unary_function_call);
-END_ENTITY;
-
-ENTITY Square_root_function
-SUBTYPE OF (Unary_function_call);
-END_ENTITY;
-
-ENTITY Atan_function
-	SUBTYPE OF (Binary_function_call);
 END_ENTITY;
 
 ENTITY Int_value_function
@@ -84,12 +43,33 @@ ENTITY Integer_defined_function
 	SUBTYPE OF (Numeric_defined_function);
 END_ENTITY ;
 
+ENTITY Length_function
+	SUBTYPE OF (Numeric_expression, Unary_generic_expression);
+	SELF\Unary_generic_expression.operand: String_expression;
+END_ENTITY;
+
+ENTITY Log10_function
+SUBTYPE OF (Unary_function_call);
+END_ENTITY;
+
+ENTITY Log2_function
+SUBTYPE OF (Unary_function_call);
+END_ENTITY;
+
+ENTITY Log_function
+SUBTYPE OF (Unary_function_call);
+END_ENTITY;
+
 ENTITY Maximum_function
 	SUBTYPE OF (Multiple_arity_function_call);
 END_ENTITY;
 
 ENTITY Minimum_function
 	SUBTYPE OF (Multiple_arity_function_call);
+END_ENTITY;
+
+ENTITY Minus_function
+SUBTYPE OF (Unary_function_call);
 END_ENTITY;
 
 ENTITY Numeric_defined_function
@@ -110,136 +90,42 @@ ENTITY Real_defined_function
 	SUBTYPE OF (Numeric_defined_function);
 END_ENTITY ;
 
+ENTITY Sin_function
+SUBTYPE OF (Unary_function_call);
+END_ENTITY;
+
+ENTITY Square_root_function
+SUBTYPE OF (Unary_function_call);
+END_ENTITY;
+
+ENTITY Tan_function
+SUBTYPE OF (Unary_function_call);
+END_ENTITY;
+
+ENTITY Unary_function_call
+ABSTRACT SUPERTYPE OF (ONEOF (Abs_function,
+				Minus_function,
+				Sin_function,
+				Cos_function,
+				Tan_function,
+				Asin_function,
+				Acos_function,
+				Exp_function,
+				Log_function,
+				Log2_function,
+				Log10_function,
+				Square_root_function))
+	SUBTYPE OF (Unary_numeric_expression);
+END_ENTITY;
+
 ENTITY Value_function
 	SUPERTYPE OF (Int_value_function)
 	SUBTYPE OF (Numeric_expression, Unary_generic_expression);
 	SELF\Unary_generic_expression.operand: String_expression;
 END_ENTITY;
 
-ENTITY Length_function
-	SUBTYPE OF (Numeric_expression, Unary_generic_expression);
-	SELF\Unary_generic_expression.operand: String_expression;
-END_ENTITY;
 
 
-FUNCTION Is_int_expr (arg: Numeric_expression) : BOOLEAN;
-
-LOCAL
-	i: INTEGER;
-END_LOCAL;
-
-IF 'EXPRESSION_ARM.INT_LITERAL' IN TYPEOF(arg) 
-THEN 
-	RETURN (TRUE); 
-END_IF;
-IF 'EXPRESSION_ARM.REAL_LITERAL' IN TYPEOF(arg) 
-THEN 
-	RETURN (FALSE); 
-END_IF;
-IF 'EXPRESSION_ARM.INT_NUMERIC_VARIABLE' IN TYPEOF(arg) 
-THEN 
-	RETURN (TRUE); 
-END_IF;
-IF 'EXPRESSION_ARM.REAL_NUMERIC_VARIABLE' IN TYPEOF(arg) 
-THEN 
-	RETURN (FALSE); 
-END_IF;
-IF 'NUMERIC_FUNCTION_ARM.ABS_FUNCTION' IN TYPEOF(arg) 
-THEN 
-	RETURN (Is_int_expr(arg\Unary_numeric_expression.operand));
-END_IF;
-IF 'NUMERIC_FUNCTION.MINUS_FUNCTION' IN TYPEOF(arg) 
-THEN 
-	RETURN (Is_int_expr(arg\Unary_numeric_expression.operand)); 
-END_IF;
-IF ('NUMERIC_FUNCTION_ARM.SIN_FUNCTION' IN TYPEOF(arg)) 
-		OR ('NUMERIC_FUNCTION_ARM.COS_FUNCTION' IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.TAN_FUNCTION' IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.ASIN_FUNCTION' IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.ACOS_FUNCTION' IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.Atan_function' IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.EXP_FUNCTION' IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.LOG_FUNCTION' IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.LOG2_FUNCTION' IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.LOG10_FUNCTION' IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.SQUARE_ROOT_FUNCTION' 
-								IN TYPEOF(arg))
-THEN 
-	RETURN (FALSE);
-END_IF;
-IF 	('EXPRESSION_ARM.PLUS_EXPRESSION' IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.MULT_EXPRESSION' 
-								IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.MAXIMUM_FUNCTION'
-								IN TYPEOF(arg))
-		OR ('NUMERIC_FUNCTION_ARM.MINIMUM_FUNCTION'
-								IN TYPEOF(arg)) 
-THEN 
-	REPEAT i :=1 TO SIZEOF (
-			arg\Multiple_arity_numeric_expression.operands);
-	IF NOT 
-		Is_int_expr(arg\Multiple_arity_numeric_expression.operands[i]) 
-	THEN 
-		RETURN (FALSE);
-	END_IF;
-	END_REPEAT;
-	RETURN (TRUE);
-END_IF;
-IF 	('EXPRESSION_ARM.MINUS_EXPRESSION' IN TYPEOF(arg))
-		OR ('EXPRESSION_ARM.POWER_EXPRESSION' 
-								IN TYPEOF(arg))
-THEN 
-	RETURN (Is_int_expr(arg\Binary_numeric_expression.operands[1])
-		AND Is_int_expr(arg\Binary_numeric_expression.operands[2]));
-END_IF;
-IF	('EXPRESSION_ARM.DIV_EXPRESSION' IN TYPEOF(arg))
-		OR ('EXPRESSION_ARM.MOD_EXPRESSION' IN TYPEOF(arg))
-THEN 
-	RETURN(TRUE);	
-END_IF;
-IF 'EXPRESSION_ARM.SLASH_EXPRESSION' IN TYPEOF(arg) 
-THEN 
-	RETURN (FALSE); 	
-END_IF;
-IF 'NUMERIC_FUNCTION_ARM.LENGTH_FUNCTION' IN TYPEOF(arg) 
-THEN 
-	RETURN (TRUE); 
-END_IF;
-IF 'NUMERIC_FUNCTION_ARM.VALUE_FUNCTION' IN TYPEOF(arg) 
-THEN 
-	IF 'NUMERIC_FUNCTION_ARM.INT_VALUE_FUNCTION' 
-								IN TYPEOF(arg) 
-	THEN 
-		RETURN (TRUE); 
-	ELSE 
-		RETURN (FALSE); 
-	END_IF;
-END_IF;
-IF 'NUMERIC_FUNCTION_ARM.INTEGER_DEFINED_FUNCTION' 
-								IN TYPEOF(arg)
-THEN 
-	RETURN(TRUE) ;
-END_IF;
-IF'NUMERIC_FUNCTION_ARM.REAL_DEFINED_FUNCTION' IN TYPEOF(arg) 
-THEN 
-	RETURN(FALSE) ;
-END_IF ;
-IF 'EXPRESSION_ARM.BOOLEAN_DEFINED_FUNCTION' 
-								IN TYPEOF(arg)
-THEN 
-	RETURN(FALSE) ;
-END_IF ;
-IF 'EXPRESSION_ARM.STRING_DEFINED_FUNCTION' 
-								IN TYPEOF(arg)
-THEN 
-	RETURN (FALSE) ;
-END_IF ;
-
-RETURN (FALSE);
-
-END_FUNCTION; 
 
 
 END_SCHEMA;
-
-
