@@ -1,3 +1,4 @@
+(* WG12N2245 *)
 SCHEMA construction_history_features_schema;
 REFERENCE FROM representation_schema  --ISO 10303-43
   (representation_context,
