@@ -2,9 +2,8 @@
    
 SCHEMA Product_identification_mim;
 
-USE FROM Product_categorization_mim; -- ISO 10303-1016
-
-USE FROM product_definition_schema   -- ISO 10303-41
+USE FROM Product_categorization_mim; --ISO 10303-1016
+USE FROM product_definition_schema -- ISO 10303-41
   (product,
    product_related_product_category);
 

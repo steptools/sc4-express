@@ -1,33 +1,35 @@
-(* 
- $Id$
- ISO/TC184/SC4 WG12N1523 - ISO/TS 10303-1123 Document definition - EXPRESS MIM 
-*)
+(*
+ISO TC184/SC4/WG12 N2122 - ISO/TS 10303-1123 Document definition - EXPRESS MIM
+*) 
 
-SCHEMA Document_definition_mim;
 
-USE FROM Document_and_version_identification_mim;
+SCHEMA Document_definition_mim; 
 
-USE FROM External_item_identification_assignment_mim;
+USE FROM Document_and_version_identification_mim;    -- ISO/TS 10303-1121
 
-USE FROM File_identification_mim;
+USE FROM External_item_identification_assignment_mim;    -- ISO/TS 10303-1128
+
+USE FROM File_identification_mim;    -- ISO/TS 10303-1127
 
 USE FROM product_definition_schema   -- ISO 10303-41
   (product_definition,
    product_definition_with_associated_documents); 
 
-TYPE document_location_select = SELECT BASED_ON external_identification_item WITH (product_definition);
-END_TYPE;
 
-RULE restrict_document_definition_category FOR (product_definition);
+TYPE document_location_select = SELECT BASED_ON external_identification_item WITH 
+   (product_definition);
+END_TYPE; 
+
+RULE restrict_document_definition_category FOR 
+(product_definition);
+
 LOCAL
   document_definitions: SET OF product_definition := [];
 END_LOCAL;
   document_definitions :=  QUERY( pd <* product_definition | 
   (pd.frame_of_reference.name IN ['digital document definition', 'physical document definition']));
-WHERE
-WR1: SIZEOF( QUERY( pd <* document_definitions | 
-(SIZEOF( QUERY( prpc <* USEDIN(pd.formation.of_product, 'PART_VIEW_DEFINITION_MIM.PRODUCT_RELATED_PRODUCT_CATEGORY.PRODUCTS') | 
-  prpc.name IN ['document'] )) = 0 ) )) = 0;
-END_RULE;
-END_SCHEMA;
+      WHERE
+  WR1: SIZEOF( QUERY( pd <* document_definitions | (SIZEOF( QUERY( prpc <* USEDIN(pd.formation.of_product, 'DOCUMENT_DEFINITION_MIM.PRODUCT_RELATED_PRODUCT_CATEGORY.PRODUCTS') | prpc.name IN ['document'] )) = 0 ) )) = 0;
+END_RULE; 
 
+END_SCHEMA;  -- Document_definition_mim

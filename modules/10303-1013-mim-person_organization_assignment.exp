@@ -2,11 +2,11 @@
       
 SCHEMA Person_organization_assignment_mim;
 
-USE FROM Person_organization_mim;     -- 10303-1011
-USE FROM person_organization_schema   -- ISO 10303-41
+USE FROM Person_organization_mim; 		-- 10303-1011
+USE FROM person_organization_schema 	-- ISO 10303-41
   (organization_role,
    person_and_organization_role);
-USE FROM management_resources_schema  -- ISO 10303-41
+USE FROM management_resources_schema 	-- ISO 10303-41
   (organization_assignment,
    person_and_organization_assignment);
 
@@ -31,3 +31,4 @@ ENTITY applied_person_and_organization_assignment
 END_ENTITY;
 
 END_SCHEMA;
+

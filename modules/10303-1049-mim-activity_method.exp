@@ -5,6 +5,6 @@
 SCHEMA Activity_method_mim;
 
 USE FROM action_schema    -- ISO 10303-41
-           (action_method );
+(action_method );
 
 END_SCHEMA;

@@ -1,7 +1,8 @@
 (* ISO/TC184/SC4 WG12N1114 - ISO/TS - 10303-1022 Part and version identification - EXPRESS MIM *)
-
+   
 SCHEMA Part_and_version_identification_mim;
 
 USE FROM Product_version_mim; -- ISO 10303-1018
 
 END_SCHEMA;
+

@@ -3,7 +3,8 @@
 SCHEMA Independent_property_mim;
 
 USE FROM product_property_definition_schema
-          (general_property,
-           general_property_relationship);
+(general_property,
+ general_property_relationship);
 
 END_SCHEMA;
+

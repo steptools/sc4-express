@@ -3,9 +3,9 @@ ISO/TC184/SC4 WG12N1106 - ISO/TS - 10303-1018 Product version - EXPRESS MIM *)
    
 SCHEMA Product_version_mim;
 
-USE FROM Product_identification_mim; -- ISO 10303-1017
+USE FROM Product_identification_mim; --ISO 10303-1017
 
-USE FROM product_definition_schema   -- ISO 10303-41
+USE FROM product_definition_schema -- ISO 10303-41
   (product_definition_formation);
    
 END_SCHEMA;

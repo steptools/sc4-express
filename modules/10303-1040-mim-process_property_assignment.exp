@@ -1,22 +1,28 @@
-(* 
- $Id$
-ISO/TC184/SC4 WG12N1247 - ISO/TS 10303-1040  Process property assignment- EXPRESS MIM *)
+(*
+ISO TC184/SC4/WG12 N2126 - ISO/TS 10303-1040 Process property assignment - EXPRESS MIM
+*) 
 
-SCHEMA Process_property_assignment_mim;
 
-USE FROM Activity_method_mim;
+SCHEMA Process_property_assignment_mim; 
 
-USE FROM Activity_mim;
+USE FROM Activity_method_mim;    -- ISO/TS 10303-1049
 
-USE FROM Foundation_representation_mim;	
+USE FROM Activity_mim;    -- ISO/TS 10303-1047
 
-USE FROM Independent_property_mim;
+USE FROM Foundation_representation_mim;    -- ISO/TS 10303-1006
 
-USE FROM process_property_schema
+USE FROM Independent_property_mim;    -- ISO/TS 10303-1036
+
+USE FROM process_property_representation_schema   -- ISO 10303-49
+  (action_property_representation); 
+
+USE FROM process_property_schema   -- ISO 10303-49
   (action_property,
-   characterized_action_definition);
+   characterized_action_definition); 
 
-USE FROM process_property_representation_schema
-  (action_property_representation);   -- ISO 10303-49
+USE FROM product_property_definition_schema   -- ISO 10303-41
+  (derived_property_select,
+   general_property_association); 
 
-END_SCHEMA;
+
+END_SCHEMA;  -- Process_property_assignment_mim

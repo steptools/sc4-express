@@ -1,5 +1,6 @@
 (* ISO/TC184/SC4 WG12N1229 - ISO/TS - 10303-1031 External model - EXPRESS MIM *)
 
+
 SCHEMA External_model_mim;
   
 USE FROM Elemental_geometric_shape_mim; -- ISO 10303-1004
@@ -13,3 +14,4 @@ USE FROM product_property_representation_schema
   (property_definition_representation);
 
 END_SCHEMA;
+

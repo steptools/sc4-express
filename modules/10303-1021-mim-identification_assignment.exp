@@ -1,31 +1,34 @@
-(* ISO/TC184/SC4 WG12N1108 - ISO/TS - 10303-1021 Identification assignment - EXPRESS MIM *)
-   
-SCHEMA Identification_assignment_mim;
+(*
+ISO TC184/SC4/WG12 N2108 - ISO/TS 10303-1021 Identification assignment - EXPRESS MIM
+*) 
 
-USE FROM management_resources_schema -- ISO 10303-41
-    (identification_assignment);
-   
-TYPE identification_item = EXTENSIBLE GENERIC_ENTITY SELECT; 
-END_TYPE;
 
-TYPE versionable_item = EXTENSIBLE GENERIC_ENTITY SELECT ;
-END_TYPE;
+SCHEMA Identification_assignment_mim; 
 
-   
+USE FROM management_resources_schema   -- ISO 10303-41
+  (identification_assignment,
+   identification_role); 
+
+
+TYPE identification_item = EXTENSIBLE SELECT;
+END_TYPE; 
+
+TYPE versionable_item = EXTENSIBLE SELECT;
+END_TYPE; 
+
 ENTITY applied_identification_assignment
   SUBTYPE OF (identification_assignment);
-  items : SET [1:?] OF identification_item;
+  items : SET[1:?] OF identification_item;
 END_ENTITY;
 
-
-RULE version_assignments_are_valid FOR (applied_identification_assignment);
+RULE version_assignments_are_valid FOR 
+(applied_identification_assignment);
 WHERE
-  WR1: SIZEOF(QUERY(aia <* applied_identification_assignment | 
-       NOT version_assignment_is_valid(aia)))=0;
-END_RULE;
+  WR1: SIZEOF(QUERY(aia <* applied_identification_assignment | NOT version_assignment_is_valid(aia)))=0;
+END_RULE; 
 
-
-FUNCTION version_assignment_is_valid (aia: applied_identification_assignment): BOOLEAN;
+FUNCTION version_assignment_is_valid
+ (aia : applied_identification_assignment) : BOOLEAN; 
 LOCAL
   item: identification_item;
   role: identification_role;
@@ -34,19 +37,17 @@ END_LOCAL;
 role:= aia.role;
 IF role.name='version' THEN
   REPEAT i:=LOINDEX(aia.items) TO HIINDEX(aia.items);
-    item := aia.items[i];
+    item:= aia.items[i];
 
     IF (SIZEOF(['IDENTIFICATION_ASSIGNMENT_MIM.' + 'VERSIONABLE_ITEM']*TYPEOF(item))=0) THEN
--- item invalid if item does not belong to versionable types
-      RETURN(FALSE);
+	RETURN(FALSE);
     END_IF;
   END_REPEAT;
   RETURN(TRUE);
 
-ELSE    -- case where aia does not convey a version id
+ELSE
   RETURN(TRUE);
 END_IF;
-END_FUNCTION;
+      END_FUNCTION; 
 
-  
-END_SCHEMA;
+END_SCHEMA;  -- Identification_assignment_mim
