@@ -1,0 +1,50 @@
+(*
+$Id$
+ISO TC184/SC4/WG12 N1641 - ISO/CD-TS 10303-1294 Interface lifecycle - EXPRESS MIM
+*) 
+
+
+SCHEMA Interface_lifecycle_mim; 
+
+USE FROM product_definition_schema   -- ISO 10303-41
+  (product_definition_formation,
+   product_definition_formation_relationship); 
+
+
+ENTITY interface_connector_as_planned
+  SUBTYPE OF (product_definition_formation);
+END_ENTITY;
+
+ENTITY interface_connector_as_realized
+  SUBTYPE OF (product_definition_formation);
+END_ENTITY;
+
+ENTITY interface_connector_design
+  SUBTYPE OF (product_definition_formation);
+END_ENTITY;
+
+ENTITY interface_connector_design_to_planned
+  SUBTYPE OF (product_definition_formation_relationship);
+  SELF\product_definition_formation_relationship.related_product_definition_formation : interface_connector_as_planned;
+  SELF\product_definition_formation_relationship.relating_product_definition_formation : interface_connector_design;
+WHERE
+  WR1: SELF.relating_product_definition_formation.of_product :=: SELF.related_product_definition_formation.of_product;
+END_ENTITY;
+
+ENTITY interface_connector_design_to_realized
+  SUBTYPE OF (product_definition_formation_relationship);
+  SELF\product_definition_formation_relationship.related_product_definition_formation : interface_connector_as_realized;
+  SELF\product_definition_formation_relationship.relating_product_definition_formation : interface_connector_design;
+WHERE
+  WR1: SELF.relating_product_definition_formation.of_product :=: SELF.related_product_definition_formation.of_product;
+END_ENTITY;
+
+ENTITY interface_connector_planned_to_realized
+  SUBTYPE OF (product_definition_formation_relationship);
+  SELF\product_definition_formation_relationship.related_product_definition_formation : interface_connector_as_realized;
+  SELF\product_definition_formation_relationship.relating_product_definition_formation : interface_connector_as_planned;
+WHERE
+  WR1: SELF.relating_product_definition_formation.of_product :=: SELF.related_product_definition_formation.of_product;
+END_ENTITY;
+
+END_SCHEMA;  -- Interface_lifecycle_mim
