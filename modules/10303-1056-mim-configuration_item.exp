@@ -2,12 +2,11 @@
    
 SCHEMA Configuration_item_mim;
 
-USE FROM Product_version_mim; -- ISO 10303-1018
-USE FROM Product_view_definition_mim; -- ISO 10303-1019
+USE FROM Product_version_mim;                -- ISO 10303-1018
+USE FROM Product_view_definition_mim;        -- ISO 10303-1019
 USE FROM Product_concept_identification_mim; -- ISO 10303-1060
-USE FROM configuration_management_schema -- ISO 10303-44
+USE FROM configuration_management_schema     -- ISO 10303-44
   (configuration_design,
    configuration_item);
     
 END_SCHEMA;
-
