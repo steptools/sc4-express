@@ -1,5 +1,5 @@
-(* Document WG12 N415 - EXPRESS listing of part 42, as amended
-    by TC2 (WG12 N414) *)
+(* Document WG12 N927 - EXPRESS listing of part 42, as amended
+    by TC3 (WG12 N926) April 2001  *)
 SCHEMA geometry_schema;
    REFERENCE FROM representation_schema
      (representation,
@@ -161,9 +161,45 @@ ENTITY point
  END_ENTITY;
 
 ENTITY cartesian_point
-   SUBTYPE OF (point);
+  SUPERTYPE OF (ONEOF(cylindrical_point, polar_point, spherical_point))
+  SUBTYPE OF (point);
    coordinates  : LIST [1:3] OF length_measure;
- END_ENTITY;
+END_ENTITY;
+
+ENTITY cylindrical_point
+  SUBTYPE OF (cartesian_point);
+    r     : length_measure;
+    theta : plane_angle_measure;
+    z     : length_measure;
+  DERIVE
+    SELF\cartesian_point.coordinates : LIST [1:3] OF length_measure :=
+                    [r*cos(theta), r*sin(theta), z];
+  WHERE
+   WR1: r >= 0.0;
+END_ENTITY;
+
+ENTITY spherical_point
+  SUBTYPE OF (cartesian_point);
+    r     : length_measure;
+    theta : plane_angle_measure;
+    phi   : plane_angle_measure;
+  DERIVE
+    SELF\cartesian_point.coordinates : LIST [1:3] OF length_measure :=
+      [r*sin(theta)*cos(phi), r*sin(theta)*sin(phi), r*cos(theta)];
+  WHERE
+   WR1: r >= 0.0;
+END_ENTITY;
+
+ENTITY polar_point
+  SUBTYPE OF (cartesian_point);
+    r     : length_measure;
+    theta : plane_angle_measure;
+  DERIVE
+    SELF\cartesian_point.coordinates : LIST [1:3] OF length_measure :=
+                  [r*cos(theta), r*sin(theta)];
+  WHERE
+   WR1: r >= 0.0;
+END_ENTITY;
 
 ENTITY point_on_curve
    SUBTYPE OF (point);
@@ -627,8 +663,11 @@ ENTITY surface_of_revolution
   SUBTYPE OF (swept_surface);
   axis_position       : axis1_placement;
 DERIVE
-  axis_line : line := dummy_gri || curve() || line(axis_position.location,
-                         dummy_gri || vector(axis_position.z, 1.0));
+  axis_line : line := representation_item('')||
+                    geometric_representation_item()|| curve()||
+                    line(axis_position.location, representation_item('')||
+                    geometric_representation_item()||
+                    vector(axis_position.z, 1.0));
 END_ENTITY;
 
 ENTITY bounded_surface
@@ -741,17 +780,18 @@ ENTITY curve_bounded_surface
    boundaries       : SET [1:?] OF boundary_curve;
    implicit_outer   : BOOLEAN;
  WHERE
-   WR1: NOT(implicit_outer AND 
-              ('GEOMETRY_SCHEMA.OUTER_BOUNDARY_CURVE' IN TYPEOF(boundaries)));
+   WR1: (NOT implicit_outer) OR
+        (SIZEOF (QUERY (temp <* boundaries |
+         'GEOMETRY_SCHEMA.OUTER_BOUNDARY_CURVE' IN TYPEOF(temp))) = 0);
    WR2: (NOT(implicit_outer)) OR
-               ('GEOMETRY_SCHEMA.BOUNDED_SURFACE' IN TYPEOF(basis_surface));
+          ('GEOMETRY_SCHEMA.BOUNDED_SURFACE' IN TYPEOF(basis_surface));
    WR3: SIZEOF(QUERY(temp <* boundaries | 
                  'GEOMETRY_SCHEMA.OUTER_BOUNDARY_CURVE' IN
                                         TYPEOF(temp))) <= 1;
    WR4: SIZEOF(QUERY(temp <* boundaries |
            (temp\composite_curve_on_surface.basis_surface [1] <>
                                         SELF.basis_surface))) = 0;
- END_ENTITY;
+END_ENTITY;
 
 ENTITY boundary_curve
    SUBTYPE OF (composite_curve_on_surface);
@@ -770,7 +810,7 @@ ENTITY rectangular_composite_surface
    n_u : INTEGER := SIZEOF(segments);
    n_v : INTEGER := SIZEOF(segments[1]);
  WHERE
-   WR1: [] = QUERY (s <* segments | n_v <> SIZEOF (s));
+   WR1: SIZEOF(QUERY (s <* segments | n_v <> SIZEOF (s))) = 0;
    WR2: constraints_rectangular_composite_surface(SELF);
  END_ENTITY;
 
@@ -829,10 +869,26 @@ END_RULE;
 FUNCTION dimension_of(item : geometric_representation_item) :
   dimension_count;
   LOCAL
-    x : SET OF representation;
-    y : representation_context;
+    x   : SET OF representation;
+    y   : representation_context;
+    dim : dimension_count;
   END_LOCAL;
-
+  -- For cartesian_point, direction, or vector dimension is determined by
+  -- counting components.
+    IF 'GEOMETRY_SCHEMA.CARTESIAN_POINT' IN TYPEOF(item) THEN
+       dim := SIZEOF(item\cartesian_point.coordinates);
+       RETURN(dim);
+    END_IF;
+    IF 'GEOMETRY_SCHEMA.DIRECTION' IN TYPEOF(item) THEN
+       dim := SIZEOF(item\direction.direction_ratios);
+       RETURN(dim);
+    END_IF;
+    IF 'GEOMETRY_SCHEMA.VECTOR' IN TYPEOF(item) THEN
+       dim := SIZEOF(item\vector.orientation\direction.direction_ratios);
+       RETURN(dim);
+    END_IF;
+  -- For all other types of geometric_representation_item dim is obtained
+  -- via context.
   -- Find the set of representation in which the item is used. 
 
   x := using_representations(item);
@@ -845,7 +901,8 @@ FUNCTION dimension_of(item : geometric_representation_item) :
   -- The SET x is non-empty since this is required by WR1 of
   -- representation_item.
     y := x[1].context_of_items;
-    RETURN(y\geometric_representation_context.coordinate_space_dimension);
+    dim := y\geometric_representation_context.coordinate_space_dimension;
+    RETURN (dim);
 
 END_FUNCTION;
 
@@ -971,7 +1028,8 @@ FUNCTION orthogonal_complement(vec : direction) : direction;
   IF (vec.dim <> 2) OR NOT EXISTS (vec) THEN
     RETURN(?);
   ELSE
-    result := dummy_gri || direction([-vec.direction_ratios[2], vec.direction_ratios[1]]);
+    result := dummy_gri || direction([-vec.direction_ratios[2],
+                      vec.direction_ratios[1]]);
     RETURN(result);
   END_IF;
 END_FUNCTION;
@@ -989,7 +1047,8 @@ FUNCTION first_proj_axis(z_axis, arg : direction) : direction;
   ELSE
     z := normalise(z_axis);
     IF NOT EXISTS(arg) THEN
-      IF (z.direction_ratios <> [1.0,0.0,0.0]) THEN
+      IF ((z.direction_ratios <> [1.0,0.0,0.0]) AND
+          (z.direction_ratios <> [-1.0,0.0,0.0]))  THEN
         v :=  dummy_gri || direction([1.0,0.0,0.0]);
       ELSE
         v := dummy_gri || direction([0.0,1.0,0.0]);
@@ -1491,7 +1550,7 @@ FUNCTION constraints_rectangular_composite_surface
  END_FUNCTION;
 
  FUNCTION list_to_array(lis : LIST [0:?] OF GENERIC : T;
-                      low,u : INTEGER) : ARRAY OF GENERIC : T;
+                      low,u : INTEGER) : ARRAY [low:u] OF GENERIC : T;
    LOCAL
      n   : INTEGER;
      res : ARRAY [low:u] OF GENERIC : T;
@@ -1511,7 +1570,7 @@ FUNCTION constraints_rectangular_composite_surface
 
  FUNCTION make_array_of_array(lis : LIST[1:?] OF LIST [1:?] OF GENERIC : T;
                               low1, u1, low2, u2 : INTEGER):
-                 ARRAY OF ARRAY OF GENERIC : T;
+                 ARRAY [low1:u1] OF ARRAY [low2:u2] OF GENERIC : T;
    LOCAL
      res   : ARRAY[low1:u1] OF ARRAY [low2:u2] OF GENERIC : T;
    END_LOCAL;
@@ -1534,7 +1593,6 @@ FUNCTION constraints_rectangular_composite_surface
    
    RETURN (res);
  END_FUNCTION;
-
 END_SCHEMA; -- end GEOMETRY schema
 
  SCHEMA topology_schema;
@@ -2167,7 +2225,7 @@ END_FUNCTION;
 
 END_SCHEMA; -- end TOPOLOGY schema
 
-SCHEMA geometric_model_schema;
+ SCHEMA geometric_model_schema;
    REFERENCE FROM geometry_schema;
    REFERENCE FROM topology_schema;
    REFERENCE FROM measure_schema(length_measure,
@@ -2175,6 +2233,7 @@ SCHEMA geometric_model_schema;
                                  plane_angle_measure,
                                  plane_angle_unit,
                                  positive_plane_angle_measure);
+   REFERENCE FROM representation_schema(founded_item);
 
 TYPE boolean_operand = SELECT
    (solid_model, 
@@ -2327,8 +2386,11 @@ ENTITY revolved_face_solid
   axis  : axis1_placement;
   angle : plane_angle_measure;
 DERIVE
-  axis_line : line := dummy_gri || curve() || line(axis.location,
-                         dummy_gri || vector(axis.z, 1.0));
+  axis_line : line := representation_item('')||
+                    geometric_representation_item()|| curve()||
+                    line(axis.location, representation_item('')||
+                    geometric_representation_item()||
+                    vector(axis.z, 1.0));
 END_ENTITY;
 
 ENTITY swept_area_solid
@@ -2355,8 +2417,11 @@ ENTITY revolved_area_solid
    axis  : axis1_placement;
    angle : plane_angle_measure;
 DERIVE
-   axis_line : line := dummy_gri || curve() || line(axis.location,
-                          dummy_gri || vector(axis.z, 1.0));
+  axis_line : line := representation_item('')||
+                    geometric_representation_item()|| curve()||
+                    line(axis.location, representation_item('')||
+                    geometric_representation_item()||
+                    vector(axis.z, 1.0));
 END_ENTITY;
 
 ENTITY half_space_solid
@@ -2370,7 +2435,8 @@ ENTITY boxed_half_space
    enclosure : box_domain;
  END_ENTITY;
 
-ENTITY box_domain;
+ ENTITY box_domain
+   SUBTYPE OF (founded_item);
    corner  : cartesian_point;
    xlength : positive_length_measure;
    ylength : positive_length_measure;
@@ -2514,12 +2580,13 @@ FUNCTION build_transformed_set(tr: cartesian_transformation_operator;
    END_LOCAL;
    REPEAT j := 1 TO SIZEOF(s);
      IF ('GEOMETRY_SCHEMA.CURVE' IN TYPEOF(s[j])) THEN
-        trset := trset + curve_replica(s[j],tr); ELSE
+        trset := trset + dummy_gri || curve() ||curve_replica(s[j],tr); ELSE
         IF ('GEOMETRY_SCHEMA.POINT' IN TYPEOF(s[j])) THEN
-          trset := trset + point_replica(s[j],tr); ELSE
+          trset := trset + dummy_gri || point() || point_replica(s[j],tr);
+          ELSE
           IF ('GEOMETRY_SCHEMA.SURFACE' IN TYPEOF(s[j])) THEN
-            trset := trset + surface_replica(s[j],
-               tr || cartesian_transformation_operator_3d (?));
+            trset := trset + dummy_gri || surface()  || surface_replica(s[j],
+              tr || cartesian_transformation_operator_3d (?));
           END_IF;
         END_IF;
      END_IF;
@@ -2538,5 +2605,4 @@ FUNCTION msb_shells (brep: manifold_solid_brep) : SET [1:?] OF  closed_shell;
 END_FUNCTION;
 
 END_SCHEMA; -- end GEOMETRIC MODEL schema
-  
 
