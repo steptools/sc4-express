@@ -2,36 +2,29 @@
    
 SCHEMA Event_arm;
 
-   
-USE FROM Date_time_arm; -- ISO/TS 10303-1010
-USE FROM Value_with_unit_arm; -- ISO/TS 10303-1054
- 
+USE FROM Date_time_arm;       -- ISO 10303-1010
+USE FROM Value_with_unit_arm; -- ISO 10303-1054
 
-   
-TYPE date_or_event = SELECT ( Calendar_date, Date_time, Event);
+TYPE date_or_event = SELECT (Calendar_date, Date_time, Event);
 END_TYPE;
-
 
 TYPE event_item = EXTENSIBLE SELECT;
 END_TYPE;
 
-
 ENTITY Event;
-  id             : STRING;
-  name           : STRING;
-  description    : OPTIONAL STRING;
+  id                   : STRING;
+  name                 : STRING;
+  description          : OPTIONAL STRING;
   planned_start_date   : OPTIONAL date_or_date_time_select;
   actual_start_date    : OPTIONAL date_or_date_time_select;  
 END_ENTITY;
 
-   
 ENTITY Event_assignment;
   assigned_event    : Event;
   role              : STRING;
   items             : SET [1:?] OF event_item;
 END_ENTITY;
 
-   
 ENTITY Event_relationship;
   relation_type : STRING;
   event1        : Event;
@@ -39,13 +32,10 @@ ENTITY Event_relationship;
   description   : OPTIONAL STRING;
 END_ENTITY;
 
-   
 ENTITY Relative_event
   SUBTYPE OF (Event);
   base_event  : Event;
   offset      : Duration;
 END_ENTITY;
 
-   
 END_SCHEMA;
-

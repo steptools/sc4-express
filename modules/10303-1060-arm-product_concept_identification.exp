@@ -7,7 +7,6 @@ ENTITY Market;
   market_segment_type       : OPTIONAL STRING;
 END_ENTITY;
 
-   
 ENTITY Product_concept;
   id                        : STRING;
   name                      : STRING;
@@ -17,6 +16,4 @@ UNIQUE
   UR1: id;
 END_ENTITY;
 
-   
 END_SCHEMA;
-

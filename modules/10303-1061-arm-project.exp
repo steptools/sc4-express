@@ -2,16 +2,15 @@
    
 SCHEMA Project_arm;
  
-USE FROM Date_time_arm; 	      -- ISO/TS 10303-1010
-USE FROM Event_arm; 		      -- ISO/TS 10303-1064
-USE FROM Person_organization_arm; 	-- ISO/TS 10303-1011
+USE FROM Date_time_arm;            -- ISO 10303-1010
+USE FROM Event_arm;                -- ISO 10303-1064
+USE FROM Person_organization_arm;  -- ISO 10303-1011
  
 TYPE project_item = EXTENSIBLE SELECT ;
 END_TYPE;
 
-
 ENTITY Project;
-  id                 	    : STRING;
+  id                        : STRING;
   name                      : STRING;
   description               : OPTIONAL STRING;
   responsible_organizations : SET[1:?] OF Organization;
@@ -21,17 +20,15 @@ ENTITY Project;
   actual_end_date           : OPTIONAL date_or_date_time_select;
 END_ENTITY;
 
-
 ENTITY Project_assignment;
   assigned_project : Project;
   role             : STRING;
   items            : SET [1:?] OF project_item;
 END_ENTITY;
 
-
 ENTITY Project_relationship;
-  relation_type 	  : STRING;
-  description   	  : OPTIONAL STRING;
+  relation_type     : STRING;
+  description       : OPTIONAL STRING;
   relating_project  : Project;
   related_project   : Project;
 END_ENTITY;
