@@ -1,0 +1,20 @@
+(*
+   $Id$
+   ISO TC184/SC4/WG12 N1656 - ISO/CD-TS 10303-1216 Functional breakdown - EXPRESS MIM
+*) 
+
+
+SCHEMA Functional_breakdown_mim; 
+
+USE FROM Product_breakdown_mim;    -- ISO/CD-TS 10303-1248
+
+
+ENTITY functional_breakdown_context
+  SUBTYPE OF (breakdown_context);
+END_ENTITY;
+
+ENTITY functional_element_usage
+  SUBTYPE OF (breakdown_element_usage);
+END_ENTITY;
+
+END_SCHEMA;  -- Functional_breakdown_mim
