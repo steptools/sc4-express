@@ -1,118 +1,56 @@
---this is wg12n429
+--this is wg12n968
 SCHEMA aic_mechanical_design_geometric_presentation;
 
     USE FROM geometry_schema                          -- ISO 10303-42
      (axis2_placement_2d,
       axis2_placement_3d); 
 
-    USE FROM measure_schema                           -- ISO 10303-41
-     (positive_ratio_measure); 
-
     USE FROM presentation_appearance_schema           -- ISO 10303-46
-     (curve_style,
-      curve_style_font, 
-      curve_style_font_pattern,
-      fill_area_style_colour,
-      invisibility,
-      over_riding_styled_item,
-      point_style,
-      pre_defined_curve_font,
-      presentation_style_by_context,
-      styled_item,
-      surface_side_style,
-      surface_style_boundary,
-      surface_style_control_grid, 
-      surface_style_fill_area,
-      surface_style_parameter_line,
-      surface_style_segmentation_curve, 
-      surface_style_silhouette, 
-      surface_style_usage,
-      u_direction_count,        
-      v_direction_count);
+       (curve_style,
+        curve_style_font, 
+        curve_style_font_pattern,
+        draughting_pre_defined_curve_font,
+        fill_area_style_colour,
+        invisibility,
+        marker_type,
+        over_riding_styled_item,
+        point_style,
+        presentation_style_by_context,
+        styled_item,
+        surface_side_style,
+        surface_style_boundary,
+        surface_style_control_grid, 
+        surface_style_fill_area,
+        surface_style_parameter_line,
+        surface_style_segmentation_curve, 
+        surface_style_silhouette, 
+        surface_style_usage,
+        u_direction_count,        
+        v_direction_count);
 
+    REFERENCE FROM presentation_organization_schema    -- ISO 10303-46
+       (aspect_ratio);
 
     USE FROM presentation_organization_schema          -- ISO 10303-46
-     (background_colour,
-      camera_image,
-      camera_model_d3,
-      camera_usage,
-      presentation_area,        
-      presentation_representation,
-      presentation_size,
-      presentation_view);
+       (background_colour,
+        camera_image_3d_with_scale,
+        camera_usage,
+        presentation_area,        
+        presentation_representation,
+        presentation_size,
+        presentation_view);
 
     USE FROM presentation_resource_schema              -- ISO 10303-46
-     (colour_rgb,
-      planar_box,   
-      planar_extent,  
-      pre_defined_colour);
+       (colour_rgb,
+        draughting_pre_defined_colour,
+        planar_extent);
 
     USE FROM product_property_representation_schema    -- ISO 10303-41
      (shape_representation);
 
     USE FROM representation_schema                     -- ISO 10303-43
-     (mapped_item,
-      representation); 
-
-ENTITY camera_image_3d_with_scale
-  SUBTYPE OF (camera_image);
-DERIVE
-  scale: positive_ratio_measure := ((SELF\mapped_item.mapping_target\
-         planar_extent.size_in_x) / (SELF\mapped_item.mapping_source.
-         mapping_origin\camera_model_d3.perspective_of_volume.view_window.
-         size_in_x));
-WHERE
-  WR1:  ('AIC_MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION.CAMERA_MODEL_D3'
-        IN TYPEOF (SELF\mapped_item.mapping_source.mapping_origin));
-  WR2:  aspect_ratio(SELF\mapped_item.mapping_target) =
-        aspect_ratio(SELF\mapped_item.mapping_source.mapping_origin\
-        camera_model_d3.perspective_of_volume.view_window);
-  WR3:  SELF\mapped_item.mapping_source.mapping_origin\camera_model_d3.
-        perspective_of_volume.front_plane_clipping
-        AND
-        SELF\mapped_item.mapping_source.mapping_origin\camera_model_d3.
-        perspective_of_volume.view_volume_sides_clipping;
-  WR4:  (SELF\mapped_item.mapping_target\planar_extent.size_in_x > 0)
-        AND
-        (SELF\mapped_item.mapping_target\planar_extent.size_in_y > 0);
-  WR5:  (SELF\mapped_item.mapping_source.mapping_origin\camera_model_d3.
-        perspective_of_volume.view_window.size_in_x > 0)
-        AND
-        (SELF\mapped_item.mapping_source.mapping_origin\camera_model_d3.
-        perspective_of_volume.view_window.size_in_y > 0);
-  WR6:  ('AIC_MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION.' +
-        'AXIS2_PLACEMENT_2D' IN TYPEOF (SELF\mapped_item.
-        mapping_target\planar_box.placement))
-        AND NOT ('AIC_MECHANICAL_DESIGN_GEOMETRIC_PRESENTATION.' +
-        'AXIS2_PLACEMENT_3D' IN TYPEOF (SELF\mapped_item.
-        mapping_target\planar_box.placement));
-END_ENTITY;
-
-ENTITY draughting_pre_defined_colour
-  SUBTYPE OF (pre_defined_colour);
-WHERE
-  WR1:  SELF.name IN
-               ['red',
-                'green',
-                'blue',
-                'yellow',
-                'magenta',
-                'cyan',
-                'black',
-                'white'];
-        
-END_ENTITY;
-
-ENTITY draughting_pre_defined_curve_font
-  SUBTYPE OF (pre_defined_curve_font);
-WHERE
-  WR1:  SELF.name IN
-               ['continuous',
-                'chain',
-                'chain double dash',
-                'dashed',
-                'dotted'];
-END_ENTITY;
+       (mapped_item,
+        representation); 
 
 ENTITY mechanical_design_geometric_presentation_area
   SUBTYPE OF (presentation_area);
@@ -469,9 +407,5 @@ WHERE
         style_of_boundary\curve_style.curve_font)) = 1)))) = 0)))
         = 0))) = 0))) = 0;
 END_ENTITY;
-
-FUNCTION aspect_ratio (p : planar_box) : positive_ratio_measure;
-  RETURN (p.size_in_x / p.size_in_y);
-END_FUNCTION;
 
 END_SCHEMA;  
