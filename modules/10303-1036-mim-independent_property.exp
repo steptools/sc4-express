@@ -1,29 +1,10 @@
-(* N845 - ISO/CD TS - 10303-1036 Independent property - EXPRESS MIM *)
-   SCHEMA Independent_property_mim;
-  USE FROM external_reference_schema               -- ISO 10303-41      (external_source,       externally_defined_item,       source_item);
-  USE FROM group_schema                            -- ISO 10303-41      (group);
-  USE FROM measure_schema                          -- ISO 10303-41      (derived_unit,       global_unit_assigned_context,       named_unit,       unit);
-  USE FROM product_property_definition_schema      -- ISO 10303-41      (general_property,       general_property_relationship);
-  USE FROM product_property_representation_schema  -- ISO 10303-41      (property_definition_representation,       represented_definition);
-  USE FROM representation_schema                   -- ISO 10303-43      (representation,       representation_context);
-  USE FROM support_resource_schema                 -- ISO 10303-41      (identifier);
-  USE FROM topology_schema                         -- ISO 10303-42      (path);
-   
-ENTITY class
-  SUBTYPE OF (group);
-END_ENTITY;
+(* ISO/TC184/SC4 WG12N1238 - ISO/TS - 10303-1036  Independent Property - EXPRESS MIM *)
 
-   
+SCHEMA Independent_property_mim;
 
-ENTITY externally_defined_class
-  SUBTYPE OF (class,externally_defined_item);
-END_ENTITY;
+USE FROM product_property_definition_schema
+(general_property,
+ general_property_relationship);
 
-   
+END_SCHEMA;
 
-ENTITY externally_defined_general_property
-  SUBTYPE OF (general_property,externally_defined_item);
-END_ENTITY;
-
-   END_SCHEMA;
-(* Last update -  15 Aug 2001 *)

@@ -1,15 +1,19 @@
-(* N761 - ISO/CD TS - 10303-1026 Part structure - EXPRESS MIM *)
-   
-SCHEMA Part_structure_mim;
-USE FROM Part_view_definition_mim; -- Part view definition
-USE FROM Product_view_definition_structure_mim; -- Product view definition structure
-USE FROM Product_version_structure_mim; -- Product version structure
-USE FROM Product_structure_mim; -- Product structure
+(* ISO/TC184/SC4 WG12N1136 - ISO/TS - 10303-1026 Assembly structure - EXPRESS MIM *)     
+
+SCHEMA Assembly_structure_mim;
+
+USE FROM Product_view_definition_relationship_mim; -- ISO/TS 10303-1041
+USE FROM Value_with_unit_mim; -- ISO/TS 10303-1054
+
 USE FROM product_structure_schema -- ISO 10303-44
-  (promissory_usage_occurrence,
+  (assembly_component_usage,
    next_assembly_usage_occurrence,
-   assembly_component_usage_substitute,
-   assembly_component_usage_substitute_with_ranking);
+   promissory_usage_occurrence,
+   quantified_assembly_component_usage,
+   specified_higher_usage_occurrence);
+
 END_SCHEMA;
 
-(* Last update -  15 Aug 2001 *)
+
+
+

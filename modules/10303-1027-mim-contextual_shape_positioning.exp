@@ -1,13 +1,21 @@
-(* N764 - ISO/CD TS - 10303-1027 Part occurrence - EXPRESS MIM *)
-   
-SCHEMA Part_occurrence_mim;
-USE FROM Part_structure_mim; -- Part structure
-USE FROM Product_view_definition_structure_properties_mim; -- Product view definition structure properties
-USE FROM Shape_property_representation_mim; -- Shape_property_representation
+(* ISO/TC184/SC4 WG12N1139 - ISO/TS - 10303-1027 Contextual shape positioning - EXPRESS MIM *)
+
+SCHEMA Contextual_shape_positioning_mim;
+
+USE FROM Elemental_geometric_shape_mim;
+USE FROM Foundation_representation_mim;
+USE FROM Shape_property_assignment_mim; 
+
 USE FROM product_property_representation_schema -- ISO 10303-41
   (context_dependent_shape_representation);
-USE FROM product_structure_schema -- ISO 10303-44
-  (specified_higher_usage_occurrence);
+
+USE FROM representation_schema 	-- ISO 10303-43
+      (functionally_defined_transformation,
+      representation_relationship_with_transformation,
+      mapped_item);
+
 END_SCHEMA;
 
-(* Last update -  15 Aug 2001 *)
+
+
+

@@ -1,25 +1,40 @@
-(* N869 - ISO/CD TS - 10303-1068 Constructive solid geometry 3d - EXPRESS MIM *)
-   
-SCHEMA Constructive_solid_geometry_3d_mim;
-USE FROM Constructive_solid_geometry_mim; -- ISO 10303-1066
-USE FROM Boundary_representation_model_mim; -- ISO/CD TS 10303-1029
-USE FROM Faceted_boundary_representation_model_mim; -- ISO/CD TS 10303-1069
-USE FROM aic_csg; -- ISO 10303-515
-USE FROM geometric_model_schema -- ISO 10303-42
-  (block,
-   ellipsoid,
-   sphere,
-   torus,
-   eccentric_cone,
-   right_circular_cylinder,
-   right_angular_wedge,
-   rectangular_pyramid,
-   right_circular_cone,
-   cyclide_segment_solid,
-   faceted_primitive,   
-   tetrahedron,
-   convex_hexahedron,
-   half_space_solid);
-END_SCHEMA;
+(*   $Id$
+  ISO/TC184/SC4 WG12N1262 - ISO/TS 10303-1068 Constructive_solid_geometry  - EXPRESS MIM *)
 
-(* Last update -  15 Aug 2001 *)
+SCHEMA Constructive_solid_geometry_3d_mim;
+
+USE FROM Elemental_geometric_shape_mim;
+
+USE FROM geometric_model_schema         -- ISO 10303-42
+(block,
+ boolean_result,
+ boxed_half_space,
+ convex_hexahedron,
+ csg_solid,
+ cyclide_segment_solid,
+ eccentric_cone,
+ ellipsoid,
+ extruded_area_solid,
+ extruded_face_solid,
+ faceted_brep,
+ faceted_primitive,
+ half_space_solid,
+ manifold_solid_brep,
+ rectangular_pyramid,
+ revolved_area_solid,
+ revolved_face_solid,
+ right_angular_wedge,
+ right_circular_cone,
+ right_circular_cylinder,
+ sphere,
+ solid_model,
+ solid_replica,
+ surface_curve_swept_area_solid,
+ surface_curve_swept_face_solid,
+ swept_area_solid,
+ swept_face_solid,
+ tetrahedron,
+ torus
+ );
+
+END_SCHEMA;

@@ -1,40 +1,13 @@
-(* N779 - ISO/CD TS - 10303-1056 End item identification - EXPRESS MIM *)
+(* ISO/TC184/SC4 WG12N1166 - ISO/TS - 10303-1056 Configuration item - EXPRESS MIM *)
    
-SCHEMA End_item_identification_mim;
-USE FROM Approval_mim; -- ISO 10303-1012
-USE FROM Person_organisation_assignment_mim; -- ISO 10303-1013
-USE FROM Alias_identification_mim; -- ISO 10303-1025
+SCHEMA Configuration_item_mim;
+
 USE FROM Product_version_mim; -- ISO 10303-1018
 USE FROM Product_view_definition_mim; -- ISO 10303-1019
 USE FROM Product_concept_identification_mim; -- ISO 10303-1060
 USE FROM configuration_management_schema -- ISO 10303-44
   (configuration_design,
    configuration_item);
-
-   
-TYPE configuration_item_approval_item = SELECT
-  BASED_ON approval_item WITH 
-  (configuration_item);
-END_TYPE;
-
-   
-TYPE configuration_item_organization_item = SELECT 
-  BASED_ON organization_item WITH 
-  (configuration_item);
-END_TYPE;
-
-   
-TYPE configuration_item_person_and_organization_item = SELECT 
-  BASED_ON person_and_organization_item WITH
-  (configuration_item);
-END_TYPE;
-
-   
-TYPE configuration_item_alias_identification_item = SELECT
-  BASED_ON alias_identification_item WITH 
-  (configuration_item);
-END_TYPE;
-   
+    
 END_SCHEMA;
 
-(* Last update -  15 Aug 2001 *)
