@@ -2,7 +2,6 @@
    
 SCHEMA Date_time_arm;
 
-
 TYPE date_or_date_time_select = SELECT
   (Calendar_date,
    Date_time);
