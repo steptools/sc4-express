@@ -2,6 +2,7 @@
    
 SCHEMA Product_identification_arm;
 
+   
 USE FROM Product_categorization_arm; -- Product categorization
 
 ENTITY Product;
@@ -18,9 +19,9 @@ END_ENTITY;
 
 FUNCTION types_of_product(obj:Product):SET OF STRING;
 LOCAL
-  category_assignments: BAG OF Product_category_assignment;
-  categories: SET OF STRING:=[];
-  i: INTEGER;
+	category_assignments: BAG OF Product_category_assignment;
+	categories: SET OF STRING:=[];
+	i: INTEGER;
 END_LOCAL;
 
 category_assignments := USEDIN(obj,'PRODUCT_IDENTIFICATION_ARM.' + 'PRODUCT_CATEGORY_ASSIGNMENT.PRODUCTS');
@@ -33,3 +34,8 @@ RETURN(categories);
 END_FUNCTION;   
 
 END_SCHEMA;
+
+
+
+
+

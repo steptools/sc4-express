@@ -1,9 +1,9 @@
-(* ISO/TC184/SC4 WG12N1117 - ISO/TS - 10303-1023 Part view definition - EXPRESS ARM *)
+(* ISO/TC184/SC4 WG12N2109 - ISO/TS - 10303-1023 Part view definition - EXPRESS ARM *)
 
 SCHEMA Part_view_definition_arm;
    
-USE FROM Part_and_version_identification_arm; -- ISO 10303-1022
-USE FROM Product_view_definition_arm;         -- ISO 10303-1023
+USE FROM Part_and_version_identification_arm; 		-- ISO/TS 10303-1022
+USE FROM Product_view_definition_arm; 		      -- ISO/TS 10303-1023
   
 ENTITY Part_view_definition
   SUBTYPE OF (Product_view_definition);

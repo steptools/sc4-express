@@ -1,6 +1,6 @@
 (* 
 $Id$
-ISO/TC184/SC4 WG12N1901 - ISO/TS 10303-1004 Elemental geometric shape - EXPRESS ARM 
+ISO/TC184/SC4 WG12N2102 - ISO/TS 10303-1004 Elemental geometric shape - EXPRESS ARM 
 *)
    
 SCHEMA Elemental_geometric_shape_arm;

@@ -1,19 +1,24 @@
-(* ISO/TC184/SC4 WG12N1147 - ISO/TS - 10303-1044 Certification - EXPRESS ARM *)
-   
-SCHEMA Certification_arm;
+(*
+ISO TC184/SC4/WG12 N1147 - ISO/TS 10303-1044 Certification - EXPRESS ARM
+*) 
 
-TYPE certification_item = EXTENSIBLE SELECT;
-END_TYPE;
+
+SCHEMA Certification_arm; 
+
+
+TYPE certification_item = EXTENSIBLE GENERIC_ENTITY SELECT;
+END_TYPE; 
 
 ENTITY Certification;
-  name           : STRING;
-  description    : OPTIONAL STRING;
+  name : STRING;
+  description : OPTIONAL STRING;
+  kind : STRING;
 END_ENTITY;
- 
+
 ENTITY Certification_assignment;
   assigned_certification : Certification;
-  role                   : STRING;
-  items                  : SET [1:?] OF certification_item;
+  items : SET[1:?] OF certification_item;
+  role : STRING;
 END_ENTITY;
- 
-END_SCHEMA;
+
+END_SCHEMA;  -- Certification_arm

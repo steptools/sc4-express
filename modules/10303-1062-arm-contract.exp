@@ -2,13 +2,14 @@
    
 SCHEMA Contract_arm;
 
+   
 TYPE contract_item = EXTENSIBLE SELECT;
 END_TYPE;
 
 ENTITY Contract;
   id             : STRING;
   purpose        : STRING;
-  kind           : STRING;
+  kind	     : STRING;
 END_ENTITY;
    
 ENTITY Contract_assignment;
@@ -16,4 +17,6 @@ ENTITY Contract_assignment;
   items              : SET [1:?] OF contract_item;
 END_ENTITY;
 
+   
 END_SCHEMA;
+

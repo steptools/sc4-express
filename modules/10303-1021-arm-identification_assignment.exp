@@ -2,6 +2,7 @@
    
 SCHEMA Identification_assignment_arm;
 
+   
 TYPE identification_item = EXTENSIBLE SELECT;
 END_TYPE;
 

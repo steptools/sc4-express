@@ -1,6 +1,9 @@
-(* ISO/TC184/SC4 WG12N1087 - ISO/TS 10303-1012 Approval - EXPRESS ARM *)
+(*
+ISO TC184/SC4/WG12 N2106 - ISO/TS 10303-1012 Approval - EXPRESS ARM
+*) 
 
-SCHEMA Approval_arm;
+
+SCHEMA Approval_arm; 
 
 USE FROM Date_time_arm;    -- ISO/TS 10303-1010
 
@@ -25,9 +28,9 @@ END_ENTITY;
 
 ENTITY Approval_relationship;
   relation_type : STRING;
+  description : OPTIONAL STRING;
   relating_approval : Approval;
   related_approval : Approval;
-  description : OPTIONAL STRING;
 END_ENTITY;
 
 ENTITY Approval_status;

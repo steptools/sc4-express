@@ -13,6 +13,7 @@ ENTITY Effectivity_assignment;
   items                 : SET [1:?] OF effectivity_item;
 END_ENTITY;
 
+   
 END_SCHEMA;
 
 (* Last update -  10 Apr 2002 *)

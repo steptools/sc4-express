@@ -3,16 +3,17 @@
 SCHEMA Configuration_effectivity_arm;
 
    
-USE FROM Effectivity_arm;                          -- ISO 10303-1057
-USE FROM Configuration_item_arm;                   -- ISO 10303-1056
-USE FROM Product_view_definition_relationship_arm; -- ISO 10303-1041
+USE FROM Effectivity_arm; -- ISO/TS 10303-1057
+USE FROM Configuration_item_arm; -- ISO/TS 10303-1056
+USE FROM Product_view_definition_relationship_arm; -- ISO/TS 10303-1041
 
    
 ENTITY Item_usage_effectivity;
-  effectivity_domain       : Effectivity;
+  effectivity_domain	   : Effectivity;
   item_usage_relationship  : View_definition_usage;
   resolved_configuration   : Item_design_association;
 END_ENTITY;
 
    
 END_SCHEMA;
+

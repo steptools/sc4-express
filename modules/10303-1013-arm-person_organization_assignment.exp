@@ -13,4 +13,6 @@ ENTITY Organization_or_person_in_organization_assignment;
   items           : SET [1:?] OF organization_or_person_in_organization_item;
 END_ENTITY;
 
+   
 END_SCHEMA;
+

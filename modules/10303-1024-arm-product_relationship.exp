@@ -1,14 +1,19 @@
-(* ISO/TC184/SC4 WG12N1132 - ISO/TS - 10303-1024 Product relationship - EXPRESS ARM *)
-   
-SCHEMA Product_relationship_arm;
+(*
+ISO TC184/SC4/WG12 N1132 - ISO/TS 10303-1024 Product relationship - EXPRESS ARM
+*) 
 
-USE FROM Product_identification_arm; -- Product identification
+
+SCHEMA Product_relationship_arm; 
+
+USE FROM Product_identification_arm;    -- ISO/TS 10303-1017
+
 
 ENTITY Product_relationship;
+  relation_type : STRING;
+  description : OPTIONAL STRING;
   relating_product : Product;
-  related_product  : Product;
-  relation_type    : STRING;
-  description      : OPTIONAL STRING;
+  related_product : Product;
 END_ENTITY;
 
-END_SCHEMA;
+END_SCHEMA;  -- Product_relationship_arm
+

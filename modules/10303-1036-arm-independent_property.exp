@@ -1,18 +1,22 @@
-(* ISO/TC184/SC4 WG12N1237 - ISO/TS - 10303-1036  Independent Property - EXPRESS ARM *)
+(*
+ISO TC184/SC4/WG12 N1237 - ISO/TS 10303-1036 Independent property - EXPRESS ARM
+*) 
 
-SCHEMA Independent_property_arm;
+
+SCHEMA Independent_property_arm; 
+
 
 ENTITY Independent_property;
-  id            : STRING;
+  id : STRING;
   property_type : STRING;
-  description   : OPTIONAL STRING;
+  description : OPTIONAL STRING;
 END_ENTITY;
 
 ENTITY Independent_property_relationship;
   relation_type : STRING;
-  related       : Independent_property;
-  relating      : Independent_property;
-  description   : OPTIONAL STRING;
+  description : OPTIONAL STRING;
+  relating : Independent_property;
+  related : Independent_property;
 END_ENTITY;
 
-END_SCHEMA;
+END_SCHEMA;  -- Independent_property_arm

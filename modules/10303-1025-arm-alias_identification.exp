@@ -2,18 +2,22 @@
    
 SCHEMA Alias_identification_arm;
 
-USE FROM Identification_assignment_arm; -- ISO 10303-1021
+   
+USE FROM Identification_assignment_arm; -- ISO/TS 10303-1021
 
+   
 TYPE alias_identification_item = EXTENSIBLE GENERIC_ENTITY SELECT;
 END_TYPE;
 
+   
 ENTITY Alias_identification
   SUBTYPE OF (Identification_assignment);
 DERIVE
   SELF\Identification_assignment.role: STRING :='alias';
 WHERE
-  WR1: SIZEOF (QUERY( item <* SELF\Identification_assignment.items |
-       NOT ('ALIAS_IDENTIFICATION_ARM.ALIAS_IDENTIFICATION_ITEM' IN TYPEOF(item) ) )) = 0;
+WR1: SIZEOF (QUERY( item <* SELF\Identification_assignment.items |
+NOT ('ALIAS_IDENTIFICATION_ARM.ALIAS_IDENTIFICATION_ITEM' IN TYPEOF(item) ) )) = 0;
 END_ENTITY;
   
 END_SCHEMA;
+

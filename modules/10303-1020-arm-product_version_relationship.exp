@@ -1,22 +1,27 @@
-(* ISO/TC184/SC4 WG12N1129 - ISO/TS - 10303-1020 Product version relationship - EXPRESS ARM *)
-   
-SCHEMA Product_version_relationship_arm;
+(*
+ISO TC184/SC4/WG12 N1129 - ISO/TS 10303-1020 Product version relationship - EXPRESS ARM
+*) 
 
-USE FROM Product_version_arm;  -- ISO/TS 10303-1018
+
+SCHEMA Product_version_relationship_arm; 
+
+USE FROM Product_version_arm;    -- ISO/TS 10303-1018
+
 
 ENTITY Product_version_relationship;
+  relation_type : STRING;
+  description : OPTIONAL STRING;
   relating_version : Product_version;
-  related_version  : Product_version;
-  relation_type    : STRING;
-  description      : OPTIONAL STRING;
+  related_version : Product_version;
 WHERE
-WR1:  relating_version :<>: related_version;
+  WR1: relating_version :<>: related_version;
 END_ENTITY;
 
 ENTITY Supplied_part_relationship
   SUBTYPE OF (Product_version_relationship);
 WHERE
-WR1:  SELF\Product_version_relationship.relation_type IN ['supplied item', 'supplied document'];
+  WR1: SELF\Product_version_relationship.relation_type IN ['supplied item', 'supplied document'];
 END_ENTITY;
 
-END_SCHEMA;
+END_SCHEMA;  -- Product_version_relationship_arm
+

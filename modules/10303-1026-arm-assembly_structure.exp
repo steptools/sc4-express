@@ -1,4 +1,4 @@
-(* ISO/TC184/SC4 WG12N1135 - ISO/TS - 10303-1026 Assembly structure - EXPRESS ARM *)
+(* ISO/TC184/SC4 WG12N2113 - ISO/TS - 10303-1026 Assembly structure - EXPRESS ARM *)
    
 SCHEMA Assembly_structure_arm;
 
