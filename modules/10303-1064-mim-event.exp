@@ -3,32 +3,29 @@
 SCHEMA Event_mim;
 
 USE FROM Date_time_assignment_mim;           -- ISO 10303-1014
-USE FROM Value_with_unit_mim;			   -- ISO 10303-1054
+USE FROM Value_with_unit_mim;                -- ISO 10303-1054
 USE FROM date_time_schema                    -- ISO 10303-41
   (event_occurrence,
    relative_event_occurrence,
    event_occurrence_relationship);
 USE FROM management_resources_schema         -- ISO 10303-41
   (event_occurrence_assignment);
-USE FROM Date_time_mim;        -- ISO 10303-1010
+USE FROM Date_time_mim;                      -- ISO 10303-1010
    
 TYPE event_occurrence_item = EXTENSIBLE SELECT;
 END_TYPE;
 
-   
 TYPE event_occurrence_date_item = SELECT
   BASED_ON date_item WITH (event_occurrence);
 END_TYPE;
 
-   
 TYPE event_occurrence_date_and_time_item = SELECT 
   BASED_ON date_and_time_item WITH (event_occurrence);
 END_TYPE;
 
-   
 ENTITY applied_event_occurrence_assignment
   SUBTYPE OF (event_occurrence_assignment);
   items : SET [1:?] of event_occurrence_item;
 END_ENTITY;
-END_SCHEMA;
 
+END_SCHEMA;
