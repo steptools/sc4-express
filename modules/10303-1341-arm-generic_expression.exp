@@ -1,11 +1,23 @@
-(* 
-   $Id$
-   ISO/TC184/SC4 WG12N1793 - ISO/CD-TS 10303-1341 Generic-expression - Express ARM 
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2552 - ISO/TS 10303-1341 Generic expression - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1793
 *)
 
 SCHEMA Generic_expression_arm;
 
-USE FROM Expression_arm;
+ENTITY Binary_generic_expression
+ABSTRACT SUPERTYPE
+SUBTYPE OF(Generic_expression);
+	operands: LIST [2:2] OF Generic_expression;
+END_ENTITY;
+
+
+ENTITY Environment;
+	syntactic_representation: Generic_variable;
+	semantics: Variable_semantics;
+END_ENTITY;
+
 
 ENTITY Generic_expression
 ABSTRACT SUPERTYPE OF(ONEOF(Simple_generic_expression,
@@ -16,15 +28,12 @@ WHERE
 WR1: Is_Acyclic(SELF);
 END_ENTITY;
 
-ENTITY Simple_generic_expression
-ABSTRACT SUPERTYPE OF (ONEOF(Generic_literal, Generic_variable))
-SUBTYPE OF (Generic_expression);
-END_ENTITY;
 
 ENTITY Generic_literal
 ABSTRACT SUPERTYPE
 SUBTYPE OF (Simple_generic_expression);
 END_ENTITY; 
+
 
 ENTITY Generic_variable
 ABSTRACT SUPERTYPE OF(Variable)
@@ -33,33 +42,6 @@ INVERSE
 	interpretation : Environment FOR syntactic_representation;
 END_ENTITY;
 
-ENTITY Variable
-ABSTRACT SUPERTYPE OF (ONEOF (Numeric_variable,
-				Boolean_variable,
-				String_variable))
-SUBTYPE OF(Generic_variable);
-END_ENTITY;
-
-ENTITY Variable_semantics
-ABSTRACT SUPERTYPE;
-END_ENTITY;
-
-ENTITY Environment;
-	syntactic_representation: Generic_variable;
-	semantics: Variable_semantics;
-END_ENTITY;
-
-ENTITY Unary_generic_expression
-ABSTRACT SUPERTYPE
-SUBTYPE OF(Generic_expression);
-	operand: Generic_expression;
-END_ENTITY;
-
-ENTITY Binary_generic_expression
-ABSTRACT SUPERTYPE
-SUBTYPE OF(Generic_expression);
-	operands: LIST [2:2] OF Generic_expression;
-END_ENTITY;
 
 ENTITY Multiple_arity_generic_expression
 ABSTRACT SUPERTYPE
@@ -68,9 +50,29 @@ SUBTYPE OF(Generic_expression);
 END_ENTITY;
 
 
-FUNCTION Is_Acyclic (arg: Generic_expression): BOOLEAN;
-RETURN (Acyclic (arg, []));
-END_FUNCTION ; 
+ENTITY Simple_generic_expression
+ABSTRACT SUPERTYPE OF (ONEOF(Generic_literal, Generic_variable))
+SUBTYPE OF (Generic_expression);
+END_ENTITY;
+
+
+ENTITY Unary_generic_expression
+ABSTRACT SUPERTYPE
+SUBTYPE OF(Generic_expression);
+	operand: Generic_expression;
+END_ENTITY;
+
+
+ENTITY Variable
+ABSTRACT SUPERTYPE
+SUBTYPE OF(Generic_variable);
+END_ENTITY;
+
+
+ENTITY Variable_semantics
+ABSTRACT SUPERTYPE;
+END_ENTITY;
+
 
 FUNCTION Acyclic (arg1: Generic_expression; 
 			arg2: SET OF Generic_expression): BOOLEAN;
@@ -120,6 +122,10 @@ THEN
 END_IF;
 
 END_FUNCTION; 
+
+FUNCTION Is_Acyclic (arg: Generic_expression): BOOLEAN;
+RETURN (Acyclic (arg, []));
+END_FUNCTION ; 
 
 FUNCTION Used_variables (arg : Generic_expression) : 
 			SET OF Generic_variable;
