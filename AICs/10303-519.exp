@@ -1,3 +1,8 @@
+(*
+    The following EXPRESS is for ISO 10303-519:2000 Technical Corrigendum 1
+
+    This is document ISO TC184/SC4/WG12 N532
+*)
 
 SCHEMA aic_geometric_tolerances;
 
@@ -5,8 +10,10 @@ SCHEMA aic_geometric_tolerances;
   (derived_unit,
   named_unit);
 
+ USE FROM product_property_definition_schema         --ISO 10303-41
+   (shape_aspect_relationship);
 
- USE FROM shape_aspect_definition_schema             -- ISO 10303-47
+ USE FROM shape_aspect_definition_schema             --ISO 10303-47
   (apex,
   centre_of_symmetry,
   composite_shape_aspect,
@@ -121,9 +128,13 @@ WHERE
 END_ENTITY;
 
 ENTITY position_tolerance
-  SUBTYPE OF (geometric_tolerance_with_datum_reference);
+  SUBTYPE OF (geometric_tolerance);
 WHERE
-  WR1:  SIZEOF(SELF\geometric_tolerance_with_datum_reference.datum_system)<=3;
+  WR1:  ( NOT ('AIC_GEOMETRIC_TOLERANCES.' +
+        'GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE' IN TYPEOF (SELF)))
+        OR
+        (SIZEOF(SELF\geometric_tolerance_with_datum_reference.
+        datum_system) <= 3);
 END_ENTITY;
 
 ENTITY roundness_tolerance
