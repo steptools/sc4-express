@@ -1,0 +1,28 @@
+(*
+   $Id$
+   WG12N 1665 - ISO/CD-TS 10303-1132 Associative text - EXPRESS MIM 
+*)
+
+SCHEMA Associative_text_mim;
+
+USE FROM Appearance_assignment_mim;
+USE FROM Curve_appearance_mim;
+USE FROM Text_appearance_mim;
+
+USE FROM Construction_geometry_mim;
+USE FROM Elemental_geometric_shape_mim;
+USE FROM Shape_property_assignment_mim;
+
+USE FROM draughting_element_schema (
+  leader_curve);
+
+USE FROM aic_associative_draughting_elements;
+
+USE FROM aic_draughting_annotation;
+
+USE FROM aic_draughting_elements;
+
+USE FROM presentation_definition_schema;
+
+
+END_SCHEMA;
