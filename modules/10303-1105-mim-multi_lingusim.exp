@@ -1,16 +1,17 @@
 (* 
    $ID: mim.exp,v 1.3 2003/01/08 08:54:20 rugarcia Exp $
-   ISO/TC184/SC4 WG12N1752 - ISO/CD-TS 10303-1105 Multi_linguism - Express MIM 
+   ISO/TC184/SC4 WG12N2224 - ISO/CD-TS 10303-1105 Multi_linguism - Express MIM 
 *)
+
 
 SCHEMA Multi_linguism_mim;
 
 USE FROM management_resources_schema (
 	attribute_classification_assignment,
-	attribute_value_assignment);	-- ISO 10303-41
+	attribute_value_assignment);
 
 USE FROM group_schema (
-	group);	-- ISO 10303-41
+	group);
 
 TYPE attribute_language_item = EXTENSIBLE GENERIC_ENTITY SELECT (multi_language_attribute_assignment);
 END_TYPE;
@@ -59,5 +60,18 @@ SIZEOF(QUERY(ata <* USEDIN(ci, 'MULTI_LINGUISM_MIM.ATTRIBUTE_LANGUAGE_ASSIGNMENT
  (ata\attribute_classification_assignment.attribute_name= SELF\attribute_value_assignment.attribute_name) AND 
  (ata\attribute_classification_assignment.assigned_class :=: translation_language) ))>0 )) =0;
 END_ENTITY; 
+
+
+RULE restrict_language_assignment_per_attribute FOR (attribute_language_assignment);
+WHERE
+WR1: SIZEOF ( QUERY ( ala1 <* attribute_language_assignment |
+	SIZEOF(QUERY( it <* ala1.items |
+	   SIZEOF ( QUERY ( ala2 <* USEDIN ( it ,'MULTI_LINGUISM_MIM.ATTRIBUTE_LANGUAGE_ASSIGNMENT.ITEMS' ) | 
+		( ala1\attribute_classification_assignment.attribute_name = ala2\attribute_classification_assignment.attribute_name ) AND 
+		( ala1\attribute_classification_assignment.assigned_class :=: ala2\attribute_classification_assignment.assigned_class )
+		 )) >1 
+	   )) >0 
+	)) =0;
+END_RULE;
 
 END_SCHEMA;
