@@ -1,0 +1,52 @@
+(* THIS IS DOCUMENT ISO TC184/SC4/WG12 N1389 *)
+
+SCHEMA assembly_feature_definition_mim;
+
+USE FROM product_definition_schema
+    (product_definition);
+USE FROM product_property_definition_schema
+    (shape_aspect_relationship);
+USE FROM product_property_representation_schema;
+USE FROM representation_schema
+    (representation_relationship_with_transformation,
+     transformation,
+     item_defined_transformation,
+     functionally_defined_transformation );
+USE FROM assembly_feature_relationship_schema;
+USE FROM product_property_feature_definition_mim
+    (product_property_instanced_feature);
+
+ENTITY instanaced_assemlby_feature
+  SUBTYPE OF (product_property_instanced_feature);
+WHERE
+WR1: 'PRODUCT_DEFINITION' IN TYPEOF (SELF\shape_aspect.of_shape.definition);
+END_ENTITY;--instanaced_assemlby_feature
+
+ENTITY instanced_assembly_feature_relationship
+  SUBTYPE OF (shape_aspect_relationship);
+  SELF\shape_aspect_relationship.relating_shape_aspect :
+                                           instanaced_assemlby_feature;
+  SELF\shape_aspect_relationship.related_shape_aspect  :
+                                           instanaced_assemlby_feature;
+WHERE
+WR1: SELF\shape_aspect_relationship.relating_shape_aspect :<>: 
+     SELF\shape_aspect_relationship.related_shape_aspect;
+WR2: SELF\shape_aspect_relationship.relating_shape_aspect.of_shape.definition :<>: 
+     SELF\shape_aspect_relationship.related_shape_aspect.of_shape.definition;
+END_ENTITY;-- instanced_assembly_feature_relationship
+
+ENTITY instanced_assembly_feature_relationship_representation_association
+SUBTYPE OF(shape_aspect_relationship_representation_association);
+  SELF\shape_aspect_relationship_representation_association.
+  represented_shape_aspect_relationship : instanced_assembly_feature_relationship;
+  SELF\shape_aspect_relationship_representation_association.
+  representing_representation_relationship : representing_relationship;
+DERIVE
+  definition        : instanced_assembly_feature_relationship 
+                    := SELF\shape_aspect_relationship_representation_association.
+                       represented_shape_aspect_relationship;
+  used_representation: representing_relationship
+                     := SELF\shape_aspect_relationship_representation_association.
+                        representing_representation_relationship;
+END_ENTITY;-- instanced_assembly_feature_relationship_representation_association
+END_SCHEMA;
