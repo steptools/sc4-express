@@ -1,0 +1,20 @@
+(*
+   $Id$
+   ISO/TC184/SC4 WG12N1757 - ISO/CD-TS 10303-1114 Classification_assignment - EXPRESS ARM
+*)
+
+SCHEMA Classification_assignment_arm;
+
+USE FROM Class_arm;
+
+TYPE classification_item = EXTENSIBLE GENERIC_ENTITY SELECT;
+END_TYPE;
+
+ENTITY Classification_assignment;
+  assigned_class  : Class;
+  items       : SET [1:?] OF classification_item;
+  role        : OPTIONAL STRING;
+END_ENTITY;
+
+
+END_SCHEMA;
