@@ -1,5 +1,6 @@
-(* ISO/TC184/SC4 WG12N1323 - ISO/CD-TS - 10303-1006 EXPRESS MIM
-$Id$ *)
+(* $Id$ 
+ISO/TC184/SC4 WG12N1905 - ISO/TS 10303-1006 Foundation representation EXPRESS MIM
+*)
 
 SCHEMA Foundation_representation_mim;
 

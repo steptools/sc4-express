@@ -1,6 +1,8 @@
-(* ISO/TC184/SC4 WG12N1247 - ISO/TS - 10303-1040  Process property assignment- EXPRESS MIM *)
+(* 
+ $Id$
+ISO/TC184/SC4 WG12N1247 - ISO/TS 10303-1040  Process property assignment- EXPRESS MIM *)
 
-SCHEMA process_property_assignment_mim;
+SCHEMA Process_property_assignment_mim;
 
 USE FROM Activity_method_mim;
 

@@ -2,9 +2,11 @@
 
 SCHEMA Approval_mim;
   
-USE FROM Date_time_mim; -- ISO 10303-1010
+USE FROM Date_time_mim; 
 
-USE FROM Person_organization_mim; -- 10303-1011
+USE FROM Date_time_assignment_mim;
+
+USE FROM Person_organization_mim; 
   
 USE FROM approval_schema -- 10303-41
     (approval,
@@ -14,12 +16,18 @@ USE FROM approval_schema -- 10303-41
      approval_role,
      approval_status);
 
-USE FROM management_resources_schema -- ISO 10303-41
+USE FROM management_resources_schema 
 	(approval_assignment );
    
-TYPE approval_item = EXTENSIBLE SELECT; 
+TYPE approval_item = EXTENSIBLE GENERIC_ENTITY SELECT; 
 END_TYPE;
-  
+
+TYPE date_item_approval = SELECT BASED_ON date_item WITH (approval_person_organization);
+END_TYPE;
+
+TYPE date_and_time_item_approval = SELECT BASED_ON date_and_time_item WITH (approval_person_organization);
+END_TYPE;
+
 ENTITY applied_approval_assignment
   SUBTYPE OF (approval_assignment);
   items : SET [1:?] OF approval_item;

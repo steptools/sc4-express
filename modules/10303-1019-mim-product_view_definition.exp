@@ -1,16 +1,36 @@
 (* 
   $Id$
-ISO/TC184/SC4 WG12N1109 - ISO/TS 10303-1019 Product view definition - EXPRESS MIM *)
+ISO/TC184/SC4 WG12N1533 - ISO/TS 10303-1019 Product view definition - EXPRESS MIM *)
      
 SCHEMA Product_view_definition_mim;
 
-USE FROM Product_version_mim; -- ISO 10303-1018
+USE FROM Product_version_mim;
 
-USE FROM product_definition_schema -- ISO 10303-41
+USE FROM product_definition_schema 
   (product_definition,
    product_definition_context_association);
-USE FROM application_context_schema -- ISO 10303-41
+
+USE FROM application_context_schema
   (product_definition_context);
+
+RULE valid_context_partitions FOR (product_definition);
+WHERE
+WR1: SIZEOF (QUERY(pd <* product_definition | initial_context_is_additional(pd))) = 0;
+END_RULE;
+
+FUNCTION initial_context_is_additional (pd: product_definition): BOOLEAN;
+LOCAL
+  initial_context: product_definition_context;
+  context_associations: SET OF product_definition_context_association;
+END_LOCAL;
+
+initial_context := pd.frame_of_reference;
+context_associations := QUERY(pdca <* USEDIN(pd, 
+'PRODUCT_VIEW_DEFINITION_MIM.PRODUCT_DEFINITION_CONTEXT_ASSOCIATION.DEFINITION')|
+(pdca.role.name='additional context') AND (pdca.frame_of_reference :=: initial_context));
+
+RETURN (SIZEOF(context_associations) > 0);
+END_FUNCTION;
 
 END_SCHEMA;
 

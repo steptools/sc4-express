@@ -1,4 +1,6 @@
-(* ISO/TC184/SC4 WG12N1320 - ISO/TS - 10303-1004 Elemental geometric shape - EXPRESS MIM *)
+(* 
+$Id$
+ISO/TC184/SC4 WG12N1902 - ISO/TS 10303-1004 Elemental geometric shape - EXPRESS MIM *)
    
 SCHEMA Elemental_geometric_shape_mim;
   

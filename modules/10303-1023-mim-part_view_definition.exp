@@ -1,8 +1,21 @@
-(* ISO/TC184/SC4 WG12N1118 - ISO/TS - 10303-1023 Part view definition - EXPRESS MIM *)
+(* $Id$
+ISO/TC184/SC4 WG12N1527 - ISO/TS 10303-1023 Part view definition - EXPRESS MIM *)
         
 SCHEMA Part_view_definition_mim;
 
-USE FROM Part_and_version_identification_mim; 	-- ISO 10303-1022
-USE FROM Product_view_definition_mim; 		-- ISO 10303-1018
+USE FROM Part_and_version_identification_mim;
+USE FROM Product_view_definition_mim;
+
+RULE restrict_part_definition_category FOR (product_definition);
+LOCAL
+  part_definitions: SET OF product_definition := [];
+END_LOCAL;
+  part_definitions :=  QUERY( pd <* product_definition | 
+  (pd.frame_of_reference.name = 'part definition'));
+WHERE
+WR1: SIZEOF( QUERY( pd <* part_definitions | 
+(SIZEOF( QUERY( prpc <* USEDIN(pd.formation.of_product, 'PART_VIEW_DEFINITION_MIM.PRODUCT_RELATED_PRODUCT_CATEGORY.PRODUCTS') | 
+  prpc.name IN ['part','raw material','tool'] )) = 0 ) )) = 0;
+END_RULE;
 
 END_SCHEMA;
