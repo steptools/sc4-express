@@ -1,0 +1,12 @@
+(*  ISO/TC184/SC4 WG12N1960 - ISO/CD-TS - 10303-1077 class_of_product - EXPRESS MIM*)
+
+SCHEMA Class_of_product_mim;
+
+USE FROM Class_mim;    --  ISO/TS 10303-1070
+USE FROM Product_version_mim;    --  ISO/TS 10303-1018
+
+ENTITY class_of_product
+  SUBTYPE OF (product_definition_formation, class);
+END_ENTITY;
+
+END_SCHEMA;
