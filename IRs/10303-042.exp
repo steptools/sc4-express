@@ -1,3 +1,5 @@
+(* Document WG12 N415 - EXPRESS listing of part 42, as amended
+    by TC2 (WG12 N414) *)
 SCHEMA geometry_schema;
    REFERENCE FROM representation_schema
      (representation,
@@ -909,18 +911,17 @@ direction;
   LOCAL
     u      : LIST [2:3] OF direction;
     factor : REAL;
+    d1, d2 : direction;
   END_LOCAL;
   
   IF (dim = 3) THEN
-    u[3] := NVL(normalise(axis3),  dummy_gri || 
-direction([0.0,0.0,1.0]));
-    u[1] := first_proj_axis(u[3],axis1);
-    u[2] := second_proj_axis(u[3],u[1],axis2);
+    d1 := NVL(normalise(axis3),  dummy_gri || direction([0.0,0.0,1.0]));
+    d2 := first_proj_axis(d1,axis1);
+    u := [d2, second_proj_axis(d1,d2,axis2), d1];
   ELSE
-    u[3] := ?;
-    IF EXISTS(axis1) THEN
-      u[1] := normalise(axis1);
-      u[2] := orthogonal_complement(u[1]);
+     IF EXISTS(axis1) THEN
+      d1 := normalise(axis1);
+      u := [d1, orthogonal_complement(d1)];
       IF EXISTS(axis2) THEN
         factor := dot_product(axis2,u[2]);
         IF (factor < 0.0) THEN
@@ -930,60 +931,47 @@ direction([0.0,0.0,1.0]));
       END_IF;
     ELSE
       IF EXISTS(axis2) THEN
-        u[2] := normalise(axis2);
-        u[1] := orthogonal_complement(u[2]);
+        d1 := normalise(axis2);
+        u := [orthogonal_complement(d1), d1]; 
         u[1].direction_ratios[1] := -u[1].direction_ratios[1];
-        u[1].direction_ratios[2] := - u[1].direction_ratios[2];
+        u[1].direction_ratios[2] := -u[1].direction_ratios[2];
       ELSE
-        u[1].name := '' ;
-        u[2].name := '' ;
-        u[1].direction_ratios[1] := 1.0;
-        u[1].direction_ratios[2] := 0.0;
-        u[2].direction_ratios[1] := 0.0;
-        u[2].direction_ratios[2] := 1.0;
+	u := [dummy_gri || direction([1.0, 0.0]), dummy_gri ||
+						direction([0.0, 1.0])];
       END_IF;
     END_IF;
   END_IF;
   RETURN(u);
 END_FUNCTION;
 
-FUNCTION build_2axes(ref_direction : direction) : LIST [2:2] OF
-direction;
-  LOCAL
-    u : LIST[2:2] OF direction;
-  END_LOCAL;
-  
-  u[1] := NVL(normalise(ref_direction), dummy_gri || 
-direction([1.0,0.0]));
-  u[2] := orthogonal_complement(u[1]);
-  RETURN(u);
-END_FUNCTION;
+ FUNCTION build_2axes(ref_direction : direction) : LIST [2:2] OF direction;
+   LOCAL
+     d : direction := NVL(normalise(ref_direction),
+                          dummy_gri || direction([1.0,0.0]));
+   END_LOCAL;
+
+   RETURN([d, orthogonal_complement(d)]);
+ END_FUNCTION;
 
 FUNCTION build_axes(axis, ref_direction : direction) :
-                                         LIST [3:3] OF direction;
-  LOCAL
-    u : LIST[3:3] OF direction;
-    d : direction;
-  END_LOCAL;
-
-     d := NVL(normalise(axis), dummy_gri || direction([0.0,0.0,1.0]));  
-  u[1] := first_proj_axis(d,ref_direction);
-  u[2] := normalise(cross_product(d,u[1])).orientation;
-  u[3] := d;
- RETURN(u);
+                                          LIST [3:3] OF direction;
+   LOCAL
+     d1, d2 : direction;
+   END_LOCAL;
+  d1 := NVL(normalise(axis), dummy_gri || direction([0.0,0.0,1.0]));
+  d2 := first_proj_axis(d1, ref_direction);
+  RETURN([d2, normalise(cross_product(d1,d2)).orientation, d1]);
 END_FUNCTION;
 
 FUNCTION orthogonal_complement(vec : direction) : direction;
   LOCAL
     result :  direction ;
   END_LOCAL;
-  
+
   IF (vec.dim <> 2) OR NOT EXISTS (vec) THEN
     RETURN(?);
   ELSE
-    result.name := '' ;
-    result.direction_ratios[1] := -vec.direction_ratios[2];
-    result.direction_ratios[2] := vec.direction_ratios[1];
+    result := dummy_gri || direction([-vec.direction_ratios[2], vec.direction_ratios[1]]);
     RETURN(result);
   END_IF;
 END_FUNCTION;
@@ -1059,22 +1047,17 @@ FUNCTION cross_product (arg1, arg2 : direction) : vector;
     BEGIN
       v1  := normalise(arg1).direction_ratios;
       v2  := normalise(arg2).direction_ratios;
-      res.name := '' ;
-      res.direction_ratios[1] := (v1[2]*v2[3] - v1[3]*v2[2]);
-      res.direction_ratios[2] := (v1[3]*v2[1] - v1[1]*v2[3]);
-      res.direction_ratios[3] := (v1[1]*v2[2] - v1[2]*v2[1]);
+      res := dummy_gri || direction([(v1[2]*v2[3] - v1[3]*v2[2]),
+	    (v1[3]*v2[1] - v1[1]*v2[3]), (v1[1]*v2[2] - v1[2]*v2[1])]);
       mag := 0.0;
       REPEAT i := 1 TO 3;
         mag := mag + res.direction_ratios[i]*res.direction_ratios[i];
       END_REPEAT;
       IF (mag > 0.0) THEN
-        result.orientation := res;
-        result.magnitude := SQRT(mag);
+        result := dummy_gri || vector(res, SQRT(mag));
       ELSE
-        result.orientation := arg1;
-        result.magnitude := 0.0;
+        result := dummy_gri || vector(arg1, 0.0);
       END_IF;
-      result.name := '' ;
       RETURN(result);
     END;
   END_IF;
@@ -1126,17 +1109,15 @@ FUNCTION normalise (arg : vector_or_direction) : vector_or_direction;
      ndim := arg.dim;
      IF 'GEOMETRY_SCHEMA.VECTOR' IN TYPEOF(arg) THEN
        BEGIN
-         vec := arg;
-         v := arg.orientation;
-         
+             v := dummy_gri || direction(arg.orientation.direction_ratios);
          IF arg.magnitude = 0.0 THEN
            RETURN(?);
          ELSE
-           vec.magnitude := 1.0;
+          vec := dummy_gri || vector (v, 1.0);
          END_IF;
        END;
      ELSE
-       v := arg;
+       v := dummy_gri || direction (arg.direction_ratios);
      END_IF;
      mag := 0.0;
      REPEAT  i := 1 TO ndim;
@@ -1167,15 +1148,15 @@ FUNCTION scalar_times_vector (scalar : REAL; vec : vector_or_direction)
     mag    : REAL;
     result : vector;
   END_LOCAL;
-  
+
   IF NOT EXISTS (scalar) OR NOT EXISTS (vec) THEN
     RETURN (?) ;
    ELSE
     IF 'GEOMETRY_SCHEMA.VECTOR' IN TYPEOF (vec) THEN
-      v   := vec.orientation;
+      v   := dummy_gri || direction(vec.orientation.direction_ratios);
       mag := scalar * vec.magnitude;
     ELSE
-      v   := vec;
+      v   := dummy_gri || direction(vec.direction_ratios);
       mag := scalar;
     END_IF;
     IF (mag < 0.0 ) THEN
@@ -1184,9 +1165,7 @@ FUNCTION scalar_times_vector (scalar : REAL; vec : vector_or_direction)
       END_REPEAT;
       mag := -mag;
     END_IF;
-    result.name := '' ;
-    result.orientation := normalise(v);
-    result.magnitude   := mag;
+    result := dummy_gri || vector(normalise(v), mag);
   END_IF;
   RETURN (result);
 END_FUNCTION;
@@ -1198,7 +1177,7 @@ FUNCTION vector_sum(arg1, arg2 : vector_or_direction) : vector;
     mag, mag1, mag2 : REAL;
     ndim            : INTEGER;
   END_LOCAL;
-  
+
   IF ((NOT EXISTS (arg1)) OR (NOT EXISTS (arg2))) OR (arg1.dim <> arg2.dim)
       THEN
     RETURN (?) ;
@@ -1223,22 +1202,19 @@ FUNCTION vector_sum(arg1, arg2 : vector_or_direction) : vector;
       vec2 := normalise (vec2);
       ndim := SIZEOF(vec1.direction_ratios);
       mag := 0.0;
+      res := dummy_gri || direction(vec1.direction_ratios);
       REPEAT i := 1 TO ndim;
         res.direction_ratios[i] := mag1*vec1.direction_ratios[i] +
-                                   mag2*vec2.direction_ratios[i];
+                                     mag2*vec2.direction_ratios[i];
         mag := mag + (res.direction_ratios[i]*res.direction_ratios[i]);
       END_REPEAT;
-      result.name := '' ;
       IF (mag > 0.0 ) THEN
-        result.magnitude := SQRT(mag);
-        result.orientation := res;
+      result := dummy_gri || vector( res, SQRT(mag));
       ELSE
-        result.magnitude := 0.0;
-        result.orientation := vec1;
+        result := dummy_gri || vector( vec1,  0.0);
       END_IF;
     END;
   END_IF;
-  result.name := '' ;
   RETURN (result);
 END_FUNCTION;
 
@@ -1249,7 +1225,7 @@ FUNCTION vector_difference(arg1, arg2 : vector_or_direction) : vector;
     mag, mag1, mag2 : REAL;
     ndim            : INTEGER;
   END_LOCAL;
-  
+
   IF ((NOT EXISTS (arg1)) OR (NOT EXISTS (arg2))) OR (arg1.dim <> arg2.dim)
       THEN
     RETURN (?) ;
@@ -1273,72 +1249,57 @@ FUNCTION vector_difference(arg1, arg2 : vector_or_direction) : vector;
       vec2 := normalise (vec2);
       ndim := SIZEOF(vec1.direction_ratios);
       mag := 0.0;
+      res := dummy_gri || direction(vec1.direction_ratios);
       REPEAT i := 1 TO ndim;
-        res.direction_ratios[i] := mag1*vec1.direction_ratios[i] -
-                                        mag2*vec2.direction_ratios[i];
+        res.direction_ratios[i] := mag1*vec1.direction_ratios[i] +
+                                    mag2*vec2.direction_ratios[i];
         mag := mag + (res.direction_ratios[i]*res.direction_ratios[i]);
       END_REPEAT;
       IF (mag > 0.0 ) THEN
-        result.magnitude := SQRT(mag);
-        result.orientation := res;
+      result := dummy_gri || vector( res, SQRT(mag));
       ELSE
-        result.magnitude := 0.0;
-        result.orientation := vec1;
+        result := dummy_gri || vector( vec1,  0.0);
       END_IF;
     END;
   END_IF;
-  result.name := '' ;
   RETURN (result);
 END_FUNCTION;
 
 FUNCTION default_b_spline_knot_mult(degree, up_knots : INTEGER;
-                                          uniform : knot_type) 
-                                                  : LIST [2:?] OF INTEGER;
-   LOCAL
-     knot_mult : LIST [1:up_knots] OF INTEGER;
-   END_LOCAL;
-   
-   REPEAT i := 1 TO up_knots;
-     knot_mult[i] := 0;
-   END_REPEAT;
-      
-   IF uniform = uniform_knots THEN
-     REPEAT i := 1 TO up_knots;
-       knot_mult[i] := 1;
-     END_REPEAT;
-   END_IF;
-      
-   IF uniform = quasi_uniform_knots THEN
-     knot_mult[1] := degree + 1;
-     knot_mult[up_knots] := degree + 1;
-     
-     REPEAT i := 2 TO (up_knots - 1);
-       knot_mult[i] := 1;
-     END_REPEAT;
-   END_IF;
-      
-   IF uniform = piecewise_bezier_knots THEN
-     knot_mult[1] := degree +1;
-     knot_mult[up_knots] := degree + 1;
-     
-     REPEAT i := 2 TO (up_knots - 1);
-       knot_mult[i] := degree;
-     END_REPEAT;
-   END_IF;
-   RETURN(knot_mult);
- END_FUNCTION;
+                                         uniform : knot_type)
+                                                 : LIST [2:?] OF INTEGER;
+  LOCAL
+    knot_mult : LIST [1:up_knots] OF INTEGER;
+  END_LOCAL;
+
+  IF uniform = uniform_knots THEN
+    knot_mult := [1:up_knots];
+  ELSE
+    IF uniform = quasi_uniform_knots THEN
+      knot_mult := [1:up_knots];
+      knot_mult[1] := degree + 1;
+      knot_mult[up_knots] := degree + 1;
+    ELSE
+      IF uniform = piecewise_bezier_knots THEN
+        knot_mult := [degree:up_knots];
+        knot_mult[1] := degree + 1;
+        knot_mult[up_knots] := degree + 1;
+      ELSE
+        knot_mult := [0:up_knots];
+      END_IF;
+    END_IF;
+  END_IF;
+  RETURN(knot_mult);
+END_FUNCTION;
 
 FUNCTION default_b_spline_knots(degree,up_knots : INTEGER;
                               uniform : knot_type)
                                       : LIST [2:?] OF parameter_value;
   LOCAL
-    knots  : LIST [1:up_knots] OF parameter_value;
+    knots  : LIST [1:up_knots] OF parameter_value := [0:up_knots];
     ishift : INTEGER := 1;
   END_LOCAL;
-  
-  REPEAT i := 1 TO up_knots;
-    knots[i] := 0;
-  END_REPEAT;
+
   IF (uniform = uniform_knots) THEN
      ishift := degree + 1;
   END_if;
@@ -1351,41 +1312,25 @@ FUNCTION default_b_spline_knots(degree,up_knots : INTEGER;
     END_REPEAT;
   END_IF;
   RETURN(knots);
- END_FUNCTION;
+END_FUNCTION;
 
 FUNCTION default_b_spline_curve_weights(up_cp : INTEGER)
-                                           : ARRAY [0:up_cp] OF REAL;
-   LOCAL
-     weights : ARRAY [0:up_cp] OF REAL;
-   END_LOCAL;
-   
-   REPEAT i := 0 TO up_cp;
-     weights[i] := 1;
-   END_REPEAT;
-   RETURN(weights);
- END_FUNCTION;
+                                          : ARRAY [0:up_cp] OF REAL;
+  RETURN([1:up_cp + 1]);
+END_FUNCTION;
 
 FUNCTION default_b_spline_surface_weights(u_upper, v_upper: INTEGER)
                                       : ARRAY [0:u_upper] OF 
                                         ARRAY [0:v_upper] OF REAL;
-   LOCAL
-     weights : ARRAY [0:u_upper] OF ARRAY [0:v_upper] OF REAL;
-   END_LOCAL;
-   
-   REPEAT i := 0 TO u_upper;
-     REPEAT j := 0 TO v_upper;
-       weights[i][j] := 1;
-     END_REPEAT;
-   END_REPEAT;
-   RETURN(weights);
- END_FUNCTION;
+   RETURN([[1:v_upper + 1]:u_upper +1]);
+END_FUNCTION;
 
 FUNCTION constraints_param_b_spline(degree, up_knots, up_cp : INTEGER;
                                                knot_mult : LIST OF INTEGER;
                         knots : LIST OF parameter_value) : BOOLEAN;
    LOCAL
      result  : BOOLEAN := TRUE;
-     k,l,sum : INTEGER;
+     k, sum  : INTEGER;
    END_LOCAL;
    
    (* Find sum of knot multiplicities. *)
@@ -1428,7 +1373,7 @@ FUNCTION constraints_param_b_spline(degree, up_knots, up_cp : INTEGER;
      END_IF;
    END_REPEAT;
    RETURN(result);
- END_FUNCTION;
+END_FUNCTION;
 
 FUNCTION curve_weights_positive(b: rational_b_spline_curve) : BOOLEAN;
    LOCAL
@@ -1545,8 +1490,8 @@ FUNCTION constraints_rectangular_composite_surface
    RETURN(TRUE);
  END_FUNCTION;
 
-FUNCTION list_to_array(lis : LIST [0:?] OF GENERIC : T; 
-                      low,u : INTEGER) : ARRAY[low:u] OF GENERIC : T;
+ FUNCTION list_to_array(lis : LIST [0:?] OF GENERIC : T;
+                      low,u : INTEGER) : ARRAY OF GENERIC : T;
    LOCAL
      n   : INTEGER;
      res : ARRAY [low:u] OF GENERIC : T;
@@ -1556,43 +1501,38 @@ FUNCTION list_to_array(lis : LIST [0:?] OF GENERIC : T;
    IF (n <> (u-low +1)) THEN
      RETURN(?);
    ELSE
-     REPEAT i := 1 TO n;
+     res := [lis[1] : n];
+     REPEAT i := 2 TO n;
        res[low+i-1] := lis[i];
      END_REPEAT;
      RETURN(res);
    END_IF;
  END_FUNCTION;
 
-FUNCTION make_array_of_array(lis : LIST[1:?] OF LIST [1:?] OF GENERIC : T;
+ FUNCTION make_array_of_array(lis : LIST[1:?] OF LIST [1:?] OF GENERIC : T;
                               low1, u1, low2, u2 : INTEGER):
-                 ARRAY[low1:u1] OF ARRAY [low2:u2] OF GENERIC : T;
+                 ARRAY OF ARRAY OF GENERIC : T;
    LOCAL
-     n1,n2 : INTEGER;
      res   : ARRAY[low1:u1] OF ARRAY [low2:u2] OF GENERIC : T;
-     resl  : LIST[1:?] OF ARRAY [low2:u2] OF GENERIC : T;
    END_LOCAL;
-   
-   (* Check input dimensions for consistency *)
-   n1 := SIZEOF(lis);
-   n2 := SIZEOF(lis[1]);
-   
-   IF (n1 <> (u1 -low1 + 1)) AND (n2 <> (u2 - low2 + 1)) THEN
-     RETURN(?);
+
+(* Check input dimensions for consistency *)
+   IF (u1-low1+1) <> SIZEOF(lis) THEN
+     RETURN (?);
    END_IF;
-      
-   REPEAT i := 1 TO n1;
-     IF (SIZEOF(lis[i]) <> n2) THEN
-       RETURN(?);
-     END_IF;
-   END_REPEAT;
+   IF (u2 - low2 + 1 ) <> SIZEOF(lis[1]) THEN
+     RETURN (?) ;
+   END_IF;
+(* Initialise res with values from lis[1] *)
+   res := [list_to_array(lis[1], low2, u2) : (u1-low1 + 1)];
+   REPEAT i := 2 TO HIINDEX(lis);
+     IF (u2-low2+1) <> SIZEOF(lis[i]) THEN
+       RETURN (?);
+     END_IF;     
+     res[low1+i-1] := list_to_array(lis[i], low2, u2);
+   END_REPEAT; 
    
-   (* Build a list of sub-arrays *)
-   REPEAT i := 1 TO  n1;
-     RESL[i] := list_to_array(lis[i],low2,u2);
-   END_REPEAT;
-      
-   res := list_to_array(resl,low1,u1);
-   RETURN(res);
+   RETURN (res);
  END_FUNCTION;
 
 END_SCHEMA; -- end GEOMETRY schema
@@ -1600,6 +1540,11 @@ END_SCHEMA; -- end GEOMETRY schema
  SCHEMA topology_schema;
    REFERENCE FROM geometry_schema;
    REFERENCE FROM representation_schema(representation_item);
+
+CONSTANT
+   dummy_tri : topological_representation_item := representation_item('')||
+                  topological_representation_item();
+END_CONSTANT;
 
 TYPE shell = SELECT
    (vertex_shell,
@@ -1876,112 +1821,125 @@ FUNCTION topology_reversed (an_item : reversible_topology)
 
 FUNCTION edge_reversed (an_edge : edge) : oriented_edge;
   LOCAL
-    the_reverse : oriented_edge;
+    the_reverse : oriented_edge; 
   END_LOCAL;
-  the_reverse.name := '' ;
-  the_reverse.edge_start := an_edge.edge_end ;
-  the_reverse.edge_end := an_edge.edge_start ;
+
   IF ('TOPOLOGY_SCHEMA.ORIENTED_EDGE' IN TYPEOF (an_edge) ) THEN
-    the_reverse.edge_element := an_edge\oriented_edge.edge_element ;
-    the_reverse.orientation := NOT (an_edge\oriented_edge.orientation) ;
+    the_reverse := dummy_tri ||
+            edge(an_edge.edge_end, an_edge.edge_start) ||
+            oriented_edge(an_edge\oriented_edge.edge_element,
+                       NOT (an_edge\oriented_edge.orientation)) ;
   ELSE
-    the_reverse.edge_element := an_edge ;
-    the_reverse.orientation :=  FALSE ;
+    the_reverse := dummy_tri ||
+            edge(an_edge.edge_end, an_edge.edge_start) ||
+            oriented_edge(an_edge, FALSE);
   END_IF;
   RETURN (the_reverse);
 END_FUNCTION;
 
 FUNCTION path_reversed (a_path : path) : oriented_path;
   LOCAL
-    the_reverse : oriented_path;
+    the_reverse : oriented_path ;
   END_LOCAL;
-  the_reverse.name := '' ;
-  the_reverse.edge_list := list_of_topology_reversed (a_path.edge_list) ;
   IF ('TOPOLOGY_SCHEMA.ORIENTED_PATH' IN TYPEOF (a_path) ) THEN
-    the_reverse.path_element := a_path\oriented_path.path_element ;
-    the_reverse.orientation := NOT(a_path\oriented_path.orientation);
+    the_reverse := dummy_tri ||
+       path(list_of_topology_reversed (a_path.edge_list)) ||
+          oriented_path(a_path\oriented_path.path_element,
+                          NOT(a_path\oriented_path.orientation)) ;
   ELSE
-    the_reverse.path_element := a_path ;
-    the_reverse.orientation := FALSE ;
+    the_reverse := dummy_tri ||
+                   path(list_of_topology_reversed (a_path.edge_list)) ||
+                       oriented_path(a_path, FALSE);
   END_IF;
- 
+
   RETURN (the_reverse);
 END_FUNCTION;
 
 FUNCTION face_bound_reversed (a_face_bound : face_bound) : face_bound;
   LOCAL
-    the_reverse : face_bound;
+    the_reverse : face_bound ;
   END_LOCAL;
-  the_reverse.name := '' ;
   IF ('TOPOLOGY_SCHEMA.FACE_OUTER_BOUND' IN TYPEOF (a_face_bound) ) THEN
-    the_reverse.bound := a_face_bound\face_bound.bound ;
-   the_reverse.orientation := NOT (a_face_bound\face_bound.orientation);
+    the_reverse := dummy_tri ||
+                     face_bound(a_face_bound\face_bound.bound,
+                          NOT (a_face_bound\face_bound.orientation))
+                           || face_outer_bound() ;
   ELSE
-    the_reverse.bound := a_face_bound.bound ;
-    the_reverse.orientation := NOT (a_face_bound.orientation);
+    the_reverse := dummy_tri ||
+               face_bound(a_face_bound.bound, NOT(a_face_bound.orientation));
   END_IF;
  RETURN (the_reverse);
 END_FUNCTION;
 
 FUNCTION face_reversed (a_face : face) : oriented_face;
   LOCAL
-    the_reverse : oriented_face;
+    the_reverse : oriented_face ;
   END_LOCAL;
-  the_reverse.name := '' ;
-  the_reverse.bounds := set_of_topology_reversed(a_face.bounds);
   IF ('TOPOLOGY_SCHEMA.ORIENTED_FACE' IN TYPEOF (a_face) ) THEN
-    the_reverse.face_element := a_face\oriented_face.face_element ;
-    the_reverse.orientation := NOT (a_face\oriented_face.orientation) ;
+    the_reverse := dummy_tri ||
+      face(set_of_topology_reversed(a_face.bounds)) ||
+         oriented_face(a_face\oriented_face.face_element,
+                          NOT (a_face\oriented_face.orientation)) ;
   ELSE
-    the_reverse.face_element := a_face ;
-    the_reverse.orientation :=  FALSE ;
+    the_reverse := dummy_tri ||
+      face(set_of_topology_reversed(a_face.bounds)) ||
+                              oriented_face(a_face, FALSE) ;
   END_IF;
      RETURN (the_reverse);
 END_FUNCTION;
 
 FUNCTION shell_reversed (a_shell : shell) : shell;
-  LOCAL
-    the_reverse : shell;
-  END_LOCAL;
+  IF ('TOPOLOGY_SCHEMA.OPEN_SHELL' IN TYPEOF (a_shell) ) THEN
+    RETURN (open_shell_reversed (a_shell));
+  ELSE
+    IF ('TOPOLOGY_SCHEMA.CLOSED_SHELL' IN TYPEOF (a_shell) ) THEN
+      RETURN (closed_shell_reversed (a_shell));
+    ELSE
+      RETURN (?);
+    END_IF;
+  END_IF;
+END_FUNCTION;
 
+FUNCTION closed_shell_reversed (a_shell : closed_shell) :
+                                      oriented_closed_shell;
+ LOCAL
+   the_reverse : oriented_closed_shell;
+ END_LOCAL;
+  IF ('TOPOLOGY_SCHEMA.ORIENTED_CLOSED_SHELL' IN TYPEOF (a_shell) ) THEN
+     the_reverse := dummy_tri ||
+                    connected_face_set (
+                       a_shell\connected_face_set.cfs_faces) ||
+                    closed_shell () || oriented_closed_shell(
+                       a_shell\oriented_closed_shell.closed_shell_element,
+                       NOT(a_shell\oriented_closed_shell.orientation));
+  ELSE
+     the_reverse := dummy_tri ||
+                   connected_face_set (
+                     a_shell\connected_face_set.cfs_faces) ||
+                   closed_shell () || oriented_closed_shell (a_shell, FALSE);
+  END_IF;
+  RETURN (the_reverse);
+END_FUNCTION;
+
+FUNCTION open_shell_reversed ( a_shell : open_shell) :
+                                        oriented_open_shell;
+  LOCAL
+    the_reverse : oriented_open_shell;
+  END_LOCAL;
   IF ('TOPOLOGY_SCHEMA.ORIENTED_OPEN_SHELL' IN TYPEOF (a_shell) ) THEN
-    the_reverse := representation_item ('') ||
-                   topological_representation_item () ||
-                   connected_face_set (set_of_topology_reversed (
-                   a_shell\connected_face_set.cfs_faces)) ||
+    the_reverse := dummy_tri ||
+                   connected_face_set (
+                       a_shell\connected_face_set.cfs_faces) ||
                    open_shell () || oriented_open_shell(
                      a_shell\oriented_open_shell.open_shell_element,
                        (NOT (a_shell\oriented_open_shell.orientation)));
   ELSE
-    IF ('TOPOLOGY_SCHEMA.OPEN_SHELL' IN TYPEOF (a_shell) ) THEN
-      the_reverse := representation_item ('') ||
-                   topological_representation_item () ||
-                   connected_face_set (set_of_topology_reversed (
-                   a_shell\connected_face_set.cfs_faces)) ||
+    the_reverse := dummy_tri ||
+                   connected_face_set (
+                       a_shell\connected_face_set.cfs_faces) ||
                    open_shell () ||  oriented_open_shell (a_shell, FALSE);
-    ELSE
-      IF ('TOPOLOGY_SCHEMA.ORIENTED_CLOSED_SHELL' IN TYPEOF (a_shell)) THEN
-        the_reverse := representation_item ('') ||
-                   topological_representation_item () ||
-                   connected_face_set (set_of_topology_reversed (
-                   a_shell\connected_face_set.cfs_faces)) ||
-                   closed_shell () || oriented_closed_shell(
-                     a_shell\oriented_closed_shell.closed_shell_element,
-                     NOT(a_shell\oriented_closed_shell.orientation));
-      ELSE
-        IF ('TOPOLOGY_SCHEMA.CLOSED_SHELL' IN TYPEOF (a_shell) ) THEN
-          the_reverse := representation_item ('') ||
-                topological_representation_item () ||
-                connected_face_set (set_of_topology_reversed (
-                a_shell\connected_face_set.cfs_faces)) ||
-                 closed_shell () || oriented_closed_shell (a_shell, FALSE);
-        ELSE
-          RETURN (?);
-        END_IF;
-      END_IF;
-    END_IF;
- END_IF;
- RETURN (the_reverse);
+  END_IF;
+  RETURN (the_reverse);
 END_FUNCTION;
 
 FUNCTION set_of_topology_reversed (a_set : set_of_reversible_topology_item)
@@ -2116,22 +2074,21 @@ FUNCTION list_shell_loops(s : shell) : LIST[0:?] OF loop;
    RETURN(loops);
  END_FUNCTION;
 
- FUNCTION mixed_loop_type_set(l: SET[0:?] OF loop): LOGICAL;
-    LOCAL
-      i             : INTEGER;
-      poly_loop_type: LOGICAL;
-    END_LOCAL;
-    IF(SIZEOF(l) <= 1) THEN
-      RETURN(FALSE);
-    END_IF;
-    poly_loop_type := ('TOPOLOGY_SCHEMA.POLY_LOOP' IN TYPEOF(l[1]));
-    REPEAT i := 2 TO SIZEOF(l);
-      IF(('TOPOLOGY_SCHEMA.POLY_LOOP' IN TYPEOF(l[i])) <> poly_loop_type) THEN
-         RETURN(TRUE);
-       END_IF;
-    END_REPEAT;
-    RETURN(FALSE);
-  END_FUNCTION;
+FUNCTION mixed_loop_type_set(l: SET[0:?] OF loop): LOGICAL;
+   LOCAL
+     poly_loop_type: LOGICAL;
+   END_LOCAL;
+   IF(SIZEOF(l) <= 1) THEN
+     RETURN(FALSE);
+   END_IF;
+   poly_loop_type := ('TOPOLOGY_SCHEMA.POLY_LOOP' IN TYPEOF(l[1]));
+   REPEAT i := 2 TO SIZEOF(l);
+     IF(('TOPOLOGY_SCHEMA.POLY_LOOP' IN TYPEOF(l[i])) <> poly_loop_type) THEN
+        RETURN(TRUE);
+      END_IF;
+   END_REPEAT;
+   RETURN(FALSE);
+END_FUNCTION;
 
 FUNCTION list_to_set(l : LIST [0:?] OF GENERIC:T) : SET OF GENERIC:T;
    LOCAL
@@ -2483,7 +2440,7 @@ END_ENTITY;
 
 FUNCTION acyclic_solid_replica(rep : solid_replica; parent : solid_model)
                                               : BOOLEAN;
-   IF NOT (('GEOMETRY_SCHEMA.SOLID_REPLICA') IN TYPEOF(parent)) THEN
+   IF NOT (('GEOMETRIC_MODEL_SCHEMA.SOLID_REPLICA') IN TYPEOF(parent)) THEN
       RETURN (TRUE);
    END_IF;
  (* Return TRUE if the parent is not of type solid_replica *)
@@ -2497,7 +2454,8 @@ END_FUNCTION;
 
 FUNCTION acyclic_set_replica(rep : geometric_set_replica;
                            parent : geometric_set) : BOOLEAN;
-   IF NOT (('GEOMETRY_SCHEMA.GEOMETRIC_SET_REPLICA') IN TYPEOF(parent)) THEN
+   IF NOT (('GEOMETRIC_MODEL_SCHEMA.GEOMETRIC_SET_REPLICA') IN
+                                             TYPEOF(parent)) THEN
       RETURN (TRUE);
    END_IF;
  (* Return TRUE if the parent is not of type geometric_set_replica *)
@@ -2549,27 +2507,34 @@ FUNCTION constraints_geometry_shell_based_wireframe_model
 END_FUNCTION;
 
 FUNCTION build_transformed_set(tr: cartesian_transformation_operator;
-         gset : geometric_set) : SET [0:?] OF geometric_set_select;
-  LOCAL
-   s          : SET [1:?] OF geometric_set_select := gset.elements;
-   trset      : SET [0:?] OF geometric_set_select := [];
-   trcurve    : curve;
-   trpoint    : point;
-   trsurf     : surface;
-  END_LOCAL;
-  REPEAT j := 1 TO SIZEOF(s);
-    IF ('GEOMETRY_SCHEMA.CURVE' IN TYPEOF(s[j])) THEN
-       trset := trset + curve_replica(s[j],tr); ELSE
-       IF ('GEOMETRY_SCHEMA.POINT' IN TYPEOF(s[j])) THEN
-         trset := trset + point_replica(s[j],tr); ELSE
-         IF ('GEOMETRY_SCHEMA.SURFACE' IN TYPEOF(s[j])) THEN
-           trset := trset + surface_replica(s[j],
-              tr || cartesian_transformation_operator_3d (?));
-         END_IF;
-       END_IF;
+          gset : geometric_set) : SET [0:?] OF geometric_set_select;
+   LOCAL
+    s          : SET [1:?] OF geometric_set_select := gset.elements;
+    trset      : SET [0:?] OF geometric_set_select := [];
+   END_LOCAL;
+   REPEAT j := 1 TO SIZEOF(s);
+     IF ('GEOMETRY_SCHEMA.CURVE' IN TYPEOF(s[j])) THEN
+        trset := trset + curve_replica(s[j],tr); ELSE
+        IF ('GEOMETRY_SCHEMA.POINT' IN TYPEOF(s[j])) THEN
+          trset := trset + point_replica(s[j],tr); ELSE
+          IF ('GEOMETRY_SCHEMA.SURFACE' IN TYPEOF(s[j])) THEN
+            trset := trset + surface_replica(s[j],
+               tr || cartesian_transformation_operator_3d (?));
+          END_IF;
+        END_IF;
+     END_IF;
+   END_REPEAT;
+   RETURN(trset);
+END_FUNCTION;
+
+FUNCTION msb_shells (brep: manifold_solid_brep) : SET [1:?] OF  closed_shell;
+
+    IF SIZEOF (QUERY (msbtype <* TYPEOF (brep) |
+      msbtype LIKE '*BREP_WITH_VOIDS')) >= 1 THEN
+      RETURN (brep\brep_with_voids.voids + brep.outer);
+    ELSE
+      RETURN([brep.outer]);
     END_IF;
-  END_REPEAT;
-  RETURN(trset);
 END_FUNCTION;
 
 END_SCHEMA; -- end GEOMETRIC MODEL schema
