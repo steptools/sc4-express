@@ -1,9 +1,11 @@
 (*
-ISO TC184/SC4/WG12 N1542 - ISO/CD-TS 10303-1131 Construction geometry - EXPRESS MIM
+$Id$
+ISO TC184/SC4/WG12 N2868 - ISO/TS 10303-1131 Construction geometry - EXPRESS MIM
+Supersedes ISO TC184/SC4/WG12 N1542
 *) 
 
 
-SCHEMA Construction_geometry_mim; 
+SCHEMA Construction_geometry_mim;
 
 USE FROM aic_topologically_bounded_surface;    -- ISO 10303-511
 
@@ -49,7 +51,9 @@ USE FROM geometry_schema   -- ISO 10303-42
    trimmed_curve); 
 
 USE FROM representation_schema   -- ISO 10303-43
-  (representation,
+  (mapped_item,
+   representation,
+   representation_map,
    representation_relationship); 
 
 USE FROM topology_schema   -- ISO 10303-42
@@ -63,8 +67,8 @@ ENTITY constructive_geometry_representation
 WHERE
   WR1: ('CONSTRUCTION_GEOMETRY_MIM.GEOMETRIC_REPRESENTATION_CONTEXT' IN TYPEOF(SELF.context_of_items)) AND ({2 <= SELF.context_of_items\geometric_representation_context. coordinate_space_dimension <= 3});
   WR2: SIZEOF( QUERY( cgr_i <* SELF.items | SIZEOF(['CONSTRUCTION_GEOMETRY_MIM.PLACEMENT', 'CONSTRUCTION_GEOMETRY_MIM.CURVE', 'CONSTRUCTION_GEOMETRY_MIM.EDGE', 'CONSTRUCTION_GEOMETRY_MIM.FACE', 'CONSTRUCTION_GEOMETRY_MIM.POINT', 'CONSTRUCTION_GEOMETRY_MIM.SURFACE', 'CONSTRUCTION_GEOMETRY_MIM.FACE_SURFACE', 'CONSTRUCTION_GEOMETRY_MIM.VERTEX_POINT'] * TYPEOF(cgr_i)) <> 1 )) = 0;
-  WR3: SIZEOF( USEDIN( SELF, 'CONSTRUCTION_GEOMETRY_MIM.' + 'REPRESENTATION_RELATIONSHIP.REP_2') ) > 0;
-  WR4: SIZEOF( USEDIN( SELF, 'CONSTRUCTION_GEOMETRY_MIM.' + 'REPRESENTATION_MAP.MAPPED_REPRESENTATION') ) = 0;
+  WR3: SIZEOF( USEDIN( SELF, 'REPRESENTATION_SCHEMA.' + 'REPRESENTATION_RELATIONSHIP.REP_2') ) > 0;
+  WR4: SIZEOF( USEDIN( SELF, 'REPRESENTATION_SCHEMA.' + 'REPRESENTATION_MAP.MAPPED_REPRESENTATION') ) = 0;
 END_ENTITY;
 
 ENTITY constructive_geometry_representation_relationship
