@@ -1,0 +1,2608 @@
+(*
+  AIM EXPRESS short form for ISO/IS 10303-203
+*)
+
+SCHEMA config_control_design;
+
+  USE FROM application_context_schema   -- ISO 10303-41
+      (application_context,
+       application_protocol_definition,
+       product_context, 
+       product_definition_context,
+       product_concept_context); 
+
+  USE FROM product_definition_schema   -- ISO 10303-41
+      (product,
+       product_definition,
+       product_definition_formation,
+       product_definition_formation_with_specified_source,
+       product_definition_relationship,
+       product_category, 
+       product_category_relationship,
+       product_related_product_category,
+       product_definition_with_associated_documents);
+
+  USE FROM product_structure_schema  -- ISO 10303-44
+      (product_definition_usage,
+       assembly_component_usage,
+       next_assembly_usage_occurrence, 
+       promissory_usage_occurrence,
+       quantified_assembly_component_usage,
+       specified_higher_usage_occurrence,
+       assembly_component_usage_substitute,
+       alternate_product_relationship);
+
+  USE FROM configuration_management_schema  -- ISO 10303-44
+      (configuration_item,
+       configuration_design,
+       configuration_effectivity);
+
+  USE FROM product_concept_schema  -- ISO 10303-44
+      (product_concept);
+
+  USE FROM product_property_definition_schema  -- ISO 10303-41
+      (product_definition_shape, 
+       shape_aspect,
+       shape_aspect_relationship);
+
+  USE FROM product_property_representation_schema  -- ISO 10303-41
+      (context_dependent_shape_representation,
+       shape_representation,
+       shape_representation_relationship,
+       shape_definition_representation);
+
+  USE FROM representation_schema  -- ISO 10303-43
+      (functionally_defined_transformation,
+       item_defined_transformation,
+       global_uncertainty_assigned_context,
+       mapped_item,
+       representation,
+       representation_context,
+       parametric_representation_context,
+       representation_item,
+       representation_map,
+       representation_relationship_with_transformation);
+
+  USE FROM geometry_schema  -- ISO 10303-42
+      (axis1_placement,
+       axis2_placement_2d,
+       axis2_placement_3d,
+       b_spline_curve_with_knots,
+       b_spline_surface_with_knots,
+       bezier_curve,
+       bezier_surface,
+       boundary_curve,
+       cartesian_point,
+       cartesian_transformation_operator_3d,
+       cartesian_transformation_operator_2d,
+       circle,
+       composite_curve,
+       composite_curve_on_surface,
+       composite_curve_segment,
+       conical_surface,
+       curve,
+       curve_bounded_surface,
+       curve_replica,
+       cylindrical_surface,
+       degenerate_pcurve,
+       dimension_count,
+       direction,
+       ellipse,
+       evaluated_degenerate_pcurve,
+       geometric_representation_context,
+       geometric_representation_item,
+       hyperbola,
+       intersection_curve,
+       line,
+       offset_curve_2d,
+       offset_curve_3d,
+       offset_surface,
+       outer_boundary_curve,
+       parabola,
+       pcurve,
+       plane,
+       point,
+       point_on_curve,
+       point_on_surface,
+       polyline,
+       quasi_uniform_curve,
+       quasi_uniform_surface,
+       rational_b_spline_curve,
+       rational_b_spline_surface,
+       rectangular_composite_surface,
+       rectangular_trimmed_surface,
+       reparametrised_composite_curve_segment, 
+       seam_curve,
+       spherical_surface,
+       surface,
+       surface_curve,
+       surface_of_linear_extrusion,
+       surface_of_revolution,
+       surface_replica,
+       toroidal_surface,
+       trimmed_curve,
+       uniform_curve,
+       uniform_surface,
+       vector);
+
+  USE FROM topology_schema  -- ISO 10303-42
+      (closed_shell,
+       connected_edge_set,
+       connected_face_set,
+       edge_curve,
+       edge_loop,
+       face_bound,
+       face_outer_bound,
+       face_surface,
+       open_shell,
+       oriented_face,
+       poly_loop,
+       vertex_loop,
+       vertex_point,
+       vertex_shell,
+       wire_shell);
+
+  USE FROM geometric_model_schema  -- ISO 10303-42
+      (edge_based_wireframe_model, 
+       faceted_brep,
+       geometric_curve_set,
+       geometric_set,
+       manifold_solid_brep,
+       shell_based_surface_model,
+       shell_based_wireframe_model);
+
+  USE FROM action_schema  -- ISO 10303-41
+      (action,
+       action_method,
+       action_request_solution, 
+       action_request_status, 
+       action_status,
+       action_directive,
+       directed_action,
+       versioned_action_request);
+
+  USE FROM certification_schema  -- ISO 10303-41 
+      (certification,
+       certification_type);
+
+  USE FROM approval_schema  -- ISO 10303-41
+      (approval_date_time,
+       approval_person_organization,
+       approval,
+       approval_status,
+       approval_relationship);
+
+  USE FROM contract_schema  -- ISO 10303-41
+      (contract,
+       contract_type);
+
+  USE FROM security_classification_schema   -- ISO 10303-41
+      (security_classification,
+       security_classification_level);
+
+  USE FROM person_organization_schema  -- ISO 10303-41
+      (person_and_organization,
+       organization_relationship,
+       personal_address,
+       organizational_address,
+       organizational_project,
+       person_and_organization_role);
+
+  USE FROM date_time_schema  -- ISO 10303-41
+      (date_and_time,
+       date,
+       calendar_date,
+       ordinal_date,
+       week_of_year_and_day_date,
+       date_time_role);
+
+  USE FROM document_schema  -- ISO 10303-41
+      (document_with_class,
+       document_usage_constraint,
+       document_type,
+       document_relationship);
+
+  USE FROM effectivity_schema  -- ISO 10303-41
+      (effectivity,
+       serial_numbered_effectivity,
+       dated_effectivity,
+       lot_effectivity);
+
+  USE FROM management_resources_schema  -- ISO 10303-41
+      (approval_assignment,
+       certification_assignment,
+       contract_assignment,
+       date_and_time_assignment,
+       person_and_organization_assignment,
+       document_reference,
+       security_classification_assignment,
+       action_assignment,
+       action_request_assignment);
+      
+  USE FROM measure_schema  -- ISO 10303-41
+      (area_measure,
+       named_unit, 
+       context_dependent_measure,
+       context_dependent_unit,
+       conversion_based_unit,
+       count_measure, 
+       descriptive_measure,
+       si_unit,
+       area_unit,
+       length_unit, 
+       mass_measure,
+       mass_unit,
+       plane_angle_unit, 
+       solid_angle_unit,
+       volume_unit,
+       measure_with_unit,
+       area_measure_with_unit,
+       length_measure_with_unit,
+       mass_measure_with_unit,
+       plane_angle_measure_with_unit,
+       positive_plane_angle_measure,
+       solid_angle_measure,
+       solid_angle_measure_with_unit,
+       volume_measure,
+       volume_measure_with_unit,
+       global_unit_assigned_context);  
+
+TYPE work_item = SELECT (product_definition_formation);
+END_TYPE;
+
+TYPE change_request_item = SELECT (product_definition_formation);
+END_TYPE;
+
+TYPE start_request_item = SELECT (product_definition_formation);
+END_TYPE;
+
+TYPE certified_item = SELECT (supplied_part_relationship);
+END_TYPE;
+
+TYPE approved_item = SELECT 
+  (product_definition_formation, 
+   product_definition, 
+   configuration_effectivity,
+   configuration_item, 
+   security_classification, 
+   change_request,
+   change, 
+   start_request, 
+   start_work, 
+   certification, 
+   contract);
+END_TYPE;
+
+TYPE contracted_item = SELECT (product_definition_formation);
+END_TYPE;
+
+TYPE classified_item = SELECT 
+  (product_definition_formation, 
+   assembly_component_usage);
+END_TYPE;
+
+TYPE person_organization_item = SELECT 
+  (change,
+   start_work,
+   change_request, 
+   start_request, 
+   configuration_item,
+   product, 
+   product_definition_formation, 
+   product_definition, 
+   contract,
+   security_classification);
+END_TYPE;
+
+TYPE date_time_item = SELECT 
+  (product_definition, 
+   change_request, 
+   start_request, 
+   change,
+   start_work, 
+   approval_person_organization,
+   contract, 
+   security_classification,
+   certification);
+END_TYPE;
+
+TYPE specified_item = SELECT 
+  (product_definition,
+   shape_aspect);
+END_TYPE;
+
+ENTITY edge_based_wireframe_shape_representation
+  SUBTYPE OF (shape_representation);
+WHERE
+  WR1:  SIZEOF (QUERY (it <* SELF\representation.items |
+        NOT (SIZEOF(['CONFIG_CONTROL_DESIGN.EDGE_BASED_WIREFRAME_MODEL',
+        'CONFIG_CONTROL_DESIGN.MAPPED_ITEM',
+        'CONFIG_CONTROL_DESIGN.AXIS2_PLACEMENT_3D'] * TYPEOF (it)) = 1
+        ))) = 0;
+  WR2:  SIZEOF (QUERY (it <* SELF\representation.items |
+        SIZEOF(['CONFIG_CONTROL_DESIGN.EDGE_BASED_WIREFRAME_MODEL',
+        'CONFIG_CONTROL_DESIGN.MAPPED_ITEM'] * TYPEOF (it)) = 1
+        )) >= 1;
+  WR3:  SIZEOF (QUERY (ebwm <*
+        QUERY (it <* SELF\representation.items |
+        'CONFIG_CONTROL_DESIGN.EDGE_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+        NOT (SIZEOF (QUERY (eb <*
+        ebwm\edge_based_wireframe_model.ebwm_boundary |
+        NOT (SIZEOF (QUERY (edges <* eb.ces_edges |
+        NOT ('CONFIG_CONTROL_DESIGN.EDGE_CURVE' IN TYPEOF (edges)))) = 0
+        ))) = 0))) = 0;
+  WR4:  SIZEOF (QUERY (ebwm <*
+        QUERY (it <* SELF\representation.items |
+        'CONFIG_CONTROL_DESIGN.EDGE_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+        NOT (SIZEOF (QUERY (eb <*
+        ebwm\edge_based_wireframe_model.ebwm_boundary |
+        NOT (SIZEOF (QUERY (pline_edges <* QUERY (edges <* eb.ces_edges |
+        'CONFIG_CONTROL_DESIGN.POLYLINE' IN
+        TYPEOF (edges\edge_curve.edge_geometry)) |
+        NOT (SIZEOF (pline_edges\edge_curve.edge_geometry\polyline.points)
+        > 2))) = 0))) = 0))) = 0;
+  WR5:  SIZEOF (QUERY (ebwm <*
+        QUERY (it <* SELF\representation.items |
+        'CONFIG_CONTROL_DESIGN.EDGE_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+        NOT (SIZEOF (QUERY (eb <*
+        ebwm\edge_based_wireframe_model.ebwm_boundary |
+        NOT (SIZEOF (QUERY (edges <* eb.ces_edges |
+        NOT (('CONFIG_CONTROL_DESIGN.VERTEX_POINT' IN
+        TYPEOF (edges.edge_start)) AND
+        ('CONFIG_CONTROL_DESIGN.VERTEX_POINT' IN
+        TYPEOF (edges.edge_end))))) = 0))) = 0))) = 0;
+  WR6:  SIZEOF (QUERY (ebwm <*
+        QUERY (it <* SELF\representation.items |
+        'CONFIG_CONTROL_DESIGN.EDGE_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+        NOT (SIZEOF (QUERY (eb <*
+        ebwm\edge_based_wireframe_model.ebwm_boundary |
+        NOT (SIZEOF (QUERY (edges <* eb.ces_edges |
+        NOT (valid_wireframe_edge_curve
+        (edges\edge_curve.edge_geometry, 'CONFIG_CONTROL_DESIGN')))) =
+        0))) = 0))) = 0;
+  WR7:  SIZEOF (QUERY (ebwm <*
+        QUERY (it <* SELF\representation.items |
+        'CONFIG_CONTROL_DESIGN.EDGE_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+        NOT (SIZEOF (QUERY (eb <*
+        ebwm\edge_based_wireframe_model.ebwm_boundary |
+        NOT (SIZEOF (QUERY (edges <* eb.ces_edges |
+        NOT((valid_wireframe_vertex_point
+        (edges.edge_start\vertex_point.vertex_geometry,
+        'CONFIG_CONTROL_DESIGN')) AND
+        (valid_wireframe_vertex_point
+        (edges.edge_end\vertex_point.vertex_geometry,
+        'CONFIG_CONTROL_DESIGN'))))) = 0))) = 0))) = 0;
+  WR8:  SIZEOF (QUERY (ebwm <*
+        QUERY (it <* SELF\representation.items |
+        'CONFIG_CONTROL_DESIGN.EDGE_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+        NOT (SIZEOF (QUERY (eb <*
+        ebwm\edge_based_wireframe_model.ebwm_boundary |
+        NOT (SIZEOF (QUERY (con_edges <* QUERY (edges <* eb.ces_edges |
+        'CONFIG_CONTROL_DESIGN.CONIC' IN
+        TYPEOF (edges\edge_curve.edge_geometry)) |
+        NOT ('CONFIG_CONTROL_DESIGN.AXIS2_PLACEMENT_3D' IN
+        TYPEOF (con_edges\edge_curve.edge_geometry\conic.position)))) = 0
+        ))) = 0))) = 0;
+   WR9: SIZEOF (QUERY (mi <* QUERY (item <* SELF\representation.items |
+        'CONFIG_CONTROL_DESIGN.MAPPED_ITEM' IN TYPEOF (item)) |
+        NOT ('CONFIG_CONTROL_DESIGN.' +
+        'EDGE_BASED_WIREFRAME_SHAPE_REPRESENTATION'
+        IN TYPEOF (mi\mapped_item.mapping_source.mapped_representation))))
+        = 0;
+END_ENTITY;
+
+ENTITY shell_based_wireframe_shape_representation
+  SUBTYPE OF (shape_representation);
+WHERE
+  WR1: SIZEOF (QUERY (it <* SELF\representation.items |
+       NOT (SIZEOF(['CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL',
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM',
+       'CONFIG_CONTROL_DESIGN.AXIS2_PLACEMENT_3D'] * TYPEOF (it)) = 1
+       ))) = 0;
+  WR2: SIZEOF (QUERY (it <* SELF\representation.items |
+       SIZEOF(['CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL',
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM'] * TYPEOF (it)) = 1)) >= 1;
+  WR3: SIZEOF (QUERY (sbwm <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (ws <* QUERY (sb <*
+       sbwm\shell_based_wireframe_model.sbwm_boundary |
+       'CONFIG_CONTROL_DESIGN.WIRE_SHELL' IN TYPEOF (sb)) |
+       NOT (SIZEOF (QUERY (eloop <* QUERY (wsb <* 
+       ws\wire_shell.wire_shell_extent |
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (wsb)) |
+       NOT (SIZEOF (QUERY (el <* eloop\path.edge_list |
+       NOT ('CONFIG_CONTROL_DESIGN.EDGE_CURVE' IN
+       TYPEOF (el.edge_element)))) = 0))) = 0))) = 0))) = 0;
+  WR4: SIZEOF (QUERY (sbwm <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (ws <* QUERY (sb <*
+       sbwm\shell_based_wireframe_model.sbwm_boundary |
+       'CONFIG_CONTROL_DESIGN.WIRE_SHELL' IN TYPEOF (sb)) |
+       NOT (SIZEOF (QUERY (eloop <* QUERY (wsb <* 
+       ws\wire_shell.wire_shell_extent |
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (wsb)) |
+       NOT (SIZEOF (QUERY (pline_el <* QUERY (el <* eloop\path.edge_list |
+       'CONFIG_CONTROL_DESIGN.POLYLINE' IN TYPEOF
+       (el.edge_element\edge_curve.edge_geometry)) |
+       NOT (SIZEOF (pline_el.edge_element\edge_curve.
+       edge_geometry\polyline.points) > 2))) 
+       = 0))) = 0))) = 0))) = 0;
+  WR5: SIZEOF (QUERY (sbwm <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (ws <* QUERY (sb <*
+       sbwm\shell_based_wireframe_model.sbwm_boundary |
+       'CONFIG_CONTROL_DESIGN.WIRE_SHELL' IN TYPEOF (sb)) |
+       NOT (SIZEOF (QUERY (eloop <* QUERY (wsb <* 
+       ws\wire_shell.wire_shell_extent |
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (wsb)) |
+       NOT (SIZEOF (QUERY (el <* eloop\path.edge_list |
+       NOT (valid_wireframe_edge_curve
+       (el.edge_element\edge_curve.edge_geometry,
+       'CONFIG_CONTROL_DESIGN')))) = 0))) = 0))) = 0))) = 0;
+  WR6: SIZEOF (QUERY (sbwm <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (ws <* QUERY (sb <*
+       sbwm\shell_based_wireframe_model.sbwm_boundary |
+       'CONFIG_CONTROL_DESIGN.WIRE_SHELL' IN TYPEOF (sb)) |
+       NOT (SIZEOF (QUERY (eloop <* QUERY (wsb <* 
+       ws\wire_shell.wire_shell_extent |
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (wsb)) |
+       NOT (SIZEOF (QUERY (el <* eloop\path.edge_list |
+       NOT(('CONFIG_CONTROL_DESIGN.VERTEX_POINT' IN 
+       TYPEOF (el.edge_element.edge_start))
+       AND
+       ('CONFIG_CONTROL_DESIGN.VERTEX_POINT' IN 
+       TYPEOF (el.edge_element.edge_end)))))
+       = 0))) = 0))) = 0))) = 0;
+  WR7: SIZEOF (QUERY (sbwm <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (ws <* QUERY (sb <*
+       sbwm\shell_based_wireframe_model.sbwm_boundary |
+       'CONFIG_CONTROL_DESIGN.WIRE_SHELL' IN TYPEOF (sb)) |
+       NOT (SIZEOF (QUERY (eloop <* QUERY (wsb <* 
+       ws\wire_shell.wire_shell_extent |
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (wsb)) |
+       NOT (SIZEOF (QUERY (el <* eloop\path.edge_list |
+       NOT((valid_wireframe_vertex_point
+       (el.edge_element.edge_start\vertex_point.vertex_geometry,
+       'CONFIG_CONTROL_DESIGN'))
+       AND
+       (valid_wireframe_vertex_point
+       (el.edge_element.edge_end\vertex_point.vertex_geometry,
+       'CONFIG_CONTROL_DESIGN'))))) = 0)))
+       = 0))) = 0))) = 0;
+  WR8: SIZEOF (QUERY (sbwm <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (ws <* QUERY (sb <*
+       sbwm\shell_based_wireframe_model.sbwm_boundary |
+       'CONFIG_CONTROL_DESIGN.WIRE_SHELL' IN TYPEOF (sb)) |
+       NOT (SIZEOF (QUERY (eloop <* QUERY (wsb <* 
+       ws\wire_shell.wire_shell_extent |
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (wsb)) |
+       NOT (SIZEOF (QUERY (con_edges <* QUERY (el <* eloop\path.edge_list |
+       'CONFIG_CONTROL_DESIGN.CONIC' IN 
+       TYPEOF (el.edge_element\edge_curve.edge_geometry)) |
+       NOT ('CONFIG_CONTROL_DESIGN.AXIS2_PLACEMENT_3D' IN
+       TYPEOF (con_edges.edge_element\edge_curve.edge_geometry\
+       conic.position)))) = 0))) = 0))) = 0))) = 0;
+  WR9: SIZEOF (QUERY (sbwm <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (ws <* QUERY (sb <*
+       sbwm\shell_based_wireframe_model.sbwm_boundary |
+       'CONFIG_CONTROL_DESIGN.WIRE_SHELL' IN TYPEOF (sb)) |
+       NOT (SIZEOF (QUERY (vloop <* QUERY (wsb <* 
+       ws\wire_shell.wire_shell_extent |
+       'CONFIG_CONTROL_DESIGN.VERTEX_LOOP' IN TYPEOF (wsb)) |
+       NOT ('CONFIG_CONTROL_DESIGN.VERTEX_POINT' IN
+       TYPEOF (vloop\vertex_loop.loop_vertex)))) = 0))) = 0))) = 0;
+ WR10: SIZEOF (QUERY (sbwm <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (ws <* QUERY (sb <*
+       sbwm\shell_based_wireframe_model.sbwm_boundary |
+       'CONFIG_CONTROL_DESIGN.WIRE_SHELL' IN TYPEOF (sb)) |
+       NOT (SIZEOF (QUERY (vloop <* QUERY (wsb <* 
+       ws\wire_shell.wire_shell_extent |
+       'CONFIG_CONTROL_DESIGN.VERTEX_LOOP' IN TYPEOF (wsb)) |
+       NOT(valid_wireframe_vertex_point
+       (vloop\vertex_loop.loop_vertex\vertex_point.vertex_geometry,
+       'CONFIG_CONTROL_DESIGN')))) = 0))) = 0))) = 0;
+ WR11: SIZEOF (QUERY (sbwm <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (vs <* QUERY (sb <*
+       sbwm\shell_based_wireframe_model.sbwm_boundary |
+       'CONFIG_CONTROL_DESIGN.VERTEX_SHELL' IN TYPEOF (sb)) |
+       NOT ('CONFIG_CONTROL_DESIGN.VERTEX_POINT' IN
+       TYPEOF (vs\vertex_shell.vertex_shell_extent.loop_vertex))))
+       = 0))) = 0; 
+ WR12: SIZEOF (QUERY (sbwm <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (vs <* QUERY (sb <*
+       sbwm\shell_based_wireframe_model.sbwm_boundary |
+       'CONFIG_CONTROL_DESIGN.VERTEX_SHELL' IN TYPEOF (sb)) |
+       NOT (valid_wireframe_vertex_point
+       (vs\vertex_shell.vertex_shell_extent.loop_vertex\
+       vertex_point.vertex_geometry,  'CONFIG_CONTROL_DESIGN'))))
+       = 0))) = 0; 
+ WR13: SIZEOF (QUERY (mi <* QUERY (item <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM' IN TYPEOF (item)) |
+       NOT ('CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_REPRESENTATION'
+       IN TYPEOF (mi\mapped_item.mapping_source.mapped_representation))))
+       = 0;
+END_ENTITY;
+
+ENTITY geometrically_bounded_surface_shape_representation 
+  SUBTYPE OF (shape_representation);  
+WHERE 
+  WR1: SIZEOF (QUERY (it <* items |  
+       NOT (SIZEOF (['CONFIG_CONTROL_DESIGN.GEOMETRIC_SET', 
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM',  
+       'CONFIG_CONTROL_DESIGN.AXIS2_PLACEMENT_3D'] * 
+       TYPEOF (it)) = 1))) = 0;
+  WR2: SIZEOF (QUERY (it <* items |  
+       SIZEOF (['CONFIG_CONTROL_DESIGN.GEOMETRIC_SET',  
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM'] * TYPEOF (it)) = 1)) > 0;  
+  WR3: SIZEOF (QUERY (mi <* QUERY (it <* items |  
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM' IN TYPEOF (it)) | 
+       NOT ('CONFIG_CONTROL_DESIGN.' + 
+       'GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION'  
+       IN TYPEOF (mi\mapped_item.mapping_source.mapped_representation))))  
+       = 0;
+  WR4: SIZEOF (QUERY (gs <* QUERY (it <* items |  
+       'CONFIG_CONTROL_DESIGN.GEOMETRIC_SET' IN TYPEOF (it)) |  
+       NOT (SIZEOF (QUERY (pnt <* QUERY (gsel <*
+       gs\geometric_set.elements |  
+       'CONFIG_CONTROL_DESIGN.POINT' IN TYPEOF (gsel)) |  
+       NOT (gbsf_check_point(pnt, 'CONFIG_CONTROL_DESIGN')))) = 0))) = 0;  
+  WR5: SIZEOF (QUERY (gs <* QUERY (it <* items |  
+       'CONFIG_CONTROL_DESIGN.GEOMETRIC_SET' IN TYPEOF (it)) |  
+       NOT (SIZEOF (QUERY (cv <* QUERY (gsel <*
+       gs\geometric_set.elements |  
+       'CONFIG_CONTROL_DESIGN.CURVE' IN TYPEOF (gsel)) |  
+       NOT (gbsf_check_curve(cv, 'CONFIG_CONTROL_DESIGN')))) = 0))) = 0;  
+  WR6: SIZEOF (QUERY (gs <* QUERY (it <* items |  
+       'CONFIG_CONTROL_DESIGN.GEOMETRIC_SET' IN TYPEOF (it)) |  
+       NOT (SIZEOF (QUERY (sf <* QUERY (gsel <* 
+       gs\geometric_set.elements |  
+       'CONFIG_CONTROL_DESIGN.SURFACE' IN TYPEOF (gsel)) |  
+       NOT (gbsf_check_surface(sf, 'CONFIG_CONTROL_DESIGN')))) = 0))) = 0;  
+END_ENTITY;
+
+ENTITY geometrically_bounded_wireframe_shape_representation
+  SUBTYPE OF (shape_representation);
+WHERE
+  WR1: SIZEOF (QUERY (it <* SELF\representation.items |
+       NOT (SIZEOF (['CONFIG_CONTROL_DESIGN.GEOMETRIC_CURVE_SET',
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM',
+       'CONFIG_CONTROL_DESIGN.AXIS2_PLACEMENT_3D'] * TYPEOF(it)) = 1))) = 0;
+  WR2: SIZEOF (QUERY (it <* SELF\representation.items |
+       SIZEOF(['CONFIG_CONTROL_DESIGN.GEOMETRIC_CURVE_SET',
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM'] * TYPEOF (it)) = 1
+       )) >= 1;
+  WR3: SIZEOF (QUERY (gcs <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.GEOMETRIC_CURVE_SET' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (elem <* gcs\geometric_set.elements |
+       NOT (valid_geometrically_bounded_wf_curve
+       (elem, 'CONFIG_CONTROL_DESIGN')))) = 0))) = 0;
+  WR4: SIZEOF (QUERY (gcs <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.GEOMETRIC_CURVE_SET' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (pnts <* QUERY (elem <*
+       gcs\geometric_set.elements |
+       'CONFIG_CONTROL_DESIGN.POINT' IN TYPEOF (elem)) |
+       NOT (valid_geometrically_bounded_wf_point
+       (pnts, 'CONFIG_CONTROL_DESIGN')))) = 0))) = 0;
+  WR5: SIZEOF (QUERY (gcs <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.GEOMETRIC_CURVE_SET' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (cnc <* QUERY (elem <*
+       gcs\geometric_set.elements |
+       'CONFIG_CONTROL_DESIGN.CONIC' IN TYPEOF (elem)) |
+       NOT ('CONFIG_CONTROL_DESIGN.AXIS2_PLACEMENT_3D' IN TYPEOF
+       (cnc\conic.position)))) = 0))) = 0; 
+  WR6: SIZEOF (QUERY (gcs <* QUERY (it <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.GEOMETRIC_CURVE_SET' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (pline <* QUERY (elem <*
+       gcs\geometric_set.elements |
+       'CONFIG_CONTROL_DESIGN.POLYLINE' IN TYPEOF(elem)) |
+       NOT (SIZEOF (pline\polyline.points) > 2))) = 0))) = 0; 
+  WR7: SIZEOF (QUERY (mi <* QUERY (item <* SELF\representation.items |
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM' IN TYPEOF (item)) |
+       NOT ('CONFIG_CONTROL_DESIGN.' +
+       'GEOMETRICALLY_BOUNDED_WIREFRAME_REPRESENTATION'
+       IN TYPEOF (mi\mapped_item.mapping_source.mapped_representation))))
+       = 0;
+END_ENTITY;
+ 
+ENTITY faceted_brep_shape_representation  
+SUBTYPE OF (shape_representation);  
+WHERE  
+  WR1: SIZEOF (QUERY (it <* items |  
+       NOT (SIZEOF(['CONFIG_CONTROL_DESIGN.FACETED_BREP',  
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM',  
+       'CONFIG_CONTROL_DESIGN.AXIS2_PLACEMENT_3D'] * TYPEOF(it)) = 1))) = 0;
+  WR2: SIZEOF (QUERY (it <* items |  
+       SIZEOF(['CONFIG_CONTROL_DESIGN.FACETED_BREP',  
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM'] * TYPEOF(it)) = 1)) > 0;  
+  WR3: SIZEOF (QUERY (fbrep <* QUERY ( it <* items |  
+       'CONFIG_CONTROL_DESIGN.FACETED_BREP' IN TYPEOF(it)) |  
+       NOT (SIZEOF (QUERY (csh <*  
+       msb_shells (fbrep, 'CONFIG_CONTROL_DESIGN') |  
+       NOT (SIZEOF (QUERY (fcs <* csh.cfs_faces |  
+       NOT (('CONFIG_CONTROL_DESIGN.FACE_SURFACE' IN TYPEOF (fcs))  
+       AND  
+       (('CONFIG_CONTROL_DESIGN.PLANE' IN TYPEOF  
+       (fcs\face_surface.face_geometry))
+       AND  
+       ('CONFIG_CONTROL_DESIGN.CARTESIAN_POINT' IN  
+       TYPEOF (fcs\face_surface.face_geometry\plane.position.location))))))  
+       = 0))) = 0))) = 0;  
+  WR4: SIZEOF (QUERY (fbrep <* QUERY ( it <* items |  
+       'CONFIG_CONTROL_DESIGN.FACETED_BREP' IN TYPEOF(it)) |  
+       NOT (SIZEOF (QUERY (csh <*  
+       msb_shells (fbrep, 'CONFIG_CONTROL_DESIGN') |  
+       NOT (SIZEOF (QUERY (fcs <* csh.cfs_faces |  
+       NOT (SIZEOF (QUERY (bnds <* fcs.bounds |  
+       'CONFIG_CONTROL_DESIGN.FACE_OUTER_BOUND' IN TYPEOF(bnds))) = 1)))  
+       = 0))) = 0))) = 0;  
+  WR5: SIZEOF (QUERY (msb <* QUERY (it <* items |  
+       'CONFIG_CONTROL_DESIGN.MANIFOLD_SOLID_BREP' IN TYPEOF(it)) |  
+       'CONFIG_CONTROL_DESIGN.ORIENTED_CLOSED_SHELL' IN  
+       TYPEOF (msb\manifold_solid_brep.outer))) = 0;
+  WR6: SIZEOF (QUERY (brv <* QUERY (it <* items |  
+       'CONFIG_CONTROL_DESIGN.BREP_WITH_VOIDS' IN TYPEOF(it)) |  
+       NOT (SIZEOF (QUERY (csh <* brv\brep_with_voids.voids |
+       csh\oriented_closed_shell.orientation)) = 0))) = 0;  
+  WR7: SIZEOF (QUERY (mi <*  QUERY (it <* items |  
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM' IN TYPEOF(it)) |  
+       NOT ('CONFIG_CONTROL_DESIGN.FACETED_BREP_SHAPE_REPRESENTATION' IN  
+       TYPEOF(mi\mapped_item.mapping_source.mapped_representation)))) 
+       = 0; 
+END_ENTITY; 
+
+ENTITY manifold_surface_shape_representation
+   SUBTYPE OF (shape_representation);
+WHERE
+  WR1: SIZEOF (QUERY (it <* items |
+       NOT (SIZEOF (['CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL',
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM',
+       'CONFIG_CONTROL_DESIGN.AXIS2_PLACEMENT_3D'] * TYPEOF (it)) = 1))) = 0;
+  WR2: SIZEOF (QUERY (it <* items |
+       SIZEOF (['CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL',
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM'] * TYPEOF (it)) = 1)) > 0;
+  WR3: SIZEOF (QUERY (mi <* QUERY (it <* items |
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM' IN TYPEOF (it)) |
+       NOT ('CONFIG_CONTROL_DESIGN.MANIFOLD_SURFACE_SHAPE_REPRESENTATION'
+       IN TYPEOF (mi\mapped_item.mapping_source.mapped_representation))))
+       = 0;
+  WR4: SIZEOF (QUERY (sbsm <* QUERY (it <* items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (sh <*
+       sbsm\shell_based_surface_model.sbsm_boundary |
+       NOT (SIZEOF (['CONFIG_CONTROL_DESIGN.OPEN_SHELL',
+       'CONFIG_CONTROL_DESIGN.CLOSED_SHELL']
+       * TYPEOF (sh)) = 1))) = 0))) = 0;
+  WR5: SIZEOF (QUERY (sbsm <* QUERY (it <* items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (cfs <*
+       sbsm\shell_based_surface_model.sbsm_boundary |
+       NOT (SIZEOF (QUERY (fa <* cfs.cfs_faces |
+       NOT (SIZEOF (['CONFIG_CONTROL_DESIGN.FACE_SURFACE',
+       'CONFIG_CONTROL_DESIGN.ORIENTED_FACE'] * TYPEOF (fa)) = 1))) = 0)))
+       = 0))) = 0;
+  WR6: SIZEOF (QUERY (sbsm <* QUERY (it <* items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (cfs <*
+       sbsm\shell_based_surface_model.sbsm_boundary |
+       NOT (SIZEOF (QUERY (f_sf <* QUERY (fa <* cfs.cfs_faces |
+       'CONFIG_CONTROL_DESIGN.FACE_SURFACE' IN TYPEOF (fa)) |
+       NOT (('CONFIG_CONTROL_DESIGN.ADVANCED_FACE' IN TYPEOF (f_sf))
+       OR
+       (SIZEOF (['CONFIG_CONTROL_DESIGN.OFFSET_SURFACE',
+       'CONFIG_CONTROL_DESIGN.SURFACE_REPLICA'] * TYPEOF
+       (f_sf\face_surface.face_geometry)) = 1)))) = 0))) = 0))) = 0; 
+  WR7: SIZEOF (QUERY (sbsm <* QUERY (it <* items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (cfs <*
+       sbsm\shell_based_surface_model.sbsm_boundary |
+       NOT (SIZEOF (QUERY (fa <* cfs.cfs_faces |
+       NOT (('CONFIG_CONTROL_DESIGN.ADVANCED_FACE' IN TYPEOF (fa))
+       OR
+       (basis_surface_check(fa\face_surface.face_geometry,
+       'CONFIG_CONTROL_DESIGN'))))) = 0))) = 0))) = 0;
+  WR8: SIZEOF (QUERY (sbsm <* QUERY (it <* items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (cfs <*
+       sbsm\shell_based_surface_model.sbsm_boundary |
+       NOT (SIZEOF (QUERY (fa <* cfs.cfs_faces |
+       NOT (('CONFIG_CONTROL_DESIGN.ADVANCED_FACE' IN TYPEOF (fa))
+       OR
+       (SIZEOF (QUERY (bnds <* fa.bounds |
+       NOT (SIZEOF (['CONFIG_CONTROL_DESIGN.EDGE_LOOP',
+       'CONFIG_CONTROL_DESIGN.VERTEX_LOOP']
+       * TYPEOF (bnds.bound)) = 1))) = 0)))) = 0))) = 0))) = 0;
+  WR9: SIZEOF (QUERY (sbsm <* QUERY (it <* items|
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (cfs <*
+       sbsm\shell_based_surface_model.sbsm_boundary |
+       NOT (SIZEOF (QUERY (fa <* cfs.cfs_faces |
+       NOT (('CONFIG_CONTROL_DESIGN.ADVANCED_FACE' IN TYPEOF (fa))
+       OR
+       (SIZEOF (QUERY (elp_fbnds <* QUERY (bnds <* fa.bounds |
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (bnds)) |
+       NOT (SIZEOF (QUERY (oe <* elp_fbnds.bound\path.edge_list |
+       NOT ('CONFIG_CONTROL_DESIGN.EDGE_CURVE' IN TYPEOF (oe.edge_element))))
+       = 0))) = 0)))) = 0))) = 0))) = 0;
+ WR10: SIZEOF (QUERY (sbsm <* QUERY (it <* items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (cfs <*
+       sbsm\shell_based_surface_model.sbsm_boundary |
+       NOT (SIZEOF (QUERY (fa <* cfs.cfs_faces |
+       NOT (('CONFIG_CONTROL_DESIGN.ADVANCED_FACE' IN TYPEOF (fa))
+       OR
+       (SIZEOF (QUERY (elp_fbnds <* QUERY (bnds <* fa.bounds |
+       'CONFIG_CONTROL_DESIGN.EDGE LOOP' IN TYPEOF (bnds.bound)) |
+       NOT (SIZEOF (QUERY (oe_cv <* QUERY (oe <* 
+       elp_fbnds.bound\path.edge_list |
+       'CONFIG_CONTROL_DESIGN.EDGE_CURVE' IN TYPEOF (oe.edge_element)) |
+       NOT (SIZEOF (['CONFIG_CONTROL_DESIGN.CURVE_REPLICA',
+       'CONFIG_CONTROL_DESIGN.OFFSET_CURVE_3D',
+       'CONFIG_CONTROL_DESIGN.SURFACE_CURVE'] * 
+       TYPEOF (oe_cv.edge_element\edge_curve.edge_geometry)) 
+       = 1))) = 0))) = 0)))) = 0))) = 0))) = 0;
+ WR11: SIZEOF (QUERY (sbsm <* QUERY (it <* items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (cfs <*
+       sbsm\shell_based_surface_model.sbsm_boundary |
+       NOT (SIZEOF (QUERY (fa <* cfs.cfs_faces |
+       NOT (('CONFIG_CONTROL_DESIGN.ADVANCED_FACE' IN TYPEOF (fa))
+       OR
+       (SIZEOF (QUERY (elp_fbnds <* QUERY (bnds <* fa.bounds |
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (bnds.bound)) |
+       NOT (SIZEOF (QUERY (oe <* elp_fbnds.bound\path.edge_list |
+       NOT (basis_curve_check (oe.edge_element\edge_curve.edge_geometry,
+       'CONFIG_CONTROL_DESIGN')))) = 0))) = 0)))) = 0))) = 0))) = 0;
+ WR12: SIZEOF (QUERY(sbsm <* QUERY (it <* items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (cfs <*
+       sbsm\shell_based_surface_model.sbsm_boundary |
+       NOT (SIZEOF (QUERY (fa <* cfs.cfs_faces |
+       NOT (('CONFIG_CONTROL_DESIGN.ADVANCED_FACE' IN TYPEOF (fa))
+       OR
+       (SIZEOF (QUERY (elp_fbnds <* QUERY (bnds <* fa.bounds |
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (bnds)) |
+       NOT (SIZEOF (QUERY (oe <* elp_fbnds.bound\path.edge_list|
+       NOT (('CONFIG_CONTROL_DESIGN.VERTEX_POINT' IN TYPEOF
+       (oe.edge_element.edge_start))
+       AND
+       ('CONFIG_CONTROL_DESIGN.VERTEX_POINT' IN
+       TYPEOF (oe.edge_element.edge_end))))) 
+       = 0))) = 0)))) = 0))) = 0))) = 0;
+ WR13: SIZEOF (QUERY (sbsm <* QUERY (it <* items |
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_SURFACE_MODEL' IN TYPEOF (it)) |
+       NOT (SIZEOF (QUERY (cfs <*
+       sbsm\shell_based_surface_model.sbsm_boundary |
+       NOT (SIZEOF (QUERY (fa <* cfs.cfs_faces |
+       NOT (('CONFIG_CONTROL_DESIGN.ADVANCED_FACE' IN TYPEOF (fa))
+       OR
+       (SIZEOF (QUERY (elp_fbnds <* QUERY (bnds <* fa. bounds |
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (bnds.bound)) |
+       NOT (SIZEOF (QUERY (oe <* elp_fbnds.bound\path.edge_list |
+       NOT ((SIZEOF (['CONFIG_CONTROL_DESIGN.CARTESIAN_POINT',
+       'CONFIG_CONTROL_DESIGN.DEGENERATE_PCURVE',
+       'CONFIG_CONTROL_DESIGN.POINT_ON_CURVE',
+       'CONFIG_CONTROL_DESIGN.POINT_ON_SURFACE'] * TYPEOF
+       (oe.edge_element.edge_start\vertex_point.vertex_geometry)) = 1)
+       AND
+       (SIZEOF (['CONFIG_CONTROL_DESIGN.CARTESIAN_POINT',
+       'CONFIG_CONTROL_DESIGN.DEGENERATE_PCURVE',
+       'CONFIG_CONTROL_DESIGN.POINT_ON_CURVE',
+       'CONFIG_CONTROL_DESIGN.POINT_ON_SURFACE'] * TYPEOF
+       (oe.edge_element.edge_end\vertex_point.vertex_geometry)) = 1
+       )))) = 0))) = 0)))) = 0))) = 0))) = 0;
+END_ENTITY;
+
+ENTITY advanced_face  
+  SUBTYPE OF (face_surface);  
+WHERE  
+  WR1: SIZEOF (['CONFIG_CONTROL_DESIGN.ELEMENTARY_SURFACE',  
+       'CONFIG_CONTROL_DESIGN.B_SPLINE_SURFACE',  
+       'CONFIG_CONTROL_DESIGN.SWEPT_SURFACE'] *  
+       TYPEOF (face_geometry)) = 1;  
+  WR2: SIZEOF (QUERY (bnd <* bounds | 
+       NOT (SIZEOF (['CONFIG_CONTROL_DESIGN.EDGE_LOOP', 
+       'CONFIG_CONTROL_DESIGN.VERTEX_LOOP'] * TYPEOF (bnd)) = 1))) = 0; 
+  WR3: SIZEOF (QUERY (elp_fbnds <* QUERY (bnds <* bounds |  
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (bnds.bound)) |  
+       NOT (SIZEOF (QUERY (oe <* elp_fbnds.bound\path.edge_list |
+       NOT ('CONFIG_CONTROL_DESIGN.EDGE_CURVE' IN  
+       TYPEOF (oe.edge_element)))) = 0))) = 0;  
+  WR4: SIZEOF (QUERY (elp_fbnds <* QUERY (bnds <* bounds |  
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (bnds.bound)) |  
+       NOT (SIZEOF (QUERY (oe <* elp_fbnds.bound\path.edge_list | 
+       NOT (('CONFIG_CONTROL_DESIGN.VERTEX_POINT' IN TYPEOF (oe.edge_start))
+       AND  
+       ('CONFIG_CONTROL_DESIGN.VERTEX_POINT' IN TYPEOF (oe.edge_end)))))  
+       = 0))) = 0;  
+  WR5: SIZEOF (QUERY (elp_fbnds <* QUERY (bnds <* bounds |  
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF (bnds.bound)) |  
+       NOT (SIZEOF (QUERY (oe <* elp_fbnds.bound\path.edge_list |
+       NOT (SIZEOF (['CONFIG_CONTROL_DESIGN.LINE',  
+       'CONFIG_CONTROL_DESIGN.CONIC',  
+       'CONFIG_CONTROL_DESIGN.POLYLINE', 
+       'CONFIG_CONTROL_DESIGN.PCURVE',  
+       'CONFIG_CONTROL_DESIGN.B_SPLINE_CURVE'] * 
+       TYPEOF (oe.edge_element\edge_curve.edge_geometry)) = 1))) = 0))) = 0; 
+  WR6: SIZEOF (QUERY (elp_fbnds <* QUERY (bnds <* bounds |  
+       'CONFIG_CONTROL_DESIGN.EDGE_LOOP' IN TYPEOF(bnds.bound)) |  
+       NOT ('CONFIG_CONTROL_DESIGN.ORIENTED_PATH' IN  
+       TYPEOF (elp_fbnds.bound)))) = 0;  
+  WR7: (NOT ('CONFIG_CONTROL_DESIGN.SWEPT_SURFACE' IN  
+       TYPEOF(face_geometry)))  
+       OR  
+       (SIZEOF(['CONFIG_CONTROL_DESIGN.LINE',  
+       'CONFIG_CONTROL_DESIGN.CONIC',  
+       'CONFIG_CONTROL_DESIGN.POLYLINE',  
+       'CONFIG_CONTROL_DESIGN.B_SPLINE_CURVE'] *
+       TYPEOF (face_geometry\swept_surface.swept_curve)) = 1);  
+  WR8: SIZEOF (QUERY (vlp_fbnds <* QUERY (bnds <* bounds | 
+       'CONFIG_CONTROL_DESIGN.VERTEX_LOOP' IN TYPEOF (bnds.bound)) |
+       NOT (('CONFIG_CONTROL_DESIGN.VERTEX_POINT' IN  
+       TYPEOF (vlp_fbnds.bound\vertex_loop.loop_vertex)) AND
+       ('CONFIG_CONTROL_DESIGN.CARTESIAN_POINT' IN  
+       TYPEOF  
+       (vlp_fbnds.bound\vertex_loop.loop_vertex\vertex_point.vertex_geometry)
+       )))) = 0;
+END_ENTITY;
+ 
+ENTITY advanced_brep_shape_representation  
+  SUBTYPE OF (shape_representation);  
+WHERE  
+  WR1: SIZEOF (QUERY (it <* SELF.items |  
+       NOT (SIZEOF (['CONFIG_CONTROL_DESIGN.MANIFOLD_SOLID_BREP',  
+       'CONFIG_CONTROL_DESIGN.FACETED_BREP',  
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM',  
+       'CONFIG_CONTROL_DESIGN.AXIS2_PLACEMENT_3D'] * TYPEOF(it)) = 1))) 
+       = 0;  
+  WR2: SIZEOF (QUERY (it <* SELF.items |  
+       SIZEOF (['CONFIG_CONTROL_DESIGN.MANIFOLD_SOLID_BREP',  
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM'] * TYPEOF(it)) =1 )) > 0;  
+  WR3: SIZEOF (QUERY (msb <* QUERY (it <* SELF.items |  
+       'CONFIG_CONTROL_DESIGN.MANIFOLD_SOLID_BREP' IN TYPEOF(it)) |  
+       NOT (SIZEOF (QUERY (csh <* 
+       msb_shells(msb, 'CONFIG_CONTROL_DESIGN') |  
+       NOT (SIZEOF (QUERY(csf <* csh.cfs_faces |  
+       NOT('CONFIG_CONTROL_DESIGN.ADVANCED_FACE' IN TYPEOF(csf)))) = 0  
+       ))) = 0))) = 0; 
+  WR4: SIZEOF (QUERY (msb <* QUERY (it <* items |  
+       'CONFIG_CONTROL_DESIGN.MANIFOLD_SOLID_BREP' IN TYPEOF(it)) |  
+       'CONFIG_CONTROL_DESIGN.ORIENTED_CLOSED_SHELL' IN  
+       TYPEOF (msb\manifold_solid_brep.outer))) = 0;
+  WR5: SIZEOF (QUERY (brv <* QUERY (it <* items |  
+       'CONFIG_CONTROL_DESIGN.BREP_WITH_VOIDS' IN TYPEOF(it)) |  
+       NOT (SIZEOF (QUERY (csh <* brv\brep_with_voids.voids |
+       csh\oriented_closed_shell.orientation)) = 0))) = 0;
+  WR6: SIZEOF (QUERY (mi <*  QUERY (it <* items |  
+       'CONFIG_CONTROL_DESIGN.MAPPED_ITEM' IN TYPEOF(it)) |  
+       NOT ('CONFIG_CONTROL_DESIGN.ADVANCED_BREP_SHAPE_REPRESENTATION' IN  
+       TYPEOF(mi\mapped_item.mapping_source.mapped_representation)))) = 0;  
+END_ENTITY;
+
+ENTITY mechanical_context
+  SUBTYPE OF (product_context);
+WHERE
+  WR1: SELF.discipline_type = 'mechanical';
+END_ENTITY;
+
+ENTITY design_context
+  SUBTYPE OF (product_definition_context);
+WHERE
+  WR1: SELF.life_cycle_stage = 'design';
+END_ENTITY;
+
+ENTITY design_make_from_relationship
+  SUBTYPE OF (product_definition_relationship);
+END_ENTITY;
+
+ENTITY supplied_part_relationship
+  SUBTYPE OF (product_definition_relationship);
+END_ENTITY;
+
+ENTITY change_request
+  SUBTYPE OF (action_request_assignment);  
+  items : SET [1:?] OF change_request_item;    
+END_ENTITY;
+
+ENTITY start_request
+  SUBTYPE OF (action_request_assignment);
+  items : SET [1:?] OF start_request_item;
+END_ENTITY;
+
+ENTITY change
+  SUBTYPE OF (action_assignment);
+  items : SET [1:?] OF work_item;
+END_ENTITY;
+
+ENTITY start_work
+  SUBTYPE OF (action_assignment);
+  items : SET [1:?] OF work_item;
+END_ENTITY;
+
+ENTITY cc_design_certification
+  SUBTYPE OF (certification_assignment);
+  items : SET [1:?] OF certified_item;
+END_ENTITY;
+
+ENTITY cc_design_approval
+  SUBTYPE OF (approval_assignment);
+  items : SET [1:?] OF approved_item;
+END_ENTITY;  
+
+ENTITY cc_design_contract
+  SUBTYPE OF (contract_assignment);
+  items : SET [1:?] OF contracted_item;
+END_ENTITY;  
+
+ENTITY cc_design_security_classification
+  SUBTYPE OF (security_classification_assignment);
+  items : SET [1:?] OF classified_item;
+END_ENTITY;  
+
+ENTITY cc_design_person_and_organization_assignment
+  SUBTYPE OF (person_and_organization_assignment);
+  items : SET [1:?] OF person_organization_item;
+WHERE
+  WR1: cc_design_person_and_organization_correlation (SELF);
+END_ENTITY;  
+
+ENTITY cc_design_date_and_time_assignment
+  SUBTYPE OF (date_and_time_assignment);
+  items : SET [1:?] OF date_time_item;
+WHERE
+  WR1: cc_design_date_time_correlation (SELF);
+END_ENTITY;  
+
+ENTITY cc_design_specification_reference
+  SUBTYPE OF (document_reference);
+  items : SET [1:?] OF specified_item;
+END_ENTITY;  
+
+RULE application_context_requires_ap_definition FOR 
+  (application_context, application_protocol_definition);
+WHERE
+  WR1: SIZEOF (QUERY (ac <* application_context | 
+       NOT (SIZEOF (QUERY (apd <* application_protocol_definition | 
+       (ac :=: apd.application) 
+       AND
+       (apd.application_interpreted_model_schema_name =   
+       'config_control_design'))) = 1 ))) = 0;
+END_RULE;
+
+RULE subtype_mandatory_product_context FOR (product_context);
+WHERE
+  WR1: SIZEOF ( QUERY (pc <* product_context |
+       NOT ('CONFIG_CONTROL_DESIGN.MECHANICAL_CONTEXT' IN TYPEOF(pc)))) = 0;
+END_RULE;
+
+RULE design_context_for_property FOR (product_definition);
+WHERE
+  WR1: SIZEOF (QUERY (pd <* product_definition |
+       (SIZEOF (USEDIN (pd, 'CONFIG_CONTROL_DESIGN.' +  
+       'PROPERTY_DEFINITION.DEFINITION') +
+       QUERY (pdr <* USEDIN (pd, 'CONFIG_CONTROL_DESIGN.' +
+       'PRODUCT_DEFINITION_RELATIONSHIP.RELATED_PRODUCT_DEFINITION') |
+       SIZEOF (USEDIN (pdr, 'CONFIG_CONTROL_DESIGN.PROPERTY_DEFINITION.' + 
+       'DEFINITION')) >= 1)) >= 1) AND
+       (NOT ('CONFIG_CONTROL_DESIGN.DESIGN_CONTEXT' IN 
+       TYPEOF (pd.frame_of_reference))))) = 0;
+END_RULE;
+
+RULE restrict_product_category_value FOR 
+  (product_related_product_category);
+WHERE
+   WR1: SIZEOF (QUERY (prpc <* 
+       product_related_product_category | 
+       NOT( prpc.name IN ['assembly', 'detail',
+       'customer_furnished_equipment', 'inseparable_assembly', 'cast',
+       'coined', 'drawn', 'extruded', 'forged', 'formed', 'machined',
+       'molded', 'rolled', 'sheared']))) = 0;
+END_RULE;
+
+RULE product_requires_product_category FOR
+  (product,product_related_product_category);
+WHERE
+  WR1: SIZEOF (QUERY (prod <* product |
+       NOT (SIZEOF (QUERY (prpc <* product_related_product_category |
+       (prod IN prpc.products) AND
+       (prpc.name IN ['assembly', 'inseparable_assembly', 'detail',
+       'customer_furnished_equipment']))) = 1))) = 0;
+END_RULE;
+
+RULE change_request_requires_approval FOR 
+  (change_request, cc_design_approval);
+WHERE
+  WR1: SIZEOF (QUERY (cr <* change_request | 
+       NOT (SIZEOF (QUERY (ccda <* cc_design_approval | 
+       cr IN ccda.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE change_request_requires_person_organization FOR 
+  (change_request,
+  cc_design_person_and_organization_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (cr <* change_request | 
+       NOT (SIZEOF (QUERY (ccpoa <* 
+       cc_design_person_and_organization_assignment |
+       cr IN ccpoa.items )) >= 1 ))) = 0;
+END_RULE;
+
+RULE change_request_requires_date_time FOR
+  (change_request, cc_design_date_and_time_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (cr <* change_request | 
+       NOT (SIZEOF (QUERY (ccdta <* cc_design_date_and_time_assignment | 
+       cr IN ccdta.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE change_requires_approval FOR 
+  (change, cc_design_approval);
+WHERE
+  WR1: SIZEOF (QUERY (chg <* change | 
+       NOT (SIZEOF (QUERY (ccda <* cc_design_approval | 
+       chg IN ccda.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE change_requires_date_time FOR
+  (change, cc_design_date_and_time_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (chg <* change |
+       NOT (SIZEOF (QUERY (ccdta <* cc_design_date_and_time_assignment |
+       (chg IN ccdta.items)
+       AND (ccdta.role.name = 'start_date'))) = 1 ))) = 0;
+END_RULE;
+
+RULE start_request_requires_approval FOR 
+  (start_request, cc_design_approval);
+WHERE
+  WR1: SIZEOF (QUERY (sr <* start_request | 
+       NOT (SIZEOF (QUERY (ccda <* cc_design_approval | 
+       sr IN ccda.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE start_request_requires_person_organization FOR (start_request,
+  cc_design_person_and_organization_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (sr <* start_request | 
+       NOT (SIZEOF (QUERY (ccdpoa <* 
+       cc_design_person_and_organization_assignment |
+       sr IN ccdpoa.items )) >= 1 ))) = 0;
+END_RULE;
+
+RULE start_request_requires_date_time FOR
+  (start_request, cc_design_date_and_time_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (sr <* start_request | 
+       NOT (SIZEOF (QUERY (ccdta <* cc_design_date_and_time_assignment | 
+       sr IN ccdta.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE start_work_requires_approval FOR 
+  (start_work, cc_design_approval);
+WHERE
+  WR1: SIZEOF (QUERY (sw <* start_work | 
+       NOT (SIZEOF (QUERY (ccda <* cc_design_approval | 
+       sw IN ccda.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE start_work_requires_date_time FOR
+  (start_work, cc_design_date_and_time_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (sw <* start_work |
+       NOT (SIZEOF (QUERY (ccdta <* cc_design_date_and_time_assignment |
+       (sw IN ccdta.items) 
+       AND (ccdta.role.name = 'start_date'))) = 1 ))) = 0;
+END_RULE;
+
+RULE restrict_action_request_status FOR (action_request_status);
+WHERE
+  WR1: SIZEOF (QUERY (ars <* action_request_status |
+       NOT (ars.status IN ['proposed', 'in_work', 'issued', 'hold']))) = 0;
+END_RULE;
+
+RULE versioned_action_request_requires_status FOR
+  (versioned_action_request, action_request_status);
+WHERE
+  WR1: SIZEOF (QUERY (ar <* versioned_action_request |
+       NOT (SIZEOF (QUERY (ars <* action_request_status |
+       ar :=: ars.assigned_request)) = 1))) = 0;
+END_RULE;
+
+RULE versioned_action_request_requires_solution FOR
+  (versioned_action_request, action_request_solution);
+WHERE
+  WR1: SIZEOF (QUERY (ar <* versioned_action_request |
+       NOT (SIZEOF (QUERY (ars <* action_request_solution |
+       ar :=: ars.request)) >= 1))) = 0;
+END_RULE;
+
+RULE unique_version_change_order_rule FOR (change);
+WHERE
+  WR1: SIZEOF (QUERY (c <* change |
+       NOT (unique_version_change_order (c.assigned_action)))) = 0;
+END_RULE;
+
+RULE product_requires_version FOR (product, product_definition_formation);
+WHERE
+  WR1: SIZEOF (QUERY (prod <* product |
+       NOT (SIZEOF (QUERY (pdf <* product_definition_formation | 
+       prod :=: pdf.of_product )) >= 1 ))) = 0;
+END_RULE;
+
+RULE product_requires_person_organization FOR
+  (product, cc_design_person_and_organization_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (prod <* product |
+       NOT (SIZEOF (QUERY (ccdpoa <* 
+       cc_design_person_and_organization_assignment |
+       prod IN ccdpoa.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE product_version_requires_approval FOR  (product_definition_formation, 
+  cc_design_approval);
+WHERE
+  WR1: SIZEOF (QUERY (pdf <* product_definition_formation |
+       NOT (SIZEOF (QUERY (ccda <* cc_design_approval | 
+       pdf IN ccda.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE product_version_requires_person_organization FOR
+  (product_definition_formation, 
+  cc_design_person_and_organization_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (pdf <* product_definition_formation |
+       NOT (SIZEOF (QUERY (ccdpoa <* 
+       cc_design_person_and_organization_assignment |
+       (pdf IN ccdpoa.items) AND (ccdpoa.role.name = 'creator'))) = 1 ))) 
+       = 0;
+  WR2: SIZEOF (QUERY (pdf <* product_definition_formation |
+       NOT (SIZEOF (QUERY (ccdpoa <* 
+       cc_design_person_and_organization_assignment |
+       (pdf IN ccdpoa.items) AND 
+       (ccdpoa.role.name IN ['design_supplier', 'part_supplier']))) >= 1))) 
+       = 0;
+END_RULE;
+
+RULE product_version_requires_security_classification FOR
+  (product_definition_formation, cc_design_security_classification);
+WHERE
+  WR1: SIZEOF (QUERY (pdf <* product_definition_formation |
+       NOT (SIZEOF (QUERY (ccdsc <* cc_design_security_classification | 
+       pdf IN ccdsc.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE product_definition_requires_person_organization FOR
+  (product_definition, 
+  cc_design_person_and_organization_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (pd <* product_definition |
+       NOT (SIZEOF (QUERY (ccdpoa <* 
+       cc_design_person_and_organization_assignment |
+       pd IN ccdpoa.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE product_definition_requires_approval FOR
+  (product_definition, cc_design_approval);
+WHERE
+  WR1: SIZEOF (QUERY (pd <* product_definition |
+       NOT (SIZEOF (QUERY (ccda <* cc_design_approval | 
+       pd IN ccda.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE product_definition_requires_date_time FOR
+  (product_definition, cc_design_date_and_time_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (pd <* product_definition |
+       NOT (SIZEOF (QUERY (ccdta <* cc_design_date_and_time_assignment | 
+       pd IN ccdta.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE certification_requires_approval FOR (certification, 
+  cc_design_approval);
+WHERE
+  WR1: SIZEOF (QUERY (cert <* certification |
+       NOT (SIZEOF (QUERY (ccda <* cc_design_approval | 
+       cert IN ccda.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE restrict_certification_type FOR (certification_type);
+WHERE
+  WR1: SIZEOF (QUERY (ct <* certification_type | 
+       NOT (ct.description IN ['design_supplier', 'part_supplier']))) = 0;
+END_RULE;
+
+RULE certification_requires_date_time FOR
+  (certification, cc_design_date_and_time_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (cert <* certification |
+       NOT (SIZEOF (QUERY (ccdta <* cc_design_date_and_time_assignment | 
+       cert IN ccdta.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE approvals_are_assigned FOR 
+  (approval, approval_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (app <* approval |
+       NOT (SIZEOF (QUERY (aa <* approval_assignment | 
+       app :=: aa.assigned_approval )) >= 1 ))) = 0;
+END_RULE;
+
+RULE approval_requires_approval_person_organization FOR 
+  (approval, approval_person_organization);
+WHERE
+  WR1: SIZEOF (QUERY (app <* approval |
+       NOT (SIZEOF (QUERY (apo <* approval_person_organization | 
+       app :=: apo.authorized_approval )) >= 1 ))) = 0;
+END_RULE;
+
+RULE approval_requires_approval_date_time FOR (approval,
+  approval_date_time);
+WHERE
+  WR1: SIZEOF (QUERY (app <* approval |
+       NOT (SIZEOF (QUERY (adt <* approval_date_time |
+       app :=: adt.dated_approval )) = 1 ))) = 0;
+END_RULE;
+
+RULE restrict_approval_status FOR (approval_status);
+WHERE
+  WR1: SIZEOF (QUERY (ast <* approval_status | 
+       NOT (ast.name IN 
+       ['approved', 'not_yet_approved', 'disapproved', 'withdrawn']))) = 0;
+END_RULE;
+
+RULE contract_requires_approval FOR (contract, 
+  cc_design_approval);
+WHERE
+  WR1: SIZEOF (QUERY (c <* contract |
+       NOT (SIZEOF (QUERY (ccda <* cc_design_approval | 
+       c IN ccda.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE contract_requires_person_organization FOR
+  (contract, cc_design_person_and_organization_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (c <* contract |
+       NOT (SIZEOF (QUERY (ccdpoa <* 
+       cc_design_person_and_organization_assignment |
+       c IN ccdpoa.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE restrict_contract_type FOR (contract_type);
+WHERE
+  WR1: SIZEOF (QUERY (ct <* contract_type | 
+       NOT (ct.description IN ['fixed_price', 'cost_plus']))) = 0;
+END_RULE;
+
+RULE security_classification_requires_approval FOR 
+  (security_classification, cc_design_approval);
+WHERE
+  WR1: SIZEOF (QUERY (sc <* security_classification |
+       NOT (SIZEOF (QUERY (ccda <* cc_design_approval | 
+       sc IN ccda.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE security_classification_requires_person_organization FOR 
+  (security_classification,
+  cc_design_person_and_organization_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (sc <* security_classification |
+       NOT (SIZEOF (QUERY (ccdpoa <* 
+       cc_design_person_and_organization_assignment |
+       sc IN ccdpoa.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE security_classification_requires_date_time FOR
+  (security_classification, cc_design_date_and_time_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (sc <* security_classification |
+       NOT (SIZEOF (QUERY (ccdta <* cc_design_date_and_time_assignment | 
+       (sc IN ccdta.items) AND 
+       ('classification_date' = ccdta.role.name))) = 1 ))) = 0;
+END_RULE;
+
+RULE security_classification_optional_date_time FOR
+  (security_classification, cc_design_date_and_time_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (sc <* security_classification |
+       NOT (SIZEOF (QUERY (ccdta <* cc_design_date_and_time_assignment | 
+       (sc IN ccdta.items) AND 
+       ('declassification_date' = ccdta.role.name))) <= 1 ))) = 0;
+END_RULE;
+
+RULE restrict_security_classification_level FOR
+  (security_classification_level);
+WHERE
+  WR1: SIZEOF (QUERY (scl <* security_classification_level | 
+       NOT (scl.name IN ['unclassified', 'classified', 'proprietary',
+       'confidential',  'secret', 'top_secret']))) = 0;
+END_RULE;
+
+RULE restrict_person_organization_role FOR
+  (person_and_organization_role);
+WHERE
+  WR1: SIZEOF (QUERY (por <* person_and_organization_role | 
+       NOT (por.name IN ['request_recipient', 'initiator', 'part_supplier',
+       'design_supplier', 'configuration_manager', 'contractor',
+       'classification_officer', 'creator', 'design_owner']))) = 0;
+END_RULE;
+
+RULE restrict_date_time_role FOR (date_time_role);
+WHERE
+  WR1: SIZEOF (QUERY (dtr <* date_time_role | 
+       NOT (dtr.name IN ['creation_date', 'request_date', 'release_date', 
+       'start_date', 'contract_date', 'certification_date', 'sign_off_date', 
+       'classification_date', 'declassification_date']))) = 0;
+END_RULE;
+
+RULE restrict_document_type FOR (document_type);
+WHERE
+  WR1: SIZEOF (QUERY (dt <* document_type | 
+       NOT (dt.product_data_type IN ['material_specification',
+       'process_specification', 'design_specification',
+       'surface_finish_specification', 'cad_filename', 'drawing']))) = 0;
+END_RULE;
+
+RULE document_to_product_definition FOR 
+  (cc_design_specification_reference, product_definition);
+WHERE
+  WR1: SIZEOF (QUERY (sp <* cc_design_specification_reference |
+       NOT (((('CONFIG_CONTROL_DESIGN.DOCUMENT_RELATIONSHIP.' +
+       'RELATING_DOCUMENT' IN 
+       ROLESOF (sp\document_reference.assigned_document)) AND
+       (SIZEOF (QUERY (it <* sp.items |
+       NOT('CONFIG_CONTROL_DESIGN.PRODUCT_DEFINITION' IN 
+       TYPEOF (it)))) = 0)))
+       OR 
+       (NOT ('CONFIG_CONTROL_DESIGN.DOCUMENT_RELATIONSHIP.' +
+       'RELATING_DOCUMENT' IN 
+       ROLESOF (sp\document_reference.assigned_document)))))) = 0;
+END_RULE; 
+
+RULE as_required_quantity FOR (measure_with_unit);
+WHERE
+  WR1: SIZEOF (QUERY (m <* measure_with_unit |
+       ('CONFIG_CONTROL_DESIGN.DESCRIPTIVE_MEASURE' IN
+       TYPEOF (m.value_component)) AND 
+       (NOT (m.value_component = 'as_required')))) = 0;
+END_RULE;
+
+RULE global_unit_assignment FOR (global_unit_assigned_context);
+WHERE
+  WR1: SIZEOF (QUERY (guac <* global_unit_assigned_context |
+       NOT (SIZEOF (guac.units) = 3))) = 0;
+  WR2: SIZEOF (QUERY (guac <* global_unit_assigned_context |
+       NOT ((SIZEOF (QUERY (u <* guac.units |
+       'CONFIG_CONTROL_DESIGN.LENGTH_UNIT' IN TYPEOF (u))) = 1) AND 
+       (SIZEOF (QUERY (u <* guac.units |
+       'CONFIG_CONTROL_DESIGN.PLANE_ANGLE_UNIT' IN TYPEOF (u))) = 1) AND
+       (SIZEOF (QUERY (u <* guac.units |
+       'CONFIG_CONTROL_DESIGN.SOLID_ANGLE_UNIT' IN TYPEOF (u))) = 1
+       )))) = 0;
+END_RULE; 
+
+RULE subtype_mandatory_action FOR 
+  (action);
+WHERE
+  WR1: SIZEOF (QUERY (act <* action |
+       NOT ('CONFIG_CONTROL_DESIGN.DIRECTED_ACTION' IN
+       TYPEOF (act)))) = 0;
+END_RULE;
+
+RULE subtype_mandatory_product_definition_formation FOR 
+  (product_definition_formation);
+WHERE
+  WR1: SIZEOF (QUERY (pdf <* product_definition_formation |
+       NOT ('CONFIG_CONTROL_DESIGN.' + 
+       'PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE' IN
+       TYPEOF (pdf)))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_date FOR (date);
+WHERE
+  WR1: SIZEOF (QUERY (dt <* date |
+       NOT (SIZEOF (USEDIN (dt, '')) >= 1))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_shape_representation FOR (shape_representation);
+WHERE
+  WR1: SIZEOF (QUERY (sr <* shape_representation |
+       NOT (SIZEOF (USEDIN (sr, '')) >= 1))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_named_unit FOR (named_unit);
+WHERE
+  WR1: SIZEOF (QUERY (nu <* named_unit |
+       NOT (SIZEOF (USEDIN (nu, '')) >= 1))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_representation_item FOR (representation_item);
+WHERE
+  WR1: SIZEOF (QUERY (ri <* representation_item |
+       NOT (SIZEOF (USEDIN (ri, '')) >= 1))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_date_time_role FOR (date_time_role);
+WHERE
+  WR1: SIZEOF (QUERY (dtr <* date_time_role |
+       NOT (SIZEOF (USEDIN (dtr, '')) >= 1))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_person_and_organization_role FOR 
+  (person_and_organization_role);
+WHERE
+  WR1: SIZEOF (QUERY (poar <* person_and_organization_role |
+       NOT (SIZEOF (USEDIN (poar, '')) >= 1))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_action_directive FOR (action_directive);
+WHERE
+  WR1: SIZEOF (QUERY (ad <* action_directive |
+       NOT (SIZEOF (USEDIN (ad, '')) >= 1))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_security_classification_level FOR 
+  (security_classification_level);
+WHERE
+  WR1: SIZEOF (QUERY (scl <* security_classification_level |
+       NOT (SIZEOF (USEDIN (scl, '')) >= 1))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_approval_status FOR (approval_status);
+WHERE
+  WR1: SIZEOF (QUERY (ast <* approval_status |
+       NOT (SIZEOF (USEDIN (ast, '')) >= 1))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_document_type FOR (document_type);
+WHERE
+  WR1: SIZEOF (QUERY (dt <* document_type |
+       NOT (SIZEOF (USEDIN (dt, '')) >= 1))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_contract_type FOR (contract_type);
+WHERE
+  WR1: SIZEOF (QUERY (ct <* contract_type |
+       NOT (SIZEOF (USEDIN (ct, '')) >= 1))) = 0;
+END_RULE;
+
+RULE dependent_instantiable_certification_type FOR (certification_type);
+WHERE
+  WR1: SIZEOF (QUERY (ct <* certification_type |
+       NOT (SIZEOF (USEDIN (ct, '')) >= 1))) = 0;
+END_RULE;
+
+RULE product_concept_requires_configuration_item FOR
+  (product_concept, configuration_item);
+WHERE
+  WR1: SIZEOF (QUERY (pc <* product_concept |
+       NOT (SIZEOF (QUERY (ci <* configuration_item |
+       pc :=: ci.item_concept)) >=1 ))) = 0;
+END_RULE;
+
+RULE configuration_item_requires_person_organization FOR 
+  (configuration_item,
+  cc_design_person_and_organization_assignment);
+WHERE
+  WR1: SIZEOF (QUERY (ci <* configuration_item |
+       NOT (SIZEOF (QUERY (ccdpoa <* 
+       cc_design_person_and_organization_assignment |
+       ci IN ccdpoa.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE subtype_mandatory_effectivity FOR
+  (effectivity);
+WHERE
+  WR1: SIZEOF (QUERY (eff <* effectivity | 
+       NOT ((SIZEOF (['CONFIG_CONTROL_DESIGN.SERIAL_NUMBERED_EFFECTIVITY', 
+       'CONFIG_CONTROL_DESIGN.LOT_EFFECTIVITY',
+       'CONFIG_CONTROL_DESIGN.DATED_EFFECTIVITY'] *
+       TYPEOF (eff)) = 1) AND
+       ('CONFIG_CONTROL_DESIGN.CONFIGURATION_EFFECTIVITY' IN TYPEOF(eff))))) 
+       = 0;
+END_RULE;
+
+RULE effectivity_requires_approval FOR 
+  (effectivity, cc_design_approval);
+WHERE
+  WR1: SIZEOF (QUERY (eff <* effectivity |
+       NOT (SIZEOF (QUERY (ccda <* cc_design_approval | 
+       eff IN ccda.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE configuration_item_requires_approval FOR 
+  (configuration_item, cc_design_approval);
+WHERE
+  WR1: SIZEOF (QUERY (ci <* configuration_item |
+       NOT (SIZEOF (QUERY (ccda <* cc_design_approval | 
+       ci IN ccda.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE coordinated_assembly_and_shape FOR
+  (next_assembly_usage_occurrence);
+WHERE
+  WR1: SIZEOF (QUERY (nauo <* next_assembly_usage_occurrence | 
+       NOT (assembly_shape_is_defined (nauo)))) = 0;
+END_RULE;
+
+RULE subtype_mandatory_product_definition_usage FOR 
+  (product_definition_usage);
+WHERE
+  WR1: SIZEOF (QUERY (pdu <* product_definition_usage |
+       NOT ('CONFIG_CONTROL_DESIGN.' + 
+       'ASSEMBLY_COMPONENT_USAGE' IN TYPEOF (pdu)))) = 0;
+END_RULE;
+
+RULE acu_requires_security_classification FOR   
+  (assembly_component_usage, 
+   cc_design_security_classification);
+WHERE
+  WR1: SIZEOF (QUERY (acu <* assembly_component_usage | 
+       NOT (SIZEOF (QUERY (ccdsc <* cc_design_security_classification | 
+       acu IN ccdsc.items )) = 1 ))) = 0;
+END_RULE;
+
+RULE geometric_representation_item_3d FOR
+  (geometric_representation_item);
+WHERE
+  WR1: SIZEOF (QUERY (gri <* geometric_representation_item | 
+       NOT ((dimension_of (gri) = 3) OR 
+       (SIZEOF (bag_to_set (USEDIN (gri, '')) - bag_to_set (USEDIN (gri,
+       'CONFIG_CONTROL_DESIGN.DEFINITIONAL_REPRESENTATION.ITEMS'))) = 0)
+       ))) = 0;  
+END_RULE;  
+
+RULE dependent_instantiable_parametric_representation_context FOR   
+  (parametric_representation_context);
+WHERE
+  WR1: SIZEOF (QUERY (prc <* parametric_representation_context |
+       NOT (SIZEOF (USEDIN (prc, '')) >= 1))) = 0;
+END_RULE;
+
+RULE subtype_mandatory_shape_representation FOR
+  (shape_representation);
+WHERE
+  WR1: SIZEOF (QUERY (sr <* shape_representation |
+       NOT ((SIZEOF (['CONFIG_CONTROL_DESIGN.' +
+       'ADVANCED_BREP_SHAPE_REPRESENTATION',
+       'CONFIG_CONTROL_DESIGN.FACETED_BREP_SHAPE_REPRESENTATION',
+       'CONFIG_CONTROL_DESIGN.MANIFOLD_SURFACE_SHAPE_REPRESENTATION',
+       'CONFIG_CONTROL_DESIGN.EDGE_BASED_WIREFRAME_SHAPE_REPRESENTATION',
+       'CONFIG_CONTROL_DESIGN.SHELL_BASED_WIREFRAME_SHAPE_REPRESENTATION',
+       'CONFIG_CONTROL_DESIGN.' +
+       'GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION',
+       'CONFIG_CONTROL_DESIGN.' +
+       'GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION'] *
+       TYPEOF (sr)) = 1) OR
+       (SIZEOF (QUERY (it <* sr\representation.items |
+       NOT ('CONFIG_CONTROL_DESIGN.AXIS2_PLACEMENT_3D' IN TYPEOF (it))))
+       = 0) OR
+       (SIZEOF (QUERY (sdr <* QUERY (pdr <* USEDIN (sr,
+       'CONFIG_CONTROL_DESIGN.PROPERTY_DEFINITION_REPRESENTATION.' +
+       'USED_REPRESENTATION') |
+       'CONFIG_CONTROL_DESIGN.SHAPE_DEFINITION_REPRESENTATION' IN
+       TYPEOF (pdr)) |
+       NOT (SIZEOF (['CONFIG_CONTROL_DESIGN.SHAPE_ASPECT',
+       'CONFIG_CONTROL_DESIGN.SHAPE_ASPECT_RELATIONSHIP'] * TYPEOF
+       (sdr.definition)) = 1))) = 0)))) = 0;
+END_RULE;
+
+RULE subtype_mandatory_representation FOR (representation);
+WHERE
+  WR1: SIZEOF (QUERY (rep <* representation |
+       NOT ('CONFIG_CONTROL_DESIGN.SHAPE_REPRESENTATION' IN
+       TYPEOF (rep)))) = 0;
+END_RULE;
+
+RULE subtype_mandatory_representation_context FOR (representation_context);
+WHERE
+  WR1: SIZEOF (QUERY (rep_cntxt <* representation_context |
+       NOT ('CONFIG_CONTROL_DESIGN.GEOMETRIC_REPRESENTATION_CONTEXT' IN 
+       TYPEOF (rep_cntxt)))) = 0;
+END_RULE;
+
+RULE no_shape_for_make_from FOR 
+  (design_make_from_relationship);
+WHERE
+  WR1: SIZEOF (QUERY (dmfr <* design_make_from_relationship |
+       NOT (SIZEOF (QUERY (pd <* USEDIN (dmfr, 'CONFIG_CONTROL_DESIGN.' + 
+       'PROPERTY_DEFINITION.DEFINITION') |
+       'CONFIG_CONTROL_DESIGN.PRODUCT_DEFINITION_SHAPE' IN TYPEOF (pd))) = 
+       0))) = 0;
+END_RULE;
+
+RULE no_shape_for_supplied_part FOR
+  (supplied_part_relationship);
+WHERE
+  WR1: SIZEOF (QUERY (spr <* supplied_part_relationship |
+       NOT (SIZEOF (QUERY (pd <* USEDIN (spr, 'CONFIG_CONTROL_DESIGN.' + 
+       'PROPERTY_DEFINITION.DEFINITION') |
+       'CONFIG_CONTROL_DESIGN.PRODUCT_DEFINITION_SHAPE' IN TYPEOF (pd))) = 
+       0))) = 0;
+END_RULE;
+
+FUNCTION unique_version_change_order (c : action) : BOOLEAN;
+  LOCAL
+    ords       : action_directive := c\directed_action.directive;
+    assign     : SET OF change_request := [];
+    versions   : SET OF product_definition_formation := [];
+  END_LOCAL;
+
+  -- build the set of change_requests that are the assigned
+  -- versioned_action_requests incorporated by the action_directive
+
+  REPEAT i := 1 TO SIZEOF(ords.requests);
+  assign := assign + QUERY (ara <* bag_to_set (USEDIN (ords.requests[i],
+            'CONFIG_CONTROL_DESIGN.ACTION_REQUEST_ASSIGNMENT.' +
+            'ASSIGNED_ACTION_REQUEST')) |
+            'CONFIG_CONTROL_DESIGN.CHANGE_REQUEST' IN TYPEOF (ara));
+  END_REPEAT;
+
+  -- gather the product_definition_formations that are referenced by the
+  -- change_requests
+
+  REPEAT k := 1 TO SIZEOF(assign);
+    versions := versions + assign[k].items;
+  END_REPEAT;
+
+  -- check that no product_definition_formation reference the same
+  -- instance of product
+
+  RETURN (SIZEOF (QUERY (vers <* versions |
+          NOT (SIZEOF (QUERY (other_vers <* versions - vers |
+          vers.of_product :=: other_vers.of_product)) = 0))) = 0);
+END_FUNCTION;
+
+FUNCTION bag_to_set (the_bag : BAG OF GENERIC:intype) : 
+  SET OF GENERIC:intype;
+  LOCAL
+    the_set : SET OF GENERIC:intype := [];
+    i       : INTEGER;
+  END_LOCAL;
+
+  IF SIZEOF (the_bag) > 0 THEN
+    REPEAT i := 1 to HIINDEX (the_bag);
+      the_set := the_set + the_bag[i];
+    END_REPEAT;
+  END_IF;
+
+  RETURN (the_set);
+
+END_FUNCTION;
+
+FUNCTION cc_design_person_and_organization_correlation 
+  (e : cc_design_person_and_organization_assignment ) : BOOLEAN;
+  LOCAL
+    po_role : STRING;
+  END_LOCAL;
+    po_role := e\person_and_organization_assignment.role.name;
+  CASE po_role OF
+    'request_recipient'      : IF SIZEOF (e.items) <>
+                                 SIZEOF (QUERY (x <* e.items |
+                                 SIZEOF(['CONFIG_CONTROL_DESIGN.' + 
+                                 'CHANGE_REQUEST',
+                                 'CONFIG_CONTROL_DESIGN.' + 
+                                 'START_REQUEST'] * 
+                                 TYPEOF (x)) = 1))
+                                 THEN RETURN(FALSE);
+                               END_IF; 
+    'initiator'              : IF SIZEOF (e.items) <>
+                                 SIZEOF (QUERY (x <* e.items |
+                                 SIZEOF(['CONFIG_CONTROL_DESIGN.' + 
+                                 'CHANGE_REQUEST',
+                                 'CONFIG_CONTROL_DESIGN.' + 
+                                 'START_REQUEST',
+                                 'CONFIG_CONTROL_DESIGN.' +
+                                 'START_WORK',
+                                 'CONFIG_CONTROL_DESIGN.' +
+                                 'CHANGE'] * 
+                                 TYPEOF (x)) = 1))
+                                 THEN RETURN(FALSE);
+                               END_IF; 
+    'creator'                : IF SIZEOF (e.items) <>
+                                 SIZEOF (QUERY (x <* e.items |
+                                 SIZEOF (['CONFIG_CONTROL_DESIGN.' + 
+                                 'PRODUCT_DEFINITION_FORMATION',
+                                 'CONFIG_CONTROL_DESIGN.' +
+                                 'PRODUCT_DEFINITION'] * 
+                                 TYPEOF (x)) = 1)) 
+                                 THEN RETURN (FALSE);
+                               END_IF;
+    'part_supplier'          : IF SIZEOF (e.items) <>
+                                 SIZEOF (QUERY (x <* e.items |
+                                 'CONFIG_CONTROL_DESIGN.' + 
+                                 'PRODUCT_DEFINITION_FORMATION' 
+                                 IN TYPEOF (x)))
+                                 THEN RETURN(FALSE);
+                               END_IF; 
+    'design_supplier'        : IF SIZEOF (e.items) <>
+                                 SIZEOF (QUERY (x <* e.items |
+                                 'CONFIG_CONTROL_DESIGN.' + 
+                                 'PRODUCT_DEFINITION_FORMATION' 
+                                 IN TYPEOF (x)))
+                                 THEN RETURN(FALSE);
+                               END_IF; 
+    'design_owner'           : IF SIZEOF (e.items) <>
+                                 SIZEOF (QUERY (x <* e.items |
+                                 'CONFIG_CONTROL_DESIGN.PRODUCT' 
+                                 IN TYPEOF (x)))
+                                 THEN RETURN(FALSE);
+                               END_IF; 
+    'configuration_manager'  : IF SIZEOF (e.items) <>
+                                 SIZEOF (QUERY (x <* e.items |
+                                 'CONFIG_CONTROL_DESIGN.' + 
+                                 'CONFIGURATION_ITEM'
+                                 IN TYPEOF (x)))
+                                 THEN RETURN(FALSE);
+                               END_IF; 
+    'contractor'             : IF SIZEOF (e.items) <>
+                                 SIZEOF (QUERY (x <* e.items |
+                                 'CONFIG_CONTROL_DESIGN.CONTRACT' 
+                                 IN TYPEOF (x)))
+                                 THEN RETURN(FALSE);
+                               END_IF; 
+    'classification_officer' : IF SIZEOF (e.items) <>
+                                 SIZEOF (QUERY (x <* e.items |  
+                                 'CONFIG_CONTROL_DESIGN.' +
+                                 'SECURITY_CLASSIFICATION' 
+                                 IN TYPEOF (x))) THEN 
+                                 RETURN(FALSE);
+                               END_IF; 
+    OTHERWISE : RETURN(TRUE);
+  END_CASE;
+  RETURN (TRUE);
+END_FUNCTION;
+
+FUNCTION cc_design_date_time_correlation 
+  (e : cc_design_date_and_time_assignment ) : BOOLEAN;
+  LOCAL
+    dt_role : STRING;
+  END_LOCAL;
+    dt_role := e\date_and_time_assignment.role.name;
+  CASE dt_role OF
+    'creation_date'         : IF SIZEOF (e.items) <>
+                                SIZEOF (QUERY (x <* e.items |
+                                'CONFIG_CONTROL_DESIGN.' + 
+                                'PRODUCT_DEFINITION'
+                                IN TYPEOF (x)))
+                                THEN RETURN(FALSE); 
+                              END_IF; 
+    'request_date'         : IF SIZEOF (e.items) <>
+                                SIZEOF (QUERY (x <* e.items |
+                                SIZEOF (
+                                ['CONFIG_CONTROL_DESIGN.CHANGE_REQUEST' + 
+                                'CONFIG_CONTROL_DESIGN.START_REQUEST'] * 
+                                TYPEOF (x)) = 1))
+                                THEN RETURN(FALSE);
+                              END_IF; 
+    'release_date'         : IF SIZEOF (e.items) <>
+                                SIZEOF (QUERY (x <* e.items |
+                                SIZEOF (
+                                ['CONFIG_CONTROL_DESIGN.CHANGE' + 
+                                'CONFIG_CONTROL_DESIGN.START_WORK'] * 
+                                TYPEOF (x)) = 1))
+                                THEN RETURN(FALSE);
+                              END_IF; 
+    'start_date'          : IF SIZEOF (e.items) <>
+                                SIZEOF (QUERY (x <* e.items |
+                                SIZEOF (
+                                ['CONFIG_CONTROL_DESIGN.CHANGE' + 
+                                'CONFIG_CONTROL_DESIGN.START_WORK'] * 
+                                TYPEOF (x)) = 1))
+                                THEN RETURN(FALSE);
+                              END_IF; 
+    'sign_off_date'         : IF SIZEOF (e.items) <>
+                                SIZEOF (QUERY (x <* e.items | 
+                                'CONFIG_CONTROL_DESIGN.' +
+                                'APPROVAL_PERSON_ORGANIZATION' 
+                                IN TYPEOF (x)))
+                                THEN RETURN(FALSE);
+                              END_IF; 
+    'contract_date'         : IF SIZEOF (e.items) <>
+                                SIZEOF (QUERY (x <* e.items | 
+                                'CONFIG_CONTROL_DESIGN.CONTRACT' 
+                                IN TYPEOF (x)))
+                                THEN RETURN(FALSE);
+                              END_IF; 
+    'certification_date'    : IF SIZEOF (e.items) <>
+                                SIZEOF (QUERY (x <* e.items | 
+                                'CONFIG_CONTROL_DESIGN.CERTIFICATION' 
+                                IN TYPEOF (x)))
+                                THEN RETURN(FALSE);
+                              END_IF; 
+    'classification_date'   : IF SIZEOF (e.items) <>
+                                SIZEOF (QUERY (x <* e.items | 
+                                'CONFIG_CONTROL_DESIGN.' + 
+                                'SECURITY_CLASSIFICATION' 
+                                IN TYPEOF (x))) 
+                                THEN RETURN(FALSE);
+                              END_IF; 
+    'declassification_date' : IF SIZEOF (e.items) <>
+                                SIZEOF (QUERY (x <* e.items |
+                                'CONFIG_CONTROL_DESIGN.' +
+                                'SECURITY_CLASSIFICATION' 
+                                IN TYPEOF (x))) 
+                                THEN RETURN(FALSE);
+                              END_IF; 
+    OTHERWISE : RETURN(TRUE);
+  END_CASE;
+  RETURN (TRUE);
+END_FUNCTION;
+
+FUNCTION assembly_shape_is_defined 
+  (assy: next_assembly_usage_occurrence) : BOOLEAN;
+  LOCAL
+      sdr_set : SET OF shape_definition_representation := [];
+      srr_set : SET OF shape_representation_relationship := [];
+  END_LOCAL;
+
+  -- Gather all instances of shape_definition_representation where the
+  -- component part has a representation defined for it. 
+     
+  sdr_set := QUERY (pdr <* bag_to_set (USEDIN  
+             (assy.related_product_definition,
+             'CONFIG_CONTROL_DESIGN.PROPERTY_DEFINITION_REPRESENTATION.' +
+             'DEFINITION.DEFINITION')) |
+             'CONFIG_CONTROL_DESIGN.SHAPE_DEFINITION_REPRESENTATION' IN
+             TYPEOF (pdr)) + 
+             QUERY (pdr <* bag_to_set ( 
+             USEDIN (assy.related_product_definition,
+             'CONFIG_CONTROL_DESIGN.' +
+             'PROPERTY_DEFINITION_REPRESENTATION.DEFINITION.' + 
+             'DEFINITION.RELATED_PRODUCT_DEFINITION')) | 
+             'CONFIG_CONTROL_DESIGN.SHAPE_DEFINITION_REPRESENTATION' IN
+             TYPEOF (pdr));
+
+  -- If there is a representation defined for the component part 
+
+  IF SIZEOF (sdr_set) > 0 THEN
+
+    -- For each representation of the shape of the component part gather all
+    -- instances of shape_representation_relationship where the
+    -- representation of component part is related to another 
+    -- representation. 
+
+    REPEAT i := 1 TO HIINDEX (sdr_set);
+      srr_set := QUERY (rr <* bag_to_set (
+                 USEDIN (sdr_set[i]\
+                 property_definition_representation.used_representation,
+                 'CONFIG_CONTROL_DESIGN.' +          
+                 'REPRESENTATION_RELATIONSHIP.REP_2')) |
+                 'CONFIG_CONTROL_DESIGN.SHAPE_REPRESENTATION_RELATIONSHIP' IN
+                 TYPEOF (rr));
+      
+      -- If there is a shape_representation_relationship where the component 
+      -- part's shape_representation is related to another shape_-
+      -- representation. 
+
+      IF SIZEOF (srr_set) > 0 THEN
+
+        -- For each shape_representation_relationship in that set
+
+        REPEAT j := 1 TO HIINDEX (srr_set);
+
+          -- If the other shape_representation in the shape_representation_-
+          -- relationship is the  shape_representation of the assembly 
+          -- product_definition in at least one instance.              
+
+          IF SIZEOF (QUERY (pdr <* bag_to_set (USEDIN 
+            (srr_set[j]\representation_relationship.rep_1, 
+            'CONFIG_CONTROL_DESIGN.PROPERTY_DEFINITION_REPRESENTATION.' +
+            'USED_REPRESENTATION')) |
+            'CONFIG_CONTROL_DESIGN.SHAPE_DEFINITION_REPRESENTATION' IN
+            TYPEOF (pdr)) * 
+            QUERY (pdr <* bag_to_set (
+            USEDIN (assy.relating_product_definition,
+            'CONFIG_CONTROL_DESIGN.PROPERTY_DEFINITION_REPRESENTATION.' +
+            'USED_REPRESENTATION.DEFINITION')) |
+            'CONFIG_CONTROL_DESIGN.SHAPE_DEFINITION_REPRESENTATION'
+            IN TYPEOF (pdr))) >= 1 THEN
+
+            -- If the shape_representation_relationship and the product_-
+            -- definition_relationship of each occurrence of the component 
+            -- and assembly relationship is not given via the            
+            -- context_dependent_shape_representation then return FALSE        
+     
+            IF SIZEOF (QUERY (cdsr <* 
+              USEDIN (assy, 'CONFIG_CONTROL_DESIGN.' +
+              'CONTEXT_DEPENDENT_SHAPE_REPRESENTATION.' +
+              'REPRESENTED_PRODUCT_RELATION') |
+              NOT ((cdsr.represented_product_relation.definition :=: assy) AND
+              (cdsr.representation_relation :=: srr_set[j])))) > 0
+              THEN RETURN (FALSE);
+            END_IF;
+          END_IF;
+        END_REPEAT;
+      END_IF;
+    END_REPEAT;
+  END_IF;
+
+  -- If the shape of the component is not specified or there are no 
+  -- violations then return TRUE
+
+  RETURN (TRUE);
+END_FUNCTION;
+
+FUNCTION msb_shells (brep: manifold_solid_brep; 
+                     schema_name : STRING) : SET [1:?] OF  closed_shell; 
+  IF (schema_name + '.BREP_WITH_VOIDS' IN TYPEOF (brep)) THEN 
+    RETURN (brep\brep_with_voids.voids + brep.outer); 
+  ELSE 
+    RETURN([brep.outer]); 
+  END_IF; 
+END_FUNCTION; 
+
+FUNCTION valid_wireframe_edge_curve (crv   : curve; 
+                                     schma : STRING) : BOOLEAN;
+
+  -- check for valid basic curve types 
+
+  IF SIZEOF ([schma + '.LINE', 
+    schma + '.CIRCLE',
+    schma + '.ELLIPSE', 
+    schma + '.PARABOLA',
+    schma + '.HYPERBOLA',
+    schma + '.B_SPLINE_CURVE',
+    schma + '.POLYLINE'] * TYPEOF (crv)) = 1 
+    THEN RETURN (TRUE);
+  ELSE
+
+   -- recursively check for valid parent curves for curve_replica 
+
+    IF (schma + '.CURVE_REPLICA') IN TYPEOF(crv)
+      THEN RETURN 
+      (valid_wireframe_edge_curve (crv\curve_replica.parent_curve, schma));
+    ELSE
+
+      -- recursively check for valid basis curves for offset_curve 
+
+      IF (schma + '.OFFSET_CURVE_3D') IN TYPEOF (crv)
+        THEN RETURN 
+        (valid_wireframe_edge_curve (crv\offset_curve_3d.basis_curve, 
+        schma));
+      END_IF;
+    END_IF;
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;
+
+FUNCTION valid_wireframe_vertex_point (pnt   : point; 
+                                       schma : STRING) : BOOLEAN;
+
+  -- check for valid basic point type 
+
+  IF (schma + '.CARTESIAN_POINT' IN TYPEOF (pnt))
+    THEN RETURN (TRUE);
+  ELSE
+
+    -- recursively check for valid basic point type as parents for a 
+    -- point_replica
+
+    IF (schma + '.POINT_REPLICA') IN TYPEOF (pnt)
+      THEN RETURN (valid_wireframe_vertex_point 
+      (pnt\point_replica.parent_pt, schma));
+    END_IF;
+  END_IF;
+  RETURN (FALSE);
+END_FUNCTION;
+
+FUNCTION valid_geometrically_bounded_wf_curve (crv   : curve;  
+                                               schma : STRING) : BOOLEAN; 
+ 
+  -- check for valid basic curves  
+ 
+  IF SIZEOF ([schma + '.POLYLINE', 
+    schma + '.B_SPLINE_CURVE', 
+    schma + '.ELLIPSE', 
+    schma + '.CIRCLE'] * TYPEOF (crv)) = 1 
+    THEN RETURN (TRUE); 
+  ELSE  
+ 
+    -- if the curve is a trimmed_curve  
+ 
+    IF (schma + '.TRIMMED_CURVE') IN TYPEOF (crv) THEN  
+   
+      -- if a line, parabola or hyperbola is being trimmed, then valid  
+ 
+      IF SIZEOF ([schma + '.LINE', 
+        schma + '.PARABOLA',
+        schma + '.HYPERBOLA'] * TYPEOF (crv\trimmed_curve.basis_curve)) = 1 
+        THEN RETURN (TRUE); 
+ 
+        -- otherwise, recursively check the basis_curve  
+ 
+        ELSE RETURN (valid_geometrically_bounded_wf_curve  
+        (crv\trimmed_curve.basis_curve, schma));
+      END_IF;  
+    ELSE 
+ 
+      -- recursively check the offset_curves basis curve  
+ 
+      IF (schma + '.OFFSET_CURVE_3D') IN TYPEOF (crv) 
+        THEN RETURN (valid_geometrically_bounded_wf_curve
+        (crv\offset_curve_3d.basis_curve, schma));
+      ELSE  
+ 
+        -- recursively check the curve_replicas parent curve  
+ 
+        IF (schma + '.CURVE_REPLICA') IN TYPEOF (crv) THEN  
+          RETURN (valid_geometrically_bounded_wf_curve
+          (crv\curve_replica.parent_curve, schma)); 
+        ELSE 
+ 
+          -- recursively check the composite_curves segments  
+ 
+          IF (schma + '.COMPOSITE_CURVE') IN TYPEOF (crv) THEN  
+            RETURN (SIZEOF (QUERY (ccs <* crv\composite_curve.segments | 
+            NOT (valid_geometrically_bounded_wf_curve
+            (ccs.parent_curve, schma))))  
+            = 0); 
+          END_IF; 
+        END_IF; 
+      END_IF; 
+    END_IF; 
+  END_IF; 
+  RETURN (FALSE); 
+END_FUNCTION;
+
+FUNCTION valid_geometrically_bounded_wf_point (pnt : point;  
+                                               schma: STRING) : BOOLEAN; 
+ 
+  -- check for valid basis type  
+ 
+  IF (schma + '.CARTESIAN_POINT') IN TYPEOF (pnt) 
+    THEN RETURN (TRUE); 
+  ELSE  
+ 
+    -- if the input type is a point_on_curve then check for a valid  
+    -- geometrically bounded curve type as the basis  
+ 
+    IF (schma + '.POINT_ON_CURVE') IN TYPEOF (pnt) 
+      THEN RETURN (valid_geometrically_bounded_wf_curve  
+      (pnt\point_on_curve.basis_curve, schma)); 
+    ELSE 
+ 
+      -- if the input type is a point_replica check for a valid parent point 
+ 
+      IF (schma + '.POINT_REPLICA') IN TYPEOF (pnt) 
+        THEN RETURN (valid_geometrically_bounded_wf_point  
+        (pnt\point_replica.parent_pt, schma)); 
+      END_IF; 
+    END_IF; 
+  END_IF; 
+  RETURN (FALSE); 
+END_FUNCTION;
+ 
+FUNCTION gbsf_check_point (pnt : point; schema_name : STRING) : BOOLEAN;
+
+  -- check whether the input has the right type
+
+  IF NOT (schema_name + '.POINT' IN TYPEOF (pnt)) THEN RETURN(TRUE);
+  END_IF;
+
+  IF schema_name + '.CARTESIAN_POINT' IN TYPEOF (pnt) THEN
+    RETURN(TRUE);
+  ELSE
+
+  -- a point_on_curve needs to be checked for the validity of its curve;
+  -- further references down the tree are taken care of by the function
+  -- gbsf_check_curve
+
+    IF schema_name + '.POINT_ON_CURVE' IN TYPEOF (pnt) THEN
+      RETURN (gbsf_check_curve
+      (pnt\point_on_curve.basis_curve, schema_name));
+    ELSE
+
+    -- a point_on_surface needs to be checked for the validity of its 
+    -- surface further references down the tree are taken care of by 
+    -- the function gbsf_check_surface
+
+      IF schema_name + '.POINT_ON_SURFACE' IN TYPEOF (pnt) THEN
+        RETURN(gbsf_check_surface
+        (pnt\point_on_surface.basis_surface, schema_name));
+      ELSE
+
+      -- a degenerate_pcurve needs to be checked for the validity of its
+      -- defining geometry further references down the tree are taken care
+      -- of by the functions gbsf_check_curve and gbsf_check_surface;
+      -- both shall return true to get a valid point
+
+        IF schema_name + '.DEGENERATE_PCURVE' IN TYPEOF (pnt) THEN
+          RETURN
+          ((gbsf_check_curve
+          (pnt\degenerate_pcurve.reference_to_curve\representation.items[1],
+          schema_name))
+          AND (gbsf_check_surface
+          (pnt\degenerate_pcurve.basis_surface, schema_name)));
+        END_IF;
+      END_IF;
+    END_IF;
+  END_IF;
+  RETURN(FALSE);
+END_FUNCTION;
+
+FUNCTION gbsf_check_curve (cv : curve; schema_name : STRING) : BOOLEAN;  
+ 
+  -- check whether the input has the right type 
+  
+  IF NOT (schema_name + '.CURVE' IN TYPEOF (cv)) THEN RETURN(TRUE);  
+  END_IF;  
+ 
+ 
+  -- let those types pass that do not have any further references  
+  -- respectively rules to be applied  
+ 
+  IF SIZEOF ([schema_name + '.CIRCLE', schema_name + '.ELLIPSE']  
+    * TYPEOF(cv)) = 1 THEN RETURN(TRUE);  
+  ELSE  
+ 
+    -- the b_spline_curve shall not self intersect  
+ 
+    IF (schema_name + '.B_SPLINE_CURVE' IN TYPEOF(cv))  
+      THEN RETURN(NOT (cv\b_spline_curve.self_intersect)); 
+    ELSE  
+ 
+      -- if the curve is a composite_curve, all of its segments shall be 
+      -- valid
+
+
+ 
+      IF schema_name + '.COMPOSITE_CURVE' IN TYPEOF(cv) THEN  
+        RETURN (SIZEOF (QUERY (seg <* cv\composite_curve.segments |
+        NOT (gbsf_check_curve(seg.parent_curve, schema_name)))) = 0); 
+      ELSE  
+ 
+        -- the curve_replica references other curves that need to be checked  
+
+        IF schema_name + '.CURVE_REPLICA' IN TYPEOF(cv) THEN  
+          RETURN (gbsf_check_curve  
+          (cv\curve_replica.parent_curve, schema_name)); 
+        ELSE 
+ 
+          -- offset_curve_3d references a curve and shall not self intersect
+
+          IF schema_name + '.OFFSET_CURVE_3D' IN TYPEOF(cv) THEN  
+            RETURN ((gbsf_check_curve
+            (cv\offset_curve_3d.basis_curve, schema_name))  
+            AND  
+            (NOT cv\offset_curve_3d.self_intersect));  
+          ELSE  
+ 
+            -- pcurve references a curve - indirectly, and a basis_surface 
+ 
+            IF schema_name + '.PCURVE' IN TYPEOF(cv) THEN  
+              RETURN
+              ((gbsf_check_curve 
+              (cv\pcurve.reference_to_curve\representation.items[1],  
+              schema_name)) AND  
+              (gbsf_check_surface 
+              (cv\pcurve.basis_surface, schema_name)));  
+            ELSE  
+ 
+              -- polyline shall have at least 3 points and shall only  
+              -- be used to represent an intersection_curve  
+ 
+              IF schema_name + '.POLYLINE' IN TYPEOF(cv) THEN  
+                IF (SIZEOF (cv\polyline.points) > 3)  AND 
+                  (SIZEOF ((bag_to_set (USEDIN (cv,'')) - 
+                  bag_to_set (USEDIN (cv,  
+                  schema_name +  
+                  '.INTERSECTION_CURVE.BASIS_CURVE')))) = 0) 
+                  THEN RETURN (TRUE);  
+                END_IF;  
+              ELSE  
+ 
+                -- surface_curve references a curve_3d and one or two  
+                -- pcurves or one or two surface_curves or one of each  
+ 
+                IF schema_name + '.SURFACE_CURVE' IN TYPEOF(cv) THEN  
+ 
+                  -- if the curve reference is correct, check also the rest 
+
+                  IF gbsf_check_curve  
+                  (cv\surface_curve.curve_3d, schema_name) THEN  
+                    REPEAT i := 1 TO SIZEOF 
+                    (cv\surface_curve.associated_geometry);  
+ 
+                    -- do for one or two associated_geometrys:  
+ 
+                    IF schema_name + '.SURFACE' IN TYPEOF
+                      (cv\surface_curve.associated_geometry[i]) THEN  
+                      IF NOT gbsf_check_surface
+                        (cv\surface_curve.associated_geometry[i],    
+                        schema_name) THEN  
+                        RETURN(FALSE);  
+                      END_IF;  
+                    ELSE 
+                      IF schema_name + '.PCURVE' IN TYPEOF  
+                        (cv\surface_curve.associated_geometry[i]) THEN  
+                        IF NOT gbsf_check_curve 
+                          (cv\surface_curve.associated_geometry[i],    
+                          schema_name) THEN  
+                          RETURN(FALSE);  
+                        END_IF;  
+                      END_IF;  
+                    END_IF;  
+                  END_REPEAT;  
+                  RETURN(TRUE);  
+                END_IF;  
+              ELSE  
+ 
+                -- if the curve is a trimmed_curve  
+                                                         
+                IF (schema_name + '.TRIMMED_CURVE') IN TYPEOF (cv) THEN  
+   
+                -- if a line, parabola or hyperbola is being trimmed,  
+                -- then valid  
+ 
+                  IF SIZEOF ([schema_name + '.LINE', 
+                  schema_name + '.PARABOLA', 
+                  schema_name + '.HYPERBOLA'] *
+                  TYPEOF (cv\trimmed_curve.basis_curve)) = 1 
+                  THEN RETURN (TRUE); 
+
+                    -- otherwise, recursively check the basis curve  
+   
+                    ELSE RETURN (gbsf_check_curve 
+                      (cv\trimmed_curve.basis_curve, schema_name));
+                    END_IF; 
+                  END_IF;  
+                END_IF;  
+              END_IF;  
+            END_IF;  
+          END_IF;   
+        END_IF;  
+      END_IF;  
+    END_IF;  
+  END_IF;  
+  RETURN(FALSE);  
+END_FUNCTION;
+
+FUNCTION gbsf_check_surface (sf : surface; schema_name : STRING) : BOOLEAN;
+
+  -- check whether the input has the right type
+
+  IF NOT (schema_name + '.SURFACE' IN TYPEOF (sf)) THEN RETURN(TRUE);
+  END_IF;
+
+  -- b_spline_surface has a self_intersect attribute that shall be false
+
+  IF schema_name + '.B_SPLINE_SURFACE' IN TYPEOF(sf) THEN
+    RETURN(NOT (sf\b_spline_surface.self_intersect));
+  ELSE
+
+    -- basis surface types return true
+
+    IF SIZEOF ([schema_name + '.SPHERICAL_SURFACE',
+      schema_name + '.TOROIDAL_SURFACE'] * TYPEOF(sf)) = 3 THEN
+      RETURN(TRUE);
+    ELSE
+
+      IF schema_name + '.CURVE_BOUNDED_SURFACE' IN TYPEOF(sf) THEN
+
+      -- if there is a simple basis_surface, check the curves
+
+        IF SIZEOF ([schema_name + '.CONICAL_SURFACE',
+          schema_name + '.CYLINDRICAL_SURFACE',
+          schema_name + '.PLANE'] * TYPEOF(sf)) = 1 THEN
+          RETURN(SIZEOF (QUERY (bcurve <*
+          sf\curve_bounded_surface.boundaries |
+          NOT (gbsf_check_curve(bcurve, schema_name)))) = 0);
+
+        ELSE
+
+        -- recursively check the basis_surface and then the curves
+
+          IF gbsf_check_surface
+          (sf\curve_bounded_surface.basis_surface, schema_name) THEN
+            RETURN(SIZEOF (QUERY (bcurve <*
+            sf\curve_bounded_surface.boundaries |
+            NOT (gbsf_check_curve(bcurve, schema_name)))) = 0);
+          END_IF;
+        END_IF;
+      ELSE
+
+        -- offset_surface references a surface and shall not self_intersect
+
+        IF schema_name + '.OFFSET_SURFACE' IN TYPEOF(sf) THEN
+          RETURN ((gbsf_check_surface
+          (sf\offset_surface.basis_surface, schema_name))
+          AND
+          (NOT (sf\offset_surface.self_intersect)));
+        ELSE
+
+          -- rectangular_composite_surface references a matrix of surfaces
+
+          IF schema_name + '.RECTANGULAR_COMPOSITE_SURFACE' IN TYPEOF(sf) 
+            THEN
+
+
+            REPEAT i := 1 TO SIZEOF
+              (sf\rectangular_composite_surface.segments);
+              REPEAT j := 1 TO SIZEOF
+                (sf\rectangular_composite_surface.segments[i]);
+                IF NOT (gbsf_check_surface
+                  (sf\rectangular_composite_surface.segments[i][j].
+                  parent_surface, schema_name))
+                  THEN RETURN (FALSE);
+                END_IF;
+              END_REPEAT;
+            END_REPEAT;
+            RETURN(TRUE);
+          ELSE
+
+            -- rectangular_trimmed_surface has a basis_surface
+
+            IF schema_name + '.RECTANGULAR_TRIMMED_SURFACE' IN TYPEOF(sf) 
+              THEN
+
+              IF  SIZEOF ([schema_name + '.CONICAL_SURFACE',
+                schema_name + '.CYLINDRICAL_SURFACE',
+                schema_name + '.PLANE'] * TYPEOF
+                (sf\rectangular_trimmed_surface.basis_surface)) = 1 THEN
+                RETURN (TRUE);
+              ELSE
+                RETURN(gbsf_check_surface
+                (sf\rectangular_trimmed_surface.basis_surface, schema_name));
+              END_IF;
+            ELSE
+
+              -- parent_surfaces need to be checked for their validity
+
+              IF schema_name + '.SURFACE_REPLICA' IN TYPEOF (sf) THEN
+                RETURN (gbsf_check_surface
+                (sf\surface_replica.parent_surface, schema_name));
+              ELSE
+
+                -- and the swept_surface must have a valid swept_curve
+
+                IF schema_name + '.SWEPT_SURFACE' IN TYPEOF(sf) THEN
+                  RETURN(gbsf_check_curve
+                  (sf\swept_surface.swept_curve, schema_name));
+                END_IF;
+              END_IF;
+            END_IF;
+          END_IF;
+        END_IF;
+      END_IF;
+    END_IF;
+  END_IF;
+  RETURN(FALSE);
+END_FUNCTION;
+
+FUNCTION basis_curve_check (cv: curve; schema_name : STRING) : BOOLEAN; 
+ 
+  -- let those types pass that do not have references to curves 
+ 
+  IF SIZEOF ([schema_name + '.B_SPLINE_CURVE',  
+    schema_name + '.CONIC', 
+    schema_name + '.LINE',  
+    schema_name + '.POLYLINE'] * TYPEOF (cv)) = 1 THEN 
+    RETURN(TRUE); 
+  ELSE 
+ 
+    -- check in case curve_replica is the type of the input curve 
+ 
+    IF schema_name + '.CURVE_REPLICA' IN TYPEOF (cv) THEN
+      RETURN (basis_curve_check(cv\curve_replica.parent_curve, schema_name)); 
+    ELSE 
+ 
+      --check in case offset_curve_3d is the type of the input curve 
+ 
+      IF schema_name + '.OFFSET_CURVE_3D' IN TYPEOF (cv) THEN 
+        RETURN(basis_curve_check  
+        (cv\offset_curve_3d.basis_curve, schema_name)); 
+      ELSE 
+ 
+          -- check in case pcurve is the type of the input curve 
+ 
+        IF schema_name + '.PCURVE' IN TYPEOF(cv) THEN 
+          IF SIZEOF ([schema_name + '.B_SPLINE_CURVE',  
+            schema_name + '.CONIC', 
+            schema_name + '.LINE',  
+            schema_name + '.POLYLINE'] *  
+            TYPEOF (cv\pcurve.reference_to_curve\representation.items[1]))  
+            = 1 THEN  
+            RETURN (basis_surface_check (cv\pcurve.basis_surface,  
+            schema_name));
+          ELSE 
+            IF schema_name + '.CURVE_REPLICA'
+              IN TYPEOF
+              (cv\pcurve.reference_to_curve\representation.items[1]) THEN 
+              RETURN ((basis_curve_check
+              (cv\pcurve.reference_to_curve\representation.items[1], 
+              schema_name)) AND  
+              (basis_surface_check (cv\pcurve.basis_surface, 
+              schema_name)));
+            END_IF; 
+          END_IF; 
+          ELSE 
+ 
+          --check in case surface_curve is the type of the input curve 
+ 
+          IF schema_name + '.SURFACE_CURVE' IN TYPEOF(cv) THEN 
+            IF SIZEOF ([schema_name + '.B_SPLINE_CURVE',  
+              schema_name + '.CONIC', 
+              schema_name + '.LINE',  
+              schema_name + '.POLYLINE'] *  
+              TYPEOF (cv\surface_curve.curve_3d)) = 1 THEN
+ 
+              REPEAT i := 1 TO SIZEOF (cv\surface_curve.associated_geometry); 
+
+ 
+                -- do for one or two associated_geometrys:  
+ 
+                IF schema_name + '.SURFACE' IN 
+                  TYPEOF (cv\surface_curve.associated_geometry[i]) THEN  
+                  IF NOT basis_surface_check
+                    (cv\surface_curve.associated_geometry[i],         
+                    schema_name) THEN  
+                    RETURN(FALSE);  
+                  END_IF;  
+                ELSE  
+                  IF schema_name + '.PCURVE' IN
+                    TYPEOF (cv\surface_curve.associated_geometry[i]) THEN  
+                    IF NOT basis_curve_check
+                      (cv\surface_curve.associated_geometry[i], 
+                      schema_name) THEN RETURN(FALSE);  
+                    END_IF;  
+                  END_IF;  
+                END_IF; 
+              END_REPEAT;  
+            ELSE 
+              IF schema_name + '.CURVE_REPLICA' IN TYPEOF  
+                (cv\surface_curve.curve_3d) THEN 
+                IF NOT (basis_curve_check  
+                  (cv\curve_replica.parent_curve, schema_name)) THEN  
+                  RETURN (FALSE); 
+                END_IF; 
+              ELSE 
+                IF schema_name + '.OFFSET_CURVE_3D' IN TYPEOF  
+                  (cv\surface_curve.curve_3d) THEN 
+                  IF NOT (basis_curve_check
+                    (cv\offset_curve_3d.basis_curve, schema_name)) THEN 
+                    RETURN (FALSE); 
+                  END_IF; 
+                ELSE 
+                  REPEAT i := 1 TO SIZEOF  
+                  (cv\surface_curve.associated_geometry);  
+ 
+                    -- do for one or two associated_geometrys:  
+ 
+                    IF schema_name + '.SURFACE' IN  
+                      TYPEOF (cv\surface_curve.associated_geometry[i]) THEN  
+                      IF NOT basis_surface_check
+                        (cv\surface_curve.associated_geometry[i],     
+                        schema_name) THEN  
+                        RETURN(FALSE);  
+                      END_IF;  
+                    ELSE  
+                      IF schema_name + '.PCURVE' IN  
+                        TYPEOF (cv\surface_curve.associated_geometry[i]) THEN 
+
+                        IF NOT basis_curve_check 
+                          (cv\surface_curve.associated_geometry[i], 
+                          schema_name) THEN  
+                          RETURN(FALSE);  
+                        END_IF;  
+                      END_IF;  
+                    END_IF; 
+                  END_REPEAT;  
+                END_IF; 
+              END_IF; 
+            END_IF; 
+          END_IF; 
+        END_IF; 
+      END_IF; 
+    END_IF; 
+  END_IF; 
+  RETURN (FALSE); 
+END_FUNCTION;
+
+FUNCTION basis_surface_check (surf : surface; schema_name : STRING) : BOOLEAN;
+
+ 
+-- let those surface types pass that do not have references to surfaces 
+ 
+  IF SIZEOF([schema_name + '.B_SPLINE_SURFACE', 
+    schema_name + '.ELEMENTARY_SURFACE'] * TYPEOF(surf)) = 1 THEN 
+    RETURN(TRUE); 
+  ELSE 
+    IF schema_name + '.SWEPT_SURFACE' IN TYPEOF (surf) THEN 
+      RETURN (basis_curve_check 
+      (surf\swept_surface.swept_curve, schema_name));  
+    ELSE 
+ 
+      -- check in case offset_surface is the type of the input surface
+ 
+      IF schema_name + '.OFFSET_SURFACE' IN TYPEOF (surf) THEN 
+        RETURN(basis_surface_check
+        (surf\offset_surface.basis_surface, schema_name));
+      ELSE 
+ 
+        -- check in case surface_replica is the type of the input surface 
+ 
+        IF schema_name + '.SURFACE_REPLICA' IN TYPEOF(surf) THEN 
+          RETURN(basis_surface_check 
+          (surf\surface_replica.parent_surface, schema_name)); 
+        END_IF; 
+      END_IF; 
+    END_IF; 
+  END_IF; 
+  RETURN(FALSE); 
+END_FUNCTION;
+
+FUNCTION dimension_of(item : geometric_representation_item) :
+  dimension_count;
+  LOCAL
+    x : SET OF representation;
+    y : representation_context;
+  END_LOCAL;
+
+  -- Find the set of representation in which the item is used. 
+
+  x := using_representations(item);
+
+  -- If there is such a representation, then determine the dimension_count
+  -- of the associated geometric_representation_context - note that the
+  -- RULE compatible_dimension ensures that the context_of_items is of type
+  -- geometric_representation_context and has the same dimension_count for
+  -- all values of x.
+
+  IF SIZEOF(x) > 0 THEN
+    y := x[1].context_of_items;
+    RETURN (y\geometric_representation_context.coordinate_space_dimension);
+  END_IF;
+END_FUNCTION;
+
+FUNCTION using_representations (item : representation_item)
+  : SET OF representation;
+  LOCAL
+    results            : SET OF representation;
+    result_bag         : BAG OF representation;
+    intermediate_items : SET OF representation_item;
+    i                  : INTEGER;
+  END_LOCAL;
+
+  -- Find the representations in which the item is used and add to the 
+  -- results set.
+
+  result_bag := USEDIN(item,'CONFIG_CONTROL_DESIGN.REPRESENTATION.ITEMS');
+
+  IF SIZEOF(result_bag) > 0 THEN
+    REPEAT i := 1 TO HIINDEX(result_bag);
+      results := results + result_bag[i];
+    END_REPEAT;
+  END_IF;
+
+  -- Find the set of representation_items in which item is used.
+
+  intermediate_items := QUERY(z <* bag_to_set( USEDIN(item , '')) |
+    'CONFIG_CONTROL_DESIGN.REPRESENTATION_ITEM' IN TYPEOF(z));
+
+  -- If the set of intermediate items is not empty;
+
+  IF SIZEOF(intermediate_items) > 0 THEN
+
+    -- For each element in the set, recursively add the 
+    -- using_representations of that element.
+
+    REPEAT i := 1 TO HIINDEX(intermediate_items);
+      results := results + using_representations(intermediate_items[i]);
+    END_REPEAT;
+  END_IF;
+
+  -- Return the set of representation in which the input item is
+  -- used directly and indirectly (through intervening 
+  -- representation_items).
+
+  RETURN (results);
+END_FUNCTION;
+
+END_SCHEMA; --config_control_design
+
