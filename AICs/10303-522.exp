@@ -1,16 +1,11 @@
 (*
-	WG12 N1018					2002-04-01
+	WG12 N1704					2002-12-10
 
 	EXPRESS for ISO/DIS 10303-522
 	
 *)
 SCHEMA aic_machining_feature;
- 
-  USE FROM document_schema                        -- ISO 10303-41
-      (document,
-       document_representation_type,
-       document_usage_constraint);
-      
+  
   USE FROM external_reference_schema              -- ISO 10303-41
       (externally_defined_item);   
       
@@ -20,10 +15,6 @@ SCHEMA aic_machining_feature;
        plane,
        placement,
        point);
-
-  USE FROM management_resources_schema            -- ISO 10303-41
-      (document_reference,
-       document_usage_constraint_assignment);
       
   USE FROM measure_schema                         -- ISO 10303-41
       (count_measure,
@@ -47,7 +38,7 @@ SCHEMA aic_machining_feature;
       (property_definition_representation,
       shape_representation);
       
-   USE FROM qualified_measure_schema               -- ISO 10303-45
+  USE FROM qualified_measure_schema                -- ISO 10303-45
       (descriptive_representation_item,
        measure_representation_item);
        
@@ -996,22 +987,8 @@ ENTITY externally_defined_feature_definition
          IN TYPEOF(sar))) ) | 
          ('AIC_MACHINING_FEATURE.APPLIED_AREA' 
          IN TYPEOF(sdr.relating_shape_aspect)) )) = 1)) )) <= 1)) )) = 0); 
-    WR6: (NOT (SIZEOF(QUERY( doc <*(QUERY( adr <*USEDIN(SELF,
-         'AIC_MACHINING_FEATURE.APPLIED_DOCUMENT_REFERENCE.ITEMS') |
-         'AIC_MACHINING_FEATURE.DOCUMENT'
-         IN TYPEOF (adr.assigned_document) )) |
-         'AIC_MACHINING_FEATURE.DOCUMENT_FILE' IN TYPEOF(doc) ))
-         =1) OR 
-         NOT (SIZEOF(QUERY( doc <*(QUERY( aduc <*USEDIN(SELF,
-         'AIC_MACHINING_FEATURE.'+
-         'APPLIED_DOCUMENT_USAGE_CONSTRAINT_ASSIGNMENT.ITEMS') |
-         'AIC_MACHINING_FEATURE.DOCUMENT'
-         IN TYPEOF (aduc\
-         document_usage_constraint_assignment.
-         assigned_document_usage.source) )) |
-         'AIC_MACHINING_FEATURE.DOCUMENT_FILE' IN TYPEOF(doc) ))
-         >=1));
-    WR7: ((NOT (SELF\characterized_object.description = 'marking')) OR 
+
+    WR6: ((NOT (SELF\characterized_object.description = 'marking')) OR 
          (SIZEOF(QUERY ( pd <* USEDIN(SELF,
          'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
          (NOT (SIZEOF(QUERY ( impl_rep <* QUERY ( pdr <* USEDIN
@@ -1024,7 +1001,7 @@ ENTITY externally_defined_feature_definition
          (('AIC_MACHINING_FEATURE.DESCRIPTIVE_REPRESENTATION_ITEM' 
          IN TYPEOF(it)) AND (it.name = 'marking text')) )) = 1)) )) 
          = 0)) )) = 0));
-    WR8: ((NOT (SELF\characterized_object.description = 'thread')) OR 
+    WR7: ((NOT (SELF\characterized_object.description = 'thread')) OR 
          (SIZEOF(QUERY ( pd <* USEDIN(SELF,
          'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
          (NOT (SIZEOF(QUERY ( impl_rep <* QUERY ( pdr <* USEDIN
@@ -1038,7 +1015,7 @@ ENTITY externally_defined_feature_definition
          IN TYPEOF(it)) AND (it.name = 'removal direction') AND 
          ((it.description = 'internal') OR 
          (it.description = 'external'))) )) = 1)) )) = 0)) )) = 0));
-     WR9: ((NOT (SELF\characterized_object.description = 'thread')) OR 
+     WR8: ((NOT (SELF\characterized_object.description = 'thread')) OR 
          (SIZEOF(QUERY ( pd <* USEDIN(SELF,
          'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
          (NOT (SIZEOF(QUERY ( impl_rep <* QUERY ( pdr <* USEDIN
@@ -1051,7 +1028,7 @@ ENTITY externally_defined_feature_definition
          (('AIC_MACHINING_FEATURE.DESCRIPTIVE_REPRESENTATION_ITEM' 
          IN TYPEOF(it)) AND (it.name = 'qualifier')) ))<= 1)) ))= 0)) )) 
          = 0));
-    WR10: ((NOT (SELF\characterized_object.description = 'thread')) OR 
+    WR9: ((NOT (SELF\characterized_object.description = 'thread')) OR 
          (SIZEOF(QUERY ( pd <*  USEDIN(SELF,
          'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
          (NOT (SIZEOF(QUERY ( impl_rep <* QUERY ( pdr <* USEDIN
@@ -1064,7 +1041,7 @@ ENTITY externally_defined_feature_definition
          (('AIC_MACHINING_FEATURE.DESCRIPTIVE_REPRESENTATION_ITEM' 
          IN TYPEOF(it)) AND (it.name = 'hand')) )) = 1)) )) = 0)) )) 
          = 0));
-     WR11: ((NOT (SELF\characterized_object.description = 'thread')) OR 
+     WR10: ((NOT (SELF\characterized_object.description = 'thread')) OR 
          (SIZEOF(QUERY ( pd <* USEDIN(SELF,
          'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
          (NOT (SIZEOF(QUERY ( impl_rep <* QUERY ( pdr <* USEDIN
@@ -1077,7 +1054,7 @@ ENTITY externally_defined_feature_definition
          (('AIC_MACHINING_FEATURE.DESCRIPTIVE_REPRESENTATION_ITEM' 
          IN TYPEOF(it)) AND (it.name = 'fit class')) )) = 1)) )) = 
          0)) )) = 0));
-     WR12: ((NOT (SELF\characterized_object.description = 'thread')) OR 
+     WR11: ((NOT (SELF\characterized_object.description = 'thread')) OR 
          (SIZEOF(QUERY ( pd <* USEDIN(SELF,
          'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
          (NOT (SIZEOF(QUERY ( impl_rep <* QUERY ( pdr <* USEDIN
@@ -1090,7 +1067,7 @@ ENTITY externally_defined_feature_definition
          (('AIC_MACHINING_FEATURE.DESCRIPTIVE_REPRESENTATION_ITEM' 
          IN TYPEOF(it)) AND (it.name = 'form')) )) = 1)) )) = 0)) )) 
          = 0));
-    WR13: ((NOT (SELF\characterized_object.description = 'thread')) OR 
+    WR12: ((NOT (SELF\characterized_object.description = 'thread')) OR 
          (SIZEOF(QUERY ( pd <* USEDIN(SELF,
          'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
          (NOT (SIZEOF(QUERY ( impl_rep <* QUERY ( pdr <* USEDIN
@@ -1105,7 +1082,7 @@ ENTITY externally_defined_feature_definition
          'AIC_MACHINING_FEATURE.LENGTH_MEASURE_WITH_UNIT'] *
          TYPEOF(it)) = 2) AND (it.name = 'major diameter')) )) = 1)) )) 
          = 0)) )) = 0));
-     WR14: ((NOT (SELF\characterized_object.description = 'thread')) OR 
+     WR13: ((NOT (SELF\characterized_object.description = 'thread')) OR 
          (SIZEOF(QUERY ( pd <* USEDIN(SELF,
          'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
          (NOT (SIZEOF(QUERY ( impl_rep <* QUERY ( pdr <* USEDIN
@@ -1120,7 +1097,7 @@ ENTITY externally_defined_feature_definition
          'AIC_MACHINING_FEATURE.RATIO_MEASURE_WITH_UNIT'] *
          TYPEOF(it)) = 2) AND (it.name = 'number of threads')) )) = 1)) )) 
          = 0)) )) = 0));
-    WR15: (NOT (SELF\characterized_object.description IN [ 'knurl',
+    WR14: (NOT (SELF\characterized_object.description IN [ 'knurl',
          'thread'])) OR
          (SIZEOF(QUERY ( pds <* QUERY ( pd <* USEDIN(SELF,
          'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
@@ -1985,10 +1962,10 @@ ENTITY outer_round
         'PROPERTY_DEFINITION_REPRESENTATION.DEFINITION') |
         ('AIC_MACHINING_FEATURE.SHAPE_REPRESENTATION_WITH_PARAMETERS' 
         IN TYPEOF(pdr.used_representation)) AND
-        (SIZEOF (pdr.used_representation.items) = 2) )) = 1 )) = 1));
+       ( {2 <= SIZEOF(pdr.used_representation.items) <= 3}) )) = 1 )) = 1));
     WR3: (SELF\characterized_object.description IN 
         ['outer diameter', 'outer diameter to shoulder']);
-    WR4: ((NOT (SELF\characterized_object.description = 'outer diameter')) OR 
+  WR4: ((NOT (SELF\characterized_object.description = 'outer diameter')) OR 
         (SIZEOF( QUERY ( pd <* USEDIN(SELF,
         'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
         (NOT (SIZEOF(QUERY ( impl_rep <* QUERY ( pdr <* USEDIN(pd,
@@ -2036,7 +2013,7 @@ ENTITY outer_round
         IN TYPEOF(sdr.relating_shape_aspect)) AND 
         (sdr.relating_shape_aspect.description = 'v-shape')) )) = 1)) )) 
         = 1)) )) = 0));
-    WR7: ((NOT (SELF\characterized_object.description = 'outer diameter')) OR 
+  WR7: ((NOT (SELF\characterized_object.description = 'outer diameter')) OR 
         (SIZEOF(QUERY ( pds <* QUERY ( pd <* USEDIN(SELF,
         'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
         ('AIC_MACHINING_FEATURE.PRODUCT_DEFINITION_SHAPE' 
@@ -2056,6 +2033,22 @@ ENTITY outer_round
         (sdr.name = 'reduced size')) 
         ))  = 1)) ))
         <= 1)) )) = 0));
+    WR8: ((NOT (SELF\characterized_object.description = 
+         'outer diameter to shoulder')) OR 
+        (SIZEOF( QUERY ( pd <* USEDIN(SELF,
+        'AIC_MACHINING_FEATURE.PROPERTY_DEFINITION.DEFINITION') | 
+        (NOT (SIZEOF(QUERY ( impl_rep <* QUERY ( pdr <* USEDIN(pd,
+         'AIC_MACHINING_FEATURE.' +
+        'PROPERTY_DEFINITION_REPRESENTATION.DEFINITION') | 
+        (('AIC_MACHINING_FEATURE.' + 
+        'SHAPE_REPRESENTATION_WITH_PARAMETERS') 
+        IN TYPEOF(pdr.used_representation)) ) | 
+        (NOT (SIZEOF(QUERY ( it <* impl_rep.used_representation.items | 
+        ((SIZEOF([
+        'AIC_MACHINING_FEATURE.MEASURE_REPRESENTATION_ITEM',
+        'AIC_MACHINING_FEATURE.LENGTH_MEASURE_WITH_UNIT'] *
+        TYPEOF(it)) = 2) AND (it.name = 'length')) )) <= 1)) ))
+        = 0)) )) = 0));  
 END_ENTITY; -- outer_round
 
 ENTITY outside_profile
@@ -5149,3 +5142,4 @@ ENTITY vee_profile
 END_ENTITY; -- vee_profile
 
 END_SCHEMA;   -- AIC_MACHINING_FEATURE
+
