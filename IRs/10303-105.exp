@@ -1,12 +1,7 @@
 (* 
 Part 105 express
-WG12 N439
-This corresponds to ISO 10303-105:1996/Cor.1:1999 contained in WG12 N438.
-
-Original EXPRESS on Server had the
-Null statement OTHERWISE line in CASE statement commented out in
-FUNCTION convert_plane_angle_for_pair_from_radian.
-This version does not have the OTHERWISE line in CASE statement commented out.
+WG12 N587
+This corresponds to ISO 10303-105:1996/Cor.2:2000 contained in WG12 N586.
 
 *)
 
@@ -18,6 +13,7 @@ REFERENCE FROM geometry_schema
      curve,
      direction,
      geometric_representation_context,
+     geometric_representation_item,
      normalise,
      point,
      point_on_curve,
@@ -157,7 +153,7 @@ WHERE
          TYPEOF (SELF\representation_relationship.rep_1));
   WR2: suitably_based_mechanism (SELF, base_of_mechanism);
   WR3: SELF\representation_relationship_with_transformation.
-         transformation_operator\representation_item IN
+         transformation_operator IN
        SELF\representation_relationship.rep_1.items;
 END_ENTITY;
 
@@ -204,8 +200,7 @@ ENTITY kinematic_link_representation
   SELF\representation.context_of_items :  geometric_representation_context;
 DERIVE
   link_frame                  :  geometric_representation_context
-                              := SELF\representation.context_of_items\
-                                 geometric_representation_context;
+                              := SELF\representation.context_of_items;
 INVERSE
   link_representation_relation :
         kinematic_link_representation_relation FOR geometric_aspects;
@@ -258,7 +253,7 @@ WHERE
          IN TYPEOF (SELF\representation_relationship.rep_2);
   WR3: SELF\representation_relationship_with_transformation.
            transformation_operator\kinematic_frame_based_transformation.
-           transformator\representation_item IN
+           transformator IN
          SELF\representation_relationship.rep_1.items;
 END_ENTITY;
 
@@ -480,7 +475,7 @@ ENTITY universal_pair
 DERIVE
   skew_angle       : plane_angle_measure := NVL (input_skew_angle, 0.0);
 WHERE
-  WR1: COS (plane_angle_for_pair_in_radian (SELF\kinematic_pair, skew_angle))
+  WR1: COS (plane_angle_for_pair_in_radian (SELF, skew_angle))
        > 0.0;
 END_ENTITY;
 
@@ -865,7 +860,7 @@ ENTITY rack_and_pinion_pair_value
 DERIVE
   actual_rotation : plane_angle_measure
                   := convert_plane_angle_for_pair_from_radian
-                     (SELF\pair_value.applies_to_pair\kinematic_pair,
+                     (SELF\pair_value.applies_to_pair,
                       (- actual_displacement /
                        SELF\pair_value.applies_to_pair\
                        rack_and_pinion_pair.pinion_radius));
@@ -987,8 +982,7 @@ FUNCTION suitably_based_mechanism (mbp  : mechanism_base_placement;
 
   IF ('KINEMATIC_STRUCTURE_SCHEMA.KINEMATIC_GROUND_REPRESENTATION' IN
       TYPEOF (mbp\representation_relationship.rep_1)) THEN
-      kgrep := mbp\representation_relationship.rep_1\
-                kinematic_ground_representation;
+      kgrep := mbp\representation_relationship.rep_1;
 
     IF (kgrep.property\property_definition_representation.definition
         :=: kprop) THEN
@@ -997,8 +991,7 @@ FUNCTION suitably_based_mechanism (mbp  : mechanism_base_placement;
       RETURN (FALSE);
     END_IF;
   ELSE
-    klrep := mbp\representation_relationship.rep_1\
-                kinematic_link_representation;
+    klrep := mbp\representation_relationship.rep_1;
     klnk   := klrep.link_representation_relation.topological_aspects;
     kjnts  := USEDIN (klnk,
             'KINEMATIC_STRUCTURE_SCHEMA.KINEMATIC_JOINT.FIRST_LINK') +
@@ -1087,9 +1080,12 @@ FUNCTION frame_associated_to_background
     ass     : kinematic_frame_background_representation_association;
   END_LOCAL;
 
-  rep_bag := USEDIN (background\representation_item,
+  rep_bag := QUERY ( bg <* USEDIN (background,
                      'KINEMATIC_STRUCTURE_SCHEMA.' +
-                     'REPRESENTATION.ITEMS');
+                     'REPRESENTATION.ITEMS')|
+                     'KINEMATIC_STRUCTURE_SCHEMA.'+
+                     'KINEMATIC_FRAME_BACKGROUND_REPRESENTATION' 
+                      IN TYPEOF (bg) );
 
   IF SIZEOF (rep_bag) = 0 THEN
     RETURN (FALSE);
@@ -1107,16 +1103,19 @@ FUNCTION frame_associated_to_background
   REPEAT i := 1 TO HIINDEX (rep_bag);
     rep := rep_bag[i];
 
-    ass_bag := USEDIN (rep\representation,
-                       'KINEMATIC_STRUCTURE_SCHEMA.' +
-                       'REPRESENTATION_RELATIONSHIP.REP_2');
+ass_bag := QUERY ( kfbra <* USEDIN ( rep,
+             'KINEMATIC_STRUCTURE_SCHEMA.' +
+             'REPRESENTATION_RELATIONSHIP.REP_2') |
+             'KINEMATIC_STRUCTURE_SCHEMA.'+
+             'KINEMATIC_FRAME_BACKGROUND_REPRESENTATION_ASSOCIATION'
+             IN TYPEOF ( kfbra ) );
 
     IF SIZEOF (ass_bag) > 0 THEN
       REPEAT j:= 1 TO HIINDEX (ass_bag);
         ass := ass_bag[j];
 
         trm_bag := QUERY (trm <* trf_bag |
-          (trm\functionally_defined_transformation :=:
+          (trm :=:
            ass\representation_relationship_with_transformation.
            transformation_operator));
 
@@ -1272,7 +1271,6 @@ FUNCTION convert_plane_angle_for_pair_from_radian
     si_prefix.pico    : conv_factor := 1.E-12 * conv_factor;
     si_prefix.femto   : conv_factor := 1.E-15 * conv_factor;
     si_prefix.atto    : conv_factor := 1.E-18 * conv_factor;
-  OTHERWISE           : ;
   END_CASE;
 
   result := angle_expr / conv_factor;
@@ -1786,8 +1784,7 @@ ENTITY founded_kinematic_path
 DERIVE
   paths : SET [1 : ?] OF kinematic_path := SELF\representation.items;
   founding : geometric_representation_context
-           := SELF\representation.context_of_items\
-              geometric_representation_context;
+           := SELF\representation.context_of_items;
 END_ENTITY;
 
 ENTITY motion_link_relationship
@@ -1799,11 +1796,9 @@ ENTITY motion_link_relationship
   related_frame                          : rigid_placement;
 DERIVE
   motion     : founded_kinematic_path
-             := SELF\representation_relationship.rep_1\
-                founded_kinematic_path; 
+             := SELF\representation_relationship.rep_1;
   frame_link : kinematic_link_representation
-             := SELF\representation_relationship.rep_2\
-                kinematic_link_representation; 
+             := SELF\representation_relationship.rep_2;
 WHERE
   WR1: related_frame IN frame_link\representation.items;
 END_ENTITY;
