@@ -3,7 +3,6 @@
    ISO/TC184/SC4 WG12N1752 - ISO/CD-TS 10303-1105 Multi_linguism - Express MIM 
 *)
 
-
 SCHEMA Multi_linguism_mim;
 
 USE FROM management_resources_schema (
