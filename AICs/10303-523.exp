@@ -1,6 +1,6 @@
  (* Curve Swept Solid AIC EXPRESS definitions - 
    document WG12 N1487 dated  2002-10-17 *)
- SCHEMA aic_curve_swept_solid; -- WG12 N1487 As in part document WG12 N1486
+ SCHEMA aic_curve_swept_solid; -- WG12 N1487 As in WG12 N1486, N2082
 
   USE FROM geometry_schema  -- ISO 10303-42
                           (axis2_placement_2d,
