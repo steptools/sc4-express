@@ -1,11 +1,13 @@
 (*
-ISO TC184/SC4/WG12 N1539 - ISO/CD-TS 10303-1130 Derived shape element - EXPRESS MIM
-*) 
+$Id$
+ISO TC184/SC4/WG12 N2865 - ISO/TS 10303-1130 Derived shape element - EXPRESS MIM
+Supersedes ISO TC184/SC4/WG12 N1539
+*)
 
 
-SCHEMA Derived_shape_element_mim; 
+SCHEMA Derived_shape_element_mim;
 
-USE FROM Construction_geometry_mim;    -- ISO/CD-TS 10303-1131
+USE FROM Construction_geometry_mim;    -- ISO/TS 10303-1131
 
 USE FROM shape_aspect_definition_schema   -- ISO 10303-47
   (apex,
