@@ -1,0 +1,97 @@
+(*
+  $Id$
+  ISO TC184/SC4/WG12N1364 - ISO/CD-TS 10303-1250 Attachment slot - EXPRESS ARM
+*) 
+
+
+SCHEMA Attachment_slot_arm; 
+
+USE FROM Interface_arm;    -- ISO/CD-TS 10303-1251
+
+USE FROM Product_identification_arm;    -- ISO/TS 10303-1017
+
+USE FROM Product_version_arm;    -- ISO/TS 10303-1018
+
+USE FROM Product_view_definition_arm;    -- ISO/TS 10303-1019
+
+
+TYPE interface_on_slot_item = EXTENSIBLE SELECT BASED_ON connector_on_item WITH 
+   (Slot_definition);
+END_TYPE; 
+
+ENTITY Product_in_slot;
+  id : STRING;
+  name : STRING;
+  description : OPTIONAL STRING;
+  product : Product_view_definition;
+  slot : Slot_definition;
+END_ENTITY;
+
+ENTITY Slot
+  SUBTYPE OF (Product);
+END_ENTITY;
+
+ENTITY Slot_as_planned
+  SUBTYPE OF (Slot_version);
+END_ENTITY;
+
+ENTITY Slot_as_realized
+  SUBTYPE OF (Slot_version);
+END_ENTITY;
+
+ENTITY Slot_definition
+  SUBTYPE OF (Product_view_definition);
+  SELF\Product_view_definition.defined_version : Slot_version;
+END_ENTITY;
+
+ENTITY Slot_design
+  SUBTYPE OF (Slot_version);
+END_ENTITY;
+
+ENTITY Slot_design_to_planned;
+  id : STRING;
+  name : STRING;
+  description : OPTIONAL STRING;
+  design : Slot_design;
+  planned : Slot_as_planned;
+WHERE
+  WR1: SELF.design.of_product :=: SELF.planned.of_product;
+END_ENTITY;
+
+ENTITY Slot_design_to_realized;
+  id : STRING;
+  name : STRING;
+  description : OPTIONAL STRING;
+  design : Slot_design;
+  realized : Slot_as_realized;
+WHERE
+  WR1: SELF.design.of_product :=: SELF.realized.of_product;
+END_ENTITY;
+
+ENTITY Slot_on_product;
+  id : STRING;
+  name : STRING;
+  description : OPTIONAL STRING;
+  product : Product_view_definition;
+  slot : Slot_definition;
+END_ENTITY;
+
+ENTITY Slot_planned_to_realized;
+  description : OPTIONAL STRING;
+  id : STRING;
+  name : STRING;
+  planned : Slot_as_planned;
+  realized : Slot_as_realized;
+WHERE
+  WR1: SELF.planned.of_product :=: SELF.realized.of_product;
+END_ENTITY;
+
+ENTITY Slot_version
+  SUPERTYPE OF (ONEOF (Slot_as_planned,
+                       Slot_as_realized,
+                       Slot_design))
+  SUBTYPE OF (Product_version);
+  SELF\Product_version.of_product : Slot;
+END_ENTITY;
+
+END_SCHEMA;  -- Attachment_slot_arm
