@@ -1,13 +1,15 @@
 (*
-ISO TC184/SC4/WG12 N1551 - ISO/CD-TS 10303-1051 Geometric tolerance - EXPRESS MIM
+$Id$
+ISO TC184/SC4/WG12 N2877 - ISO/TS 10303-1051 Geometric tolerance - EXPRESS MIM
+Supersedes ISO TC184/SC4/WG12 N1551
 *) 
 
 
-SCHEMA Geometric_tolerance_mim; 
+SCHEMA Geometric_tolerance_mim;
 
 USE FROM aic_geometric_tolerances;    -- ISO 10303-519
 
-USE FROM Derived_shape_element_mim;    -- ISO/CD-TS 10303-1130
+USE FROM Derived_shape_element_mim;    -- ISO/TS 10303-1130
 
 USE FROM Elemental_geometric_shape_mim;    -- ISO/TS 10303-1004
 
@@ -31,7 +33,8 @@ USE FROM Shape_property_assignment_mim;    -- ISO/TS 10303-1032
 USE FROM Value_with_unit_mim;    -- ISO/TS 10303-1054
 
 REFERENCE FROM support_resource_schema   -- ISO 10303-41
-  (type_check_function); 
+  (bag_to_set,
+   type_check_function); 
 
 
 ENTITY placed_datum_target_feature
@@ -68,13 +71,13 @@ LOCAL
 pd_set : SET OF property_definition := [];
 pdr_set : SET OF property_definition_representation := [] ;
 END_LOCAL;
-pd_set := bag_to_set(USEDIN(s_a_instance, 'GEOMETRIC_TOLERANCE_MIM.PROPERTY_DEFINITION.DEFINITION'));
+pd_set := bag_to_set(USEDIN(s_a_instance, 'PRODUCT_PROPERTY_DEFINITION_SCHEMA.PROPERTY_DEFINITION.DEFINITION'));
 IF (SIZEOF(pd_set) < 1) THEN
 RETURN (pdr_set);
 END_IF;
 REPEAT i := 1 TO HIINDEX(pd_set);
-pdr_set := pdr_set + (QUERY(pdr <* USEDIN(pd_set[i], 'GEOMETRIC_TOLERANCE_MIM.' + 'PROPERTY_DEFINITION_REPRESENTATION.' + 'DEFINITION') |
-'GEOMETRIC_TOLERANCE_MIM.SHAPE_DEFINITION_REPRESENTATION' IN TYPEOF(pdr)));
+pdr_set := pdr_set + (QUERY(pdr <* USEDIN(pd_set[i], 'PRODUCT_PROPERTY_REPRESENTATION_SCHEMA.' + 'PROPERTY_DEFINITION_REPRESENTATION.' + 'DEFINITION') |
+'PRODUCT_PROPERTY_REPRESENTATION_SCHEMA.SHAPE_DEFINITION_REPRESENTATION' IN TYPEOF(pdr)));
 END_REPEAT;
 RETURN (pdr_set);      
 END_FUNCTION; 
@@ -82,12 +85,21 @@ END_FUNCTION;
 FUNCTION valid_datum_target_parameters
  (pdf : placed_datum_target_feature) : BOOLEAN; 
 LOCAL
+
+rep_set : SET OF representation := [] ;
+
 parameter_representations: SET OF representation;
 END_LOCAL;
 
-parameter_representations := QUERY(pdr <* pdf.representation_associations |
+
+REPEAT i := 1 TO HIINDEX(pdf.representation_associations);
+rep_set := rep_set + pdf.representation_associations[i].used_representation;
+END_REPEAT;
+ 
+parameter_representations := QUERY(rep <* rep_set |
 ('GEOMETRIC_TOLERANCE_MIM.SHAPE_REPRESENTATION_WITH_PARAMETERS' IN
-TYPEOF(pdr.used_representation)));
+TYPEOF(rep)));
+
 
 IF (SIZEOF( QUERY( srwp <* parameter_representations |
           (SIZEOF( QUERY( i <* srwp.items |
