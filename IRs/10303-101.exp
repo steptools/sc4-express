@@ -1,11 +1,7 @@
 (* 
 
-Josh Lubell, March 2, 1998
-
-This file contains the IS schema for ISO 10303-101 as modified to
-relflect SEDS Report #47. The proposed resolution requires the
-addition of parentheses to the expression in rule WR1 of entity
-drawing_sheet_revision_usage.
+This is WG12 N268.  It contains the proposed modification to 
+ISO 10303-101:1994 to incorporate ISO 10303-101:1994.Corr1
 
 *)
 
@@ -82,15 +78,11 @@ ENTITY drawing_sheet_revision_usage
 UNIQUE
   UR1: sheet_number, in_set;
 WHERE
-(* Josh Lubell, March 2, 1998
-IS as published: 
-  WR1: 'DRAWING_DEFINITION_SCHEMA.DRAWING_SHEET_REVISION' IN TYPEOF           
-        (SELF\area_in_set.area) AND 'DRAWING_DEFINITION_SCHEMA.DRAWING_REVISION' 
-       IN TYPEOF (SELF\area_in_set.in_set);
-as corrected: *)
-  WR1: ('DRAWING_DEFINITION_SCHEMA.DRAWING_SHEET_REVISION' IN TYPEOF           
-        (SELF\area_in_set.area)) AND ('DRAWING_DEFINITION_SCHEMA.DRAWING_REVISION' 
-       IN TYPEOF (SELF\area_in_set.in_set));
+  WR1: ('DRAWING_DEFINITION_SCHEMA.DRAWING_SHEET_REVISION' IN 
+                  TYPEOF(SELF\area_in_set.area)) 
+              AND
+              ('DRAWING_DEFINITION_SCHEMA.DRAWING_REVISION' 
+               IN TYPEOF (SELF\area_in_set.in_set));
 END_ENTITY;
 
 ENTITY draughting_title;
@@ -138,24 +130,44 @@ END_TYPE;
 ENTITY dimension_curve
   SUBTYPE OF (annotation_curve_occurrence);
 WHERE
-  WR1: SIZEOF( USEDIN( SELF, 'DRAUGHTING_ELEMENT_SCHEMA.'+
-       'DIMENSION_CURVE_TERMINATOR.ANNOTATED_DIMENSION_'+
-       'CURVE')) <= 2;
-  WR2: SIZEOF(USEDIN(SELF,'DRAUGHTING_ELEMENT_SCHEMA.'+
-       'DIMENSION_CURVE_DIRECTED_CALLOUT.CONTENTS')) >= 1;
-  WR3: (SIZEOF(QUERY(dct_1 <* USEDIN(SELF,'DRAUGHTING_ELEMENT_'+
-       'SCHEMA.DIMENSION_CURVE_TERMINATOR.ANNOTATED_DIMENSION_'+
-       'CURVE') | (dct_1.role = origin))) <=1) AND
-       (SIZEOF(QUERY(dct_2 <* USEDIN(SELF,'DRAUGHTING_ELEMENT_'+
-       'SCHEMA.DIMENSION_CURVE_TERMINATOR.ANNOTATED_DIMENSION_'+
-       'CURVE') | (dct_2.role = target))) <=1);
+  wr1: (SIZEOF(
+          QUERY(dct <* USEDIN(SELF,'DRAUGHTING_ELEMENT_SCHEMA.' +
+                'TERMINATOR_SYMBOL.ANNOTATED_CURVE')
+               | (('DRAUGHTING_ELEMENT_SCHEMA.'+
+                  'DIMENSION_CURVE_TERMINATOR' IN TYPEOF(dct))
+                  ))
+          ) <= 2);
+   wr2:  SIZEOF(
+            QUERY( dcdc <* USEDIN(SELF,'DRAUGHTING_ELEMENT_SCHEMA.' +
+                   'DRAUGHTING_CALLOUT.CONTENTS') |
+                   ('DRAUGHTING_ELEMENT_SCHEMA.'+
+                    'DIMENSION_CURVE_DIRECTED_CALLOUT' IN TYPEOF(dcdc)))
+       )>= 1;
+   wr3: (SIZEOF(
+            QUERY(dct1 <* USEDIN(SELF,'DRAUGHTING_ELEMENT_SCHEMA.' +
+                  'TERMINATOR_SYMBOL.ANNOTATED_CURVE') 
+               | (('DRAUGHTING_ELEMENT_SCHEMA.'+
+                  'DIMENSION_CURVE_TERMINATOR' IN TYPEOF(dct1)) 
+                  AND (dct1.role = origin)))
+        ) <= 1)
+     AND 
+        (SIZEOF(
+            QUERY (dct2 <* USEDIN(SELF,'DRAUGHTING_ELEMENT_SCHEMA.'+
+                   'TERMINATOR_SYMBOL.ANNOTATED_CURVE') 
+                 | (('DRAUGHTING_ELEMENT_SCHEMA.'+
+                   'DIMENSION_CURVE_TERMINATOR' IN TYPEOF(dct2))
+                   AND (dct2.role = target)))
+       ) <= 1);
 END_ENTITY;
 
 ENTITY leader_curve
   SUBTYPE OF (annotation_curve_occurrence);
 WHERE
-  WR1: SIZEOF( USEDIN( SELF, 'DRAUGHTING_ELEMENT_SCHEMA.'+
-       'LEADER_DIRECTED_CALLOUT.CONTENTS')) >= 1;
+  WR1: SIZEOF( 
+          QUERY(ldc <* USEDIN( SELF, 'DRAUGHTING_ELEMENT_SCHEMA.' +
+                       'DRAUGHTING_CALLOUT.CONTENTS')
+                   |   'DRAUGHTING_ELEMENT_SCHEMA.' +
+                       'LEADER_DIRECTED_CALLOUT'  IN TYPEOF(ldc))) >= 1;
 END_ENTITY;
 
 ENTITY projection_curve
@@ -246,7 +258,8 @@ WHERE
        (SIZEOF (QUERY(dce_1 <* SELF\draughting_callout.contents |
        ('DRAUGHTING_ELEMENT_SCHEMA.PROJECTION_CURVE'
         IN (TYPEOF(dce_1))))) = 0);
-  WR3: ('DRAUGHTING_ELEMENT_SCHEMA.DIMENSION_CURVE_DIRECTED_CALLOUT'
+  WR3:
+('DRAUGHTING_ELEMENT_SCHEMA.DIMENSION_CURVE_DIRECTED_CALLOUT'
         IN (TYPEOF (SELF))) XOR
        (SIZEOF (QUERY(dce_1 <* SELF\draughting_callout.contents |
        ('DRAUGHTING_ELEMENT_SCHEMA.DIMENSION_CURVE'
