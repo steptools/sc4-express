@@ -1,4 +1,9 @@
+(*
+  The following EXPRESS is for ISO 10303-44:1994 Technical Corrigendum 1
 
+  This is document ISO TC184/SC4/WG12 N228
+
+*)
 SCHEMA product_structure_schema; 
  
   REFERENCE FROM product_definition_schema
@@ -36,8 +41,7 @@ WHERE
   WR1:  acyclic_product_definition_relationship
          (SELF,
          [SELF\product_definition_relationship.related_product_definition],
-         'PRODUCT_STRUCTURE_SCHEMA.PRODUCT_DEFINITION_USAGE.' +
-         'RELATED_PRODUCT_DEFINITION');
+         'PRODUCT_STRUCTURE_SCHEMA.PRODUCT_DEFINITION_USAGE');
 END_ENTITY;
 
 ENTITY make_from_usage_option
@@ -172,17 +176,7 @@ UNIQUE
        usage,
        id;
 WHERE
-  WR1: SELF\product_definition_effectivity.usage.relating_product_definition IN
-       USEDIN  (SELF.configuration.design, 
-                'PRODUCT_DEFINITION_SCHEMA.' + 
-                'PRODUCT_DEFINITION.FORMATION') +
-                relatives_of_product_definitions ( bag_to_set (USEDIN
-                  (SELF.configuration.design, 
-                  'PRODUCT_DEFINITION_SCHEMA.' + 
-                  'PRODUCT_DEFINITION.FORMATION') ) , 
-                  'PRODUCT_STRUCTURE_SCHEMA.' + 
-                  'PRODUCT_DEFINITION_USAGE');        
-  WR2: 'PRODUCT_STRUCTURE_SCHEMA.PRODUCT_DEFINITION_USAGE' IN
+  WR1: 'PRODUCT_STRUCTURE_SCHEMA.PRODUCT_DEFINITION_USAGE' IN
         TYPEOF (SELF\product_definition_effectivity.usage);  
 END_ENTITY; 
 
