@@ -2,10 +2,9 @@
    
 SCHEMA Effectivity_arm;
 
-USE FROM Time_interval_arm;  -- ISO/TS 10303-1065
-USE FROM Value_with_unit_arm;  -- ISO/TS 10303-1054
+USE FROM Time_interval_arm;    -- ISO 10303-1065
+USE FROM Value_with_unit_arm;  -- ISO 10303-1054
 
-   
 ENTITY Dated_effectivity
   SUBTYPE OF (Effectivity);
   start_bound : date_or_event;

@@ -1,7 +1,7 @@
 (* ISO/TC184/SC4 WG12N1147 - ISO/TS - 10303-1044 Certification - EXPRESS ARM *)
    
 SCHEMA Certification_arm;
- 
+
 TYPE certification_item = EXTENSIBLE SELECT;
 END_TYPE;
 
@@ -17,5 +17,3 @@ ENTITY Certification_assignment;
 END_ENTITY;
  
 END_SCHEMA;
-
-

@@ -3,28 +3,27 @@
 SCHEMA Configuration_item_arm;
 
    
-USE FROM Product_version_arm; -- ISO/TS 10303-1018
-USE FROM Product_view_definition_arm; -- ISO/TS 10303-1019
-USE FROM Product_concept_identification_arm; -- ISO/TS 10303-1060
+USE FROM Product_version_arm;                -- ISO 10303-1018
+USE FROM Product_view_definition_arm;        -- ISO 10303-1019
+USE FROM Product_concept_identification_arm; -- ISO 10303-1060
 
 TYPE version_or_definition = SELECT (Product_version, Product_view_definition);
 END_TYPE;
 
 ENTITY Configuration_watched_item;
-  id                        : STRING;
-  name                      : STRING;
-  description               : OPTIONAL STRING;
-  item_context              : Product_concept;
+  id                   : STRING;
+  name                 : STRING;
+  description          : OPTIONAL STRING;
+  item_context         : Product_concept;
 INVERSE
-  corresponding_design      : SET [0:1] OF Item_design_association FOR watched_item;
+  corresponding_design : SET [0:1] OF Item_design_association FOR watched_item;
 END_ENTITY;
 
 ENTITY Item_design_association;
-  watched_item: Configuration_watched_item;
+  watched_item   : Configuration_watched_item;
   proposed_design: version_or_definition;
 UNIQUE
   UR1: watched_item, proposed_design;
 END_ENTITY;
 
 END_SCHEMA;
-

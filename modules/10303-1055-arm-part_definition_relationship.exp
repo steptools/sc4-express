@@ -16,7 +16,8 @@ WHERE
 WR1: SELF\View_definition_relationship.relating_view :<>: 
   SELF\View_definition_relationship.related_view ;
 WR2: NOT(EXISTS(quantity)) XOR 
-	((NOT ('NUMBER' IN TYPEOF(quantity.value_component))) XOR (quantity.value_component > 0));
+    ((NOT ('NUMBER' IN TYPEOF(quantity.value_component))) XOR 
+     (quantity.value_component > 0));
 END_ENTITY;
 
 END_SCHEMA;
