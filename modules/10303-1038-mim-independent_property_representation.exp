@@ -1,0 +1,6 @@
+(* N851 - ISO/CD TS - 10303-1038 Independent property representation - EXPRESS MIM *)
+   SCHEMA Independent_property_representation_mim;
+  USE FROM Foundation_representation_mim;  -- ISO/TS 10303-1006
+  USE FROM Independent_property_mim;       -- ISO/TS 10303-1036
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,22 @@
+(* N740 - ISO/CD TS - 10303-1022 Part and version identification - EXPRESS MIM *)
+   
+SCHEMA Part_and_version_identification_mim;
+  USE FROM Product_version_mim; -- ISO 10303-1018
+  USE FROM Person_organisation_assignment_mim; -- ISO 10303-1013
+  USE FROM product_definition_schema -- ISO 10303-41
+  (product_definition_formation_with_specified_source);
+
+   
+TYPE part_and_version_identification_organization_item = SELECT 
+  BASED_ON organization_item WITH 
+  (product_definition_formation);
+END_TYPE;
+
+   
+TYPE part_and_version_identification_person_and_organization_item = SELECT 
+  BASED_ON person_and_organization_item WITH
+  (product_definition_formation);
+END_TYPE;
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

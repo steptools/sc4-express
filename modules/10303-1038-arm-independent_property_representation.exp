@@ -1,0 +1,15 @@
+(* N850 - ISO/CD TS - 10303-1038 Independent property representation - EXPRESS ARM *)
+   
+SCHEMA Independent_property_representation_arm;
+
+   
+USE FROM Foundation_representation_arm;  -- ISO/TS 10303-1006
+USE FROM Independent_property_arm;       -- ISO/TS 10303-1036
+   
+ENTITY Independent_property_representation;
+  property : Independent_property;
+  rep      : Representation;
+END_ENTITY; -- Independent_property_representation
+
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

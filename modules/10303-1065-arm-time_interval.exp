@@ -1,0 +1,44 @@
+(* N796 - ISO/CD TS - 10303-1065 Time Interval - EXPRESS ARM *)
+   
+SCHEMA Time_interval_arm;
+
+   
+USE FROM Person_organisation_assignment_arm; -- ISO/TS 10303-1013.
+USE FROM Event_arm; -- ISO/TS 10303-1064.
+
+   
+TYPE time_interval_item = EXTENSIBLE SELECT
+  ();
+END_TYPE;
+
+   
+TYPE time_interval_organisation_or_person_in_organisation_item = SELECT
+  BASED_ON organisation_or_person_in_organisation_item WITH
+  (Time_interval);
+END_TYPE;
+
+   
+ENTITY Time_interval;
+  id             : STRING
+  name           : STRING
+  description    : OPTIONAL STRING;
+  duration       : OPTIONAL STRING;
+  start          : date_or_date_time_select;
+  end            : OPTIONAL date_or_date_time_select;
+INVERSE
+  identifier     : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
+WHERE
+  WR1 : NOT (EXISTS (duration) AND EXISTS (end_date));
+END_ENTITY;
+
+   
+ENTITY Time_interval_assignment;
+  assigned_interval : Time_interval;
+  role              : STRING;
+  items             : SET [1:?] OF time_interval_item;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

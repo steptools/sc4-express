@@ -1,0 +1,22 @@
+(* N821 - ISO/CD TS - 10303-1128 External item identification assignment - EXPRESS MIM *)
+   
+SCHEMA External_item_identification_assignment_mim;
+USE FROM Identification_assignment_mim; -- ISO 10303-1021
+USE FROM management_resource_schema -- ISO 10303-41
+    (external_identification_assignment);
+
+   
+TYPE external_identification_item = EXTENSIBLE SELECT
+    ();
+END_TYPE;
+
+   
+ENTITY applied_external_identification_assignment
+  SUBTYPE OF (external_identification_assignment);
+  items : SET [1:?] of external_identification_item;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

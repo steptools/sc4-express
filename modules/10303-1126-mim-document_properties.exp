@@ -1,0 +1,13 @@
+(* N815 - ISO/CD TS - 10303-1126 Document properties - EXPRESS MIM *)
+   
+SCHEMA Document_properties_mim;
+USE FROM Property_assignment_mim; -- ISO 10303-1030
+USE FROM Document_definition_mim; -- ISO 10303-1123
+USE FROM External_item_identification_assignment_mim; -- ISO 10303-1128
+USE FROM external_reference_schema -- ISO 10303-41
+  (external_source);
+USE FROM representation_schema -- ISO 10303-43
+  (representation);
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

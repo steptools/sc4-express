@@ -1,0 +1,18 @@
+(* N824 - ISO/CD TS - 10303-1039 Geometric validation property representation - EXPRESS MIM *)
+   
+SCHEMA Geometric_validation_property_representation_mim;
+USE FROM Shape_property_representation_mim; -- ISO 10303-1033
+USE FROM representation_schema
+  (representation,
+   representation_item); -- ISO 10303-43
+USE FROM measure_schema
+  (area_measure,
+   measure_with_unit,
+   volume_measure); -- ISO 10303-41
+USE FROM geometry_schema
+  (cartesian_point); -- ISO 10303-42
+USE FROM qualified_measure_schema
+  (measure_representation_item); -- ISO 10303-43
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

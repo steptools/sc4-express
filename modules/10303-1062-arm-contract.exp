@@ -1,0 +1,54 @@
+(* N751 - ISO/CD TS - 10303-1062 Contract - EXPRESS ARM *)
+   
+SCHEMA Contract_arm;
+
+   
+USE FROM Approval_arm;                       -- ISO/TS 10303-1012
+USE FROM Date_time_assignment_arm;           -- ISO/TS 10303-1014
+USE FROM Person_organisation_assignment_arm; -- ISO/TS 10303-1013
+
+   
+TYPE contract_item = EXTENSIBLE SELECT
+  ();
+END_TYPE;
+
+   
+TYPE contract_organisation_or_person_in_organisation_item = SELECT
+  BASED_ON organisation_or_person_in_organisation_item WITH
+  (Contract);
+END_TYPE;
+
+   
+TYPE contract_date_or_date_time_item = SELECT
+  BASED_ON date_or_date_time_item WITH
+  (Contract);
+END_TYPE;
+
+   
+TYPE contract_approval_item = SELECT
+  BASED_ON approval_item WITH 
+  (Contract);
+END_TYPE;
+
+   
+ENTITY Contract;
+  id             : STRING;
+  purpose        : STRING;
+  type           : STRING;
+INVERSE
+  identifier      : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
+  contractor      : SET [1:?] OF Organisation_or_person_in_organisation_assignment FOR items;
+  contract_date   : SET [0:1] OF Date_or_date_time_assignment FOR items;
+  approval        : SET [1:?] OF Approval_assignment FOR items;
+END_ENTITY;
+
+   
+ENTITY Contract_assignment;
+  assigned_contract  : Contract;
+  items              : SET [1:?] OF contract_item;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

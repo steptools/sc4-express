@@ -1,0 +1,36 @@
+(* N835 - ISO/CD TS - 10303-1033 Shape property representation - EXPRESS ARM *)
+   
+SCHEMA Shape_property_representation_arm;
+
+   
+USE FROM Elemental_geometric_shape_arm;  -- ISO/TS 10303-1004
+USE FROM Property_representation_arm;    -- ISO/TS 10303-1031
+USE FROM Shape_property_assignment_arm;  -- ISO/TS 10303-1032
+   
+TYPE shape_definition_select = EXTENSIBLE SELECT
+    (Geometric_model);
+END_TYPE; 
+
+   
+TYPE shape_model_assignment = EXTENSIBLE SELECT
+	(shape_select);
+	END_TYPE;
+
+   
+ENTITY Shape_dependent_property_representation;
+  described_element   : item_shape_or_shape_element_select;
+  description         : OPTIONAL STRING;
+  value_determination : OPTIONAL STRING;
+  is_defined_in       : Cartesian_coordinate_space;
+END_ENTITY;
+
+   
+ENTITY Shape_description_association
+  SUBTYPE OF(Property_representation);
+  is_defining_shape_for : shape_model_assignment;
+  defining_geometry     : shape_definition_select;
+  role                  : OPTIONAL STRING;
+END_ENTITY;
+
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

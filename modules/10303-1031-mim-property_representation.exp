@@ -1,0 +1,7 @@
+(* N830 - ISO/CD TS - 10303-1031 - EXPRESS MIM *)
+   SCHEMA Property_representation_mim;
+  USE FROM Foundation_representation_mim;               -- ISO/TS 10303-1006
+  USE FROM Property_assignment_mim;                     -- ISO/TS 10303-1030
+  USE FROM product_property_representation_schema  -- ISO 10303-41      (property_definition_representation,       represented_definition);
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

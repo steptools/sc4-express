@@ -1,0 +1,22 @@
+(* N892 - ISO/CD TS - 10303-1512 Faceted boundary representation - EXPRESS ARM *)
+   
+SCHEMA Faceted_boundary_representation_arm;
+
+   
+USE FROM Geometric_shape_with_topology_arm; -- ISO/CD TS 10303-1028
+USE FROM Faceted_boundary_representation_model_arm; -- ISO/CD TS 10303-1069
+
+   
+ENTITY Faceted_brep_shape_representation
+  SUBTYPE OF (Geometric_model);
+WHERE
+  WR1: (SIZEOF(QUERY ( it <* SELF.items | (NOT (SIZEOF([
+        'FACETED_BREP_SHAPE_REPRESENTATION_ARM.FACETED_MODEL',
+        'FACETED_BREP_SHAPE_REPRESENTATION_ARM.TEMPLATE_INSTANCE'] * TYPEOF(it)) =
+        1)) )) = 0);
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,8 @@
+(* N896 - ISO/CD TS - 10303-1514 Advanced boundary representation - EXPRESS MIM *)
+   
+SCHEMA Advanced_boundary_representation_mim;
+USE FROM Boundary_representation_model_mim; -- ISO 10303-1029
+USE FROM aic_advanced_brep; -- ISO 10303-514 
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

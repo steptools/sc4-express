@@ -1,0 +1,8 @@
+(* N884 - ISO/CD TS - 10303-1509 Manifold surface - EXPRESS MIM *)
+   
+SCHEMA Manifold_surface_mim;
+USE FROM Topologically_bounded_surface_mim; -- ISO 10303-1501
+USE FROM aic_manifold_surface; -- ISO 10303-509 
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

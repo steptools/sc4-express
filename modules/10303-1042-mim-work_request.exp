@@ -1,0 +1,45 @@
+(* N773 - ISO/CD TS - 10303-1042 Work request - EXPRESS MIM *)
+   
+SCHEMA work_request_mim;
+USE FROM Approval_mim; -- ISO 10303-1012
+USE FROM Date_time_assignment_mim; -- ISO 10303-1010
+USE FROM Product_version_mim;  -- ISO 10303-1018
+USE FROM Product_view_definition_structure_mim;  -- ISO 10303-1041
+USE FROM Person_organisation_assignment_mim;  -- ISO 10303-1011
+USE FROM action_schema -- ISO 10303-41
+  (versioned_action_request,
+   action_request_status,
+   action_method);
+
+   
+TYPE versioned_action_request_approval_item = SELECT
+  BASED_ON approval_item WITH 
+  (versioned_action_request);
+END_TYPE;
+
+   
+TYPE versioned_action_request_date_item = SELECT
+  BASED_ON date_item WITH 
+  (versioned_action_request);
+END_TYPE;
+
+   
+TYPE versioned_action_request_date_and_time_item = SELECT 
+  BASED_ON date_and_time_item WITH 
+  (versioned_action_request);
+END_TYPE;
+
+   
+TYPE versioned_action_request_organization_item = SELECT 
+  BASED_ON organization_item WITH 
+  (versioned_action_request);
+END_TYPE;
+
+   
+TYPE versioned_action_request_person_and_organization_item = SELECT 
+  BASED_ON person_and_organization_item WITH
+  (versioned_action_request);
+END_TYPE;
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

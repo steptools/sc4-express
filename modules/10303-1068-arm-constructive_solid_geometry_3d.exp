@@ -1,0 +1,110 @@
+(* N868 - ISO/CD TS - 10303-1068 Constructive solid geometry 3d - EXPRESS ARM *)
+   
+SCHEMA Constructive_solid_geometry_3d_arm;
+
+   
+USE FROM Constructive_solid_geometry_arm; -- ISO/CD TS 10303-1066
+USE FROM Boundary_representation_model_arm; -- ISO/CD TS 10303-1512
+USE FROM Faceted_boundary_representation_model_arm; -- ISO/CD TS 10303-1069
+
+   
+TYPE boolean_operand_3d = SELECT
+  BASED_ON boolean_operand WITH
+  (Half_space_solid);
+END_TYPE;
+
+   
+TYPE csg_primitive_3d = SELECT
+  BASED_ON csg_primitive WITH
+  (Sphere,
+   Ellipsoid,
+   Block,
+   Right_angular_wedge,
+   Faceted_primitive,
+   Rectangular_pyramid,
+   torus,
+   Right_circular_cone,
+   Eccentric_cone,
+   Right_circular_cylinder,
+   Cyclide_segment_solid);
+END_TYPE;
+
+   
+ENTITY CSG_shape_representation_3d
+  SUBTYPE OF (CSG_shape_representation);
+END_ENTITY;
+
+   
+ENTITY Block
+  SUBTYPE OF (detailed_geometric_model_element);
+END_ENTITY;
+
+   
+ENTITY Ellipsoid
+  SUBTYPE OF (Detailed_geometric_model_element);
+END_ENTITY;
+
+   
+ENTITY Sphere
+  SUBTYPE OF (Detailed_geometric_model_element);
+END_ENTITY;
+
+   
+ENTITY Torus
+  SUBTYPE OF (Detailed_geometric_model_element);
+END_ENTITY;
+
+   
+ENTITY Eccentric_cone
+  SUBTYPE OF (Detailed_geometric_model_element);
+END_ENTITY;
+
+   
+ENTITY Right_circular_cylinder
+  SUBTYPE OF (Detailed_geometric_model_element);
+END_ENTITY;
+
+   
+ENTITY Right_angular_wedge
+  SUBTYPE OF (Detailed_geometric_model_element);
+END_ENTITY;
+
+   
+ENTITY Rectangular_pyramid
+  SUBTYPE OF (Detailed_geometric_model_element);
+END_ENTITY;
+
+   
+ENTITY Right_circular_cone
+  SUBTYPE OF (Detailed_geometric_model_element);
+END_ENTITY;
+
+   
+ENTITY Cyclide_segment_solid
+  SUBTYPE OF (Detailed_geometric_model_element);
+END_ENTITY;
+
+   
+ENTITY Faceted_primitive
+  SUBTYPE OF (Detailed_geometric_model_element);
+END_ENTITY;
+
+   
+ENTITY Tetrahedron 
+  SUBTYPE OF (Faceted_primitive);
+END_ENTITY;
+
+   
+ENTITY Convex_hexahedron 
+  SUBTYPE OF (Faceted_primitive);
+END_ENTITY;
+
+   
+ENTITY Half_space_solid
+  SUBTYPE OF (Detailed_geometric_model_element);
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

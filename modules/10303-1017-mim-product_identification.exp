@@ -1,0 +1,39 @@
+(* N728 - ISO/CD TS - 10303-1017 Product identification - EXPRESS MIM *)
+   
+SCHEMA Product_identification_mim;
+USE FROM Person_organisation_assignment_mim; -- ISO 10303-1013
+USE FROM Product_categorisation_mim; --ISO 10303-1016
+USE FROM product_definition_schema -- ISO 10303-41
+  (product,
+   product_related_product_category);
+
+   
+TYPE product_organization_item = SELECT 
+  BASED_ON organization_item WITH 
+  (product);
+END_TYPE;
+
+   
+TYPE product_person_and_organization_item = SELECT 
+  BASED_ON person_and_organization_item WITH
+  (product);
+END_TYPE;
+
+   
+RULE product_requires_product_category FOR
+  (product, product_related_product_category);
+WHERE
+  WR1: SIZEOF (QUERY (prod <* product |
+       NOT (SIZEOF (QUERY (prpc <* product_related_product_category |
+       (prod IN prpc.products))) >= 1))) = 0;
+END_RULE; -- product_requires_product_category
+
+   
+RULE restrict_product_category_name FOR
+    (product_category);
+WHERE
+  WR1:  SIZEOF(QUERY(pc <* product_category | (NOT (pc.name IN ['assembly','detail','part', 'raw material', 'document','functionality','requirement'])) AND (NOT (EXISTS(pc.description))))="0;" END_RULE; 
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

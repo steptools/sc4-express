@@ -1,0 +1,9 @@
+(* N758 - ISO/CD TS - 10303-1024 Product structure - EXPRESS MIM *)
+   
+SCHEMA Product_structure_mim;
+USE FROM Product_identification_mim; -- ISO 10303-1017
+USE FROM product_definition_schema -- ISO 10303-41
+  (product_relationship);
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

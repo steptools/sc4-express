@@ -1,0 +1,61 @@
+(* N709 - ISO/CD TS - 10303-1011 Person organisation - EXPRESS ARM *)
+   
+SCHEMA Person_organization_arm;
+
+   
+ENTITY Address;
+  street_number           : OPTIONAL STRING;
+  street                  : OPTIONAL STRING;
+  postal_box              : OPTIONAL STRING;
+  town                    : OPTIONAL STRING;
+  region                  : OPTIONAL STRING;
+  postal_code             : OPTIONAL STRING;
+  country                 : OPTIONAL STRING;
+  internal_location       : OPTIONAL STRING;
+  facsimile_number        : OPTIONAL STRING;
+  telephone_number        : OPTIONAL STRING;
+  electronic_mail_address : OPTIONAL STRING;
+  telex_number            : OPTIONAL STRING;
+WHERE
+  WR1 : (EXISTS (street_number) OR
+         EXISTS (street) OR
+         EXISTS (postal_box) OR
+         EXISTS (town) OR
+         EXISTS (region) OR
+         EXISTS (postal_code) OR
+         EXISTS (country) OR
+         EXISTS (internal_location) OR
+         EXISTS (facsimile_number) OR
+         EXISTS (telephone_number) OR
+         EXISTS (electronic_mail_address) OR
+         EXISTS (telex_number));
+END_ENTITY;
+
+   
+ENTITY Organisation;
+  id            : STRING;
+  short_name    : OPTIONAL STRING;
+  long_name     : OPTIONAL STRING;
+  address       : OPTIONAL Address;
+UNIQUE
+  organisations_are_unique : id;
+END_ENTITY;
+
+   
+ENTITY Person_in_organisation;
+  id            : STRING;
+  id_org        : Organisation;
+  last_name     : OPTIONAL STRING;
+  first_name    : OPTIONAL STRING;
+  middle_names  : OPTIONAL LIST [1:?] OF STRING;
+  prefix_titles : OPTIONAL LIST [1:?] OF STRING;
+  suffix_titles : OPTIONAL LIST [1:?] OF STRING;
+  address       : OPTIONAL Address;
+UNIQUE
+  person_is_unique: id, id_org;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

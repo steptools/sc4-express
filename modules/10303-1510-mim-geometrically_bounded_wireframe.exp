@@ -1,0 +1,8 @@
+(* N887 - ISO/CD TS - 10303-1510 Geometrically bounded wireframe - EXPRESS MIM *)
+   
+SCHEMA Geometrically_bounded_wireframe_mim;
+USE FROM Elemental_geometric_shape_mim; -- ISO 10303-1004
+USE FROM aic_geometrically_bounded_wireframe; -- ISO 10303-510
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

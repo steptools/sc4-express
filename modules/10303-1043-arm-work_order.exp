@@ -1,0 +1,80 @@
+(* N775 - ISO/CD TS - 10303-1043 Work order - EXPRESS ARM *)
+   
+SCHEMA work_order_arm;
+
+   
+USE FROM Approval_arm; -- ISO/TS 10303-1012
+USE FROM Contract_arm; -- ISO/TS 10303-1062
+USE FROM Date_time_assignment_arm;  -- ISO/TS 10303-1014
+USE FROM Person_organisation_assignment_arm;  -- ISO/TS 10303-1013
+USE FROM Work_request_arm;  -- ISO/TS 10303-1042
+
+   
+TYPE ordered_item_select = SELECT
+  (Product_version, 
+   Product_view_definition, 
+   View_definition_relationship);
+END_TYPE;
+
+   
+TYPE work_order_organisation_or_person_in_organisation_item = SELECT
+  BASED_ON organisation_or_person_in_organisation_item WITH
+  (Work_order);
+END_TYPE;
+
+   
+TYPE work_order_date_or_date_time_item = SELECT
+  BASED_ON date_or_date_time_item WITH
+  (Work_order);
+END_TYPE;
+
+   
+TYPE work_order_approval_item = SELECT
+  BASED_ON approval_item WITH 
+  (Work_order);
+END_TYPE;
+
+   
+TYPE work_order_contract_item = SELECT
+  BASED_ON contract_item WITH 
+  (Work_order);
+END_TYPE;
+
+   
+ENTITY Activity;
+  name             : STRING;
+  description      : OPTIONAL STRING;
+  status           : STRING;
+  adopted_solution : Activity_method;
+  input_items      : SET [0:?] OF ordered_item_select;
+  output_items     : SET [0:?] OF ordered_item_select;
+END_ENTITY;
+
+   
+ENTITY Work_definition
+ SUBTYPE OF (Activity);
+INVERSE
+  associated_order  : SET [1:1] OF Work_order FOR directed_activity;
+END_ENTITY;
+
+   
+ENTITY Work_order;
+  name              : STRING;
+  description       : OPTIONAL STRING;
+  in_response_to    : SET [1:?] OF Work_request;
+  directed_activity : Work_definition;
+DERIVE
+  adopted_solution : Activity_method := directed_activity.adopted_solution;
+  output_items     : SET [0:?] OF ordered_item_select := directed_activity.output_items;
+  status           : STRING := directed_activity.status;
+INVERSE
+  requestor        : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
+  order_date       : SET [0:1] OF Date_or_date_time_assignment FOR items;
+  approval         : SET [0:?] OF Approval_assignment FOR items;
+  contracts        : SET [0:?] OF Contract_assignment FOR items;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

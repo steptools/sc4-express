@@ -1,0 +1,39 @@
+(* N763 - ISO/CD TS - 10303-1027 Part occurrence - EXPRESS ARM *)
+   
+SCHEMA Part_occurrence_arm;
+
+   
+USE FROM Part_structure_arm; -- ISO/TS 10303-1026
+USE FROM Product_view_definition_structure_properties_arm; -- ISO/TS 10303-1041
+USE FROM Shape_property_representation_arm; -- ISO/TS 10303-1033
+
+   
+ENTITY Part_occurrence
+  SUBTYPE OF (Assembly_component);
+INVERSE
+  location : SET [0:?] OF template_instance;
+WHERE
+  WR1: EXISTS(SELF\Assembly_component.location_indicator) OR EXISTS(location);
+END_ENTITY;
+
+   
+ENTITY Part_instance
+  SUBTYPE OF (Assembly_component);
+  assembly : Assembly_component;
+  sub_assembly  : Next_assembly_usage;
+UNIQUE
+  UR1 : assembly, sub_assembly;
+WHERE
+  WR1: SELF :<>: assembly;
+  WR2: SELF\view_definition_relationship.view1 :=:
+       assembly.view1;
+  WR3: SELF\view_definition_relationship.view2 :=:
+       sub_assembly.view2;
+  WR4: assembly.view2 :=:
+       sub_assembly.view1;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,46 @@
+(* N760 - ISO/CD TS - 10303-1026 Part structure - EXPRESS ARM *)
+   
+SCHEMA Part_structure_arm;
+
+   
+USE FROM Part_view_definition_arm; -- ISO/TS 10303-1023
+USE FROM Product_view_definition_structure_arm; -- ISO/TS 10303-1019
+USE FROM Product_version_structure_arm; -- ISO/TS 10303-1020
+USE FROM Product_structure_arm; -- ISO/TS 10303-1024
+
+   
+ENTITY Promissory_usage
+  SUBTYPE OF (Assembly_component);
+END_ENTITY;
+
+   
+ENTITY Next_assembly_usage
+  SUBTYPE OF (Assembly_component);
+END_ENTITY;
+
+   
+ENTITY Alternate_part
+  SUBTYPE OF(Product_relationship);
+END_ENTITY;
+
+   
+ENTITY Substitute_part;
+  base        : Assembly_component;
+  substitute  : Assembly_component;
+  priority    : OPTIONAL STRING;
+UNIQUE
+  UR1 : base, substitute;
+WHERE
+  WR1: base.view1 :=: substitute.view2;
+  WR2: base :<>: substitute;
+END_ENTITY;
+
+   
+ENTITY Supplied_part
+  SUBTYPE OF (Version_relationship);
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

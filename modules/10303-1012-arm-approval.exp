@@ -1,0 +1,41 @@
+(* N712 - ISO/CD TS - 10303-1012 Approval - EXPRESS ARM *)
+   
+SCHEMA Approval_arm;
+
+   
+USE FROM Date_time_arm; -- ISO/TS 10303-1010&#9;&#9;
+USE FROM Person_organisation_arm; -- ISO/TS 10303-1011
+
+   
+ENTITY Approval;
+  approver       : OPTIONAL organisation_or_person_in_organisation_select;
+  discipline     : OPTIONAL STRING;
+  planned_date   : OPTIONAL date_or_date_time_select;
+  effective_date : OPTIONAL date_or_date_time_select;
+  purpose        : OPTIONAL STRING;
+  status         : STRING;
+WHERE
+  WR1 : (EXISTS (approver) OR
+         EXISTS (discipline));
+  WR2: SELF.status IN ['approved', 'dissaproved', 'withdrawn', 'not yet approved'];
+  WR3: NOT (SELF.status IN ['approved', 'dissaproved', 'withdrawn'] AND (NOT EXISTS(SELF.effective_date)));
+END_ENTITY;
+
+   
+ENTITY Approval_assignment;
+  assigned_approval : Approval;
+  items             : SET [1:?] OF approval_item;
+END_ENTITY;
+
+   
+ENTITY Approval_relationship;
+  relation_type : OPTIONAL STRING;
+  description   : OPTIONAL STRING;
+  approval1     : Approval;
+  approval2     : Approval;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,29 @@
+(* N770 - ISO/CD TS - 10303-1044 Certification - EXPRESS MIM *)
+   
+SCHEMA Certification_mim;
+USE FROM Approval_mim; -- ISO 10303-1012
+USE FROM certification_schema -- ISO 10303-41
+  (certification,
+   certification_type);
+USE FROM management_resources_schema -- ISO 10303-41
+  (certification_assignment);
+
+   
+TYPE certification_item = EXTENSIBLE SELECT 
+  ();
+END_TYPE;
+
+   
+TYPE certification_approval_item = SELECT
+  BASED_ON approval_item WITH 
+  (certification);
+END_TYPE;
+
+   
+ENTITY applied_certification_assignment
+  SUBTYPE OF (certification_assignment);
+  items : SET [1:?] of certification_item;
+END_ENTITY;
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

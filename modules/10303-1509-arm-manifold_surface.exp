@@ -1,0 +1,16 @@
+(* N883 - ISO/CD TS - 10303-1509 Manifold surface - EXPRESS ARM *)
+   
+SCHEMA Manifold_surface_arm;
+
+   
+USE FROM Topologically_bounded_surface_arm; -- ISO/CD TS 10303-1511
+
+   
+ENTITY Manifold_surface_shape_representation
+  SUBTYPE OF (Geometric_model);
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,9 @@
+(* N893 - ISO/CD TS - 10303-1512 Faceted boundary representation - EXPRESS MIM *)
+   
+SCHEMA Faceted_boundary_representation_mim;
+USE FROM Geometric_shape_with_topology_mim; -- ISO 10303-1028
+USE FROM Faceted_boundary_representation_model_mim; -- ISO 10303-1069
+USE FROM aic_faceted_brep; -- ISO 10303-512
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

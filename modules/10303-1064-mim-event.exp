@@ -1,0 +1,52 @@
+(* N794 - ISO/CD TS - 10303-1064 Event - EXPRESS MIM *)
+   
+SCHEMA Event_mim;
+USE FROM Date_time_assignment_mim;           -- ISO 10303-1014
+USE FROM Person_organisation_assignment_mim; -- ISO 10303-1013
+USE FROM date_time_schema                    -- ISO 10303-41
+  (event_occurrence,
+   relative_event_occurrence,
+   event_occurrence_relationship);
+USE FROM management_resources_schema         -- ISO 10303-41
+  (event_occurrence_assignment);
+USE FROM measure_schema                      -- ISO 10303-41
+  (time_measure_with_unit,
+   time_measure);
+
+   
+TYPE event_occurrence_item = EXTENSIBLE SELECT
+  ();
+END_TYPE;
+
+   
+TYPE event_occurrence_date_item = SELECT
+  BASED_ON date_item WITH 
+  (event_occurrence);
+END_TYPE;
+
+   
+TYPE event_occurrence_date_and_time_item = SELECT 
+  BASED_ON date_and_time_item WITH 
+  (event_occurrence);
+END_TYPE;
+
+   
+TYPE event_occurrence_organization_item = SELECT 
+  BASED_ON organization_item WITH 
+  (event_occurrence);
+END_TYPE;
+
+   
+TYPE event_occurrence_person_and_organization_item = SELECT 
+  BASED_ON person_and_organization_item WITH
+  (event_occurrence);
+END_TYPE;
+
+   
+ENTITY applied_event_occurrence_assignment
+  SUBTYPE OF (event_occurrence_assignment);
+  items : SET [1:?] of event_occurrence_item;
+END_ENTITY;
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

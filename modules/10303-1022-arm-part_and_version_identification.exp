@@ -1,0 +1,35 @@
+(* N739 - ISO/CD TS - 10303-1022 Part and version identification - EXPRESS ARM *)
+   
+SCHEMA Part_and_version_identification_arm;
+
+   
+USE FROM Product_version_arm; --ISO/TS 10303-1018.
+USE FROM Person_organisation_assignment_arm; --ISO/TS 10303-1013.
+
+   
+TYPE part_version_organisation_or_person_in_organisation_item = SELECT
+  BASED_ON organisation_or_person_in_organisation_item WITH
+  (Part_version);
+END_TYPE;
+
+   
+ENTITY Part
+  SUBTYPE OF (Product);
+WHERE
+  WR1: SELF.product_type IN ['part', 'raw material']; 
+END_ENTITY;
+
+   
+ENTITY Part_version
+  SUBTYPE OF (Product_version);
+INVERSE
+  supplier          : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
+WHERE
+  WR1: SELF.supplier.role = 'part supplier' OR NOT EXISTS(supplier);
+  WR2: SELF.of_product.product_type.name IN ['part', 'raw material']; 
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

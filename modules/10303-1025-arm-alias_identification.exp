@@ -1,0 +1,24 @@
+(* N745 - ISO/CD TS - 10303-1025 Alias identification - EXPRESS ARM *)
+   
+SCHEMA Alias_identification_arm;
+
+   
+USE FROM Identification_assignment_arm; -- ISO/TS 10303-1021
+
+   
+TYPE alias_identification_item = EXTENSIBLE SELECT
+  BASED_ON identification_item WITH
+  ();
+END_TYPE;
+
+   
+ENTITY Alias_identification
+  SUBTYPE OF (Identification_assignment);
+WHERE
+  alias_must_have_scope : (EXISTS(owner) OR EXISTS(role));
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

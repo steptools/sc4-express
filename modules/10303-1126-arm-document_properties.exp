@@ -1,0 +1,59 @@
+(* N814 - ISO/CD TS - 10303-1126 Document properties - EXPRESS ARM *)
+   
+SCHEMA Document_properties_arm;
+
+   
+USE FROM Property_assignment_arm; -- ISO/CD TS 10303-1030
+USE FROM Document_definition_arm; -- ISO/CD TS 10303-1123
+USE FROM External_item_identification_assignment_arm; -- ISO/CD TS 10303-1128
+
+   
+TYPE document_property_assignment = SELECT 
+	BASED_ON property_assignment_select WITH 
+	(Document_definition);
+END_TYPE;
+
+   
+ENTITY Document_content_property;
+  detail_level      : OPTIONAL STRING;
+  geometry_type     : OPTIONAL STRING;
+  real_world_scale  : OPTIONAL STRING;
+  languages         : SET[0:?] OF STRING;
+  described_element : document_property_assignment;
+END_ENTITY;
+
+   
+ENTITY Document_creation_property;
+  creating_system    : STRING;
+  creating_interface : OPTIONAL STRING;
+  operating_system   : OPTIONAL STRING;
+  described_element  : document_property_assignment;
+END_ENTITY;
+
+   
+ENTITY Document_format_property;
+  data_format       : OPTIONAL STRING;
+  character_code    : OPTIONAL STRING;
+  size_format       : OPTIONAL STRING;
+  described_element : document_property_assignment;
+END_ENTITY;
+
+   
+ENTITY Document_size_property;
+  digital_file_size : OPTIONAL INTEGER;
+  page_count        : OPTIONAL INTEGER;
+  described_element : document_property_assignment;
+END_ENTITY;
+
+   
+ENTITY Document_source_property;
+  path_information      : STRING;
+  storage_node          : STRING;
+  identifying_mechanism : STRING;
+  described_element     : document_property_assignment;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

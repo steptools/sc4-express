@@ -1,0 +1,25 @@
+(* N869 - ISO/CD TS - 10303-1068 Constructive solid geometry 3d - EXPRESS MIM *)
+   
+SCHEMA Constructive_solid_geometry_3d_mim;
+USE FROM Constructive_solid_geometry_mim; -- ISO 10303-1066
+USE FROM Boundary_representation_model_mim; -- ISO/CD TS 10303-1029
+USE FROM Faceted_boundary_representation_model_mim; -- ISO/CD TS 10303-1069
+USE FROM aic_csg; -- ISO 10303-515
+USE FROM geometric_model_schema -- ISO 10303-42
+  (block,
+   ellipsoid,
+   sphere,
+   torus,
+   eccentric_cone,
+   right_circular_cylinder,
+   right_angular_wedge,
+   rectangular_pyramid,
+   right_circular_cone,
+   cyclide_segment_solid,
+   faceted_primitive,   
+   tetrahedron,
+   convex_hexahedron,
+   half_space_solid);
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

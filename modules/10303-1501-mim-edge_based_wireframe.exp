@@ -1,0 +1,8 @@
+(* N875 - ISO/CD TS - 10303-1501 Edge based wireframe - EXPRESS MIM *)
+   
+SCHEMA Edge_based_wireframe_mim;
+USE FROM Geometric_shape_with_topology_mim; -- ISO 10303-1028
+USE FROM aic_edge_based_wireframe; -- ISO 10303-501
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

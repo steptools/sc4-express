@@ -1,0 +1,40 @@
+(* N803 - ISO/CD TS - 10303-1122 Document assignment - EXPRESS MIM *)
+   
+SCHEMA Document_assignment_mim;
+   USE FROM Document_and_version_identification_mim; -- ISO 10303-1121
+   USE FROM File_identification_mim; -- ISO 10303-1127
+   USE FROM Document_definition_mim; -- ISO 10303-1123
+   USE FROM document_schema
+     (document_product_association); -- ISO 10303-41
+   USE FROM management_resources_schema
+     (document_usage_constraint_assignment,
+      document_reference); -- ISO 10303-41
+
+   
+TYPE document_reference_item = EXTENSIBLE SELECT 
+  ();
+END_TYPE;
+
+   
+ENTITY applied_document_reference
+  SUBTYPE OF (document_reference);
+  items : SET [1:?] of document_reference_item;
+END_ENTITY;
+
+   
+ENTITY applied_document_usage_constraint_assignment
+  SUBTYPE OF (document_usage_constraint_assignment);
+  items : SET [1:?] of document_reference_item;
+END_ENTITY;
+
+   
+ENTITY document_product_equivalence
+  SUBTYPE OF (document_product_association);
+WHERE
+  WR1: SELF.name = 'equivalence';
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

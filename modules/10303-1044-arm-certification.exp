@@ -1,0 +1,37 @@
+(* N769 - ISO/CD TS - 10303-1044 Certification - EXPRESS ARM *)
+   
+SCHEMA Certification_arm;
+
+   
+USE FROM Approval_arm; -- ISO/TS 10303-1012
+
+   
+TYPE certification_item = EXTENSIBLE SELECT
+  ();
+END_TYPE;
+
+   
+TYPE certification_approval_item = SELECT
+  BASED_ON approval_item WITH 
+  (Certification);
+END_TYPE;
+
+   
+ENTITY Certification;
+  name           : STRING;
+  description    : OPTIONAL STRING;
+INVERSE
+  approvals      : SET [0:?] OF Approval_assignment FOR items;
+END_ENTITY;
+
+   
+ENTITY Certification_assignment;
+  assigned_certification : Certification;
+  role                   : STRING;
+  items                  : SET [1:?] OF certification_item;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,32 @@
+(* N805 - ISO/CD TS - 10303-1123 Document definition - EXPRESS ARM *)
+   
+SCHEMA Document_definition_arm;
+
+   
+USE FROM Document_and_version_identification_arm; -- ISO/TS 10303-1121
+USE FROM File_identification_arm;                 -- ISO/TS 10303-1127
+
+   
+ENTITY Document_definition;
+ABSTRACT SUPERTYPE OF (ONEOF(Physical_document_definition, Digital_document_definition));
+  id                          : STRING;
+  description                 : OPTIONAL STRING;
+  associated_document_version : Document_version;
+END_ENTITY;
+
+   
+ENTITY Digital_document_definition;
+  SUBTYPE OF (Document_definition);
+  file : SET[0:?] OF digital_file;
+END_ENTITY;
+
+   
+ENTITY Physical_document_definition
+  SUBTYPE OF (Document_definition);
+  component : SET[0:?] OF hardcopy;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

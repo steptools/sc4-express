@@ -1,0 +1,11 @@
+(* N785 - ISO/CD TS - 10303-1058 Configuration effectivity - EXPRESS MIM *)
+   
+SCHEMA Configuration_effectivity_mim;
+USE FROM Effectivity_mim; -- 10303-1057
+USE FROM End_item_identification_mim; -- 10303-1056
+USE FROM Product_view_definition_structure_mim; -- 10303-1041
+USE FROM configuration_management_schema -- ISO 10303-44
+  (configuration_effectivity);
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

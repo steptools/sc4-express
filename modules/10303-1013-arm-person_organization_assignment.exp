@@ -1,0 +1,23 @@
+(* N715 - ISO/CD TS - 10303-1013 Person organisation assignment - EXPRESS ARM *)
+   
+SCHEMA Person_organisation_assignment_arm;
+
+   
+USE FROM Person_organisation_arm; -- Person organisation
+
+   
+TYPE organisation_or_person_in_organisation_item = EXTENSIBLE SELECT
+  ();
+END_TYPE;
+
+   
+ENTITY Organisation_or_person_in_organisation_assignment;
+  assigned_entity : organisation_or_person_in_organisation_select;
+  role            : STRING;
+  items           : SET [1:?] OF organisation_or_person_in_organisation_item;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,53 @@
+(* N776 - ISO/CD TS - 10303-1043 Work order - EXPRESS MIM *)
+   
+SCHEMA work_order_mim;
+USE FROM Approval_mim; -- ISO 10303-1012
+USE FROM Contract_mim; -- ISO 10303-1062
+USE FROM Date_time_assignment_mim; -- ISO 10303-1010
+USE FROM Person_organisation_assignment_mim;  -- ISO 10303-1011
+USE FROM Work_request_mim; -- ISO 10303-1042
+USE FROM action_schema -- ISO 10303-41
+  (action,
+   action_status,
+   action_directive,
+   directed_action,
+   executed_action);
+
+   
+TYPE action_approval_item = SELECT
+  BASED_ON approval_item WITH 
+  (action);
+END_TYPE;
+
+   
+TYPE action_date_item = SELECT
+  BASED_ON date_item WITH 
+  (action);
+END_TYPE;
+
+   
+TYPE action_date_and_time_item = SELECT 
+  BASED_ON date_and_time_item WITH 
+  (action);
+END_TYPE;
+
+   
+TYPE action_organization_item = SELECT 
+  BASED_ON organization_item WITH 
+  (action);
+END_TYPE;
+
+   
+TYPE action_person_and_organization_item = SELECT 
+  BASED_ON person_and_organization_item WITH
+  (action);
+END_TYPE;
+
+   
+TYPE action_contract_item = SELECT 
+  BASED_ON contract_item WITH 
+  (action);
+END_TYPE;
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

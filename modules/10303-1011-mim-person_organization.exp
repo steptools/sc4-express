@@ -1,0 +1,11 @@
+(* N710 - ISO/CD TS - 10303-1011 Person organisation - EXPRESS MIM *)
+   
+SCHEMA Person_organization_mim;
+USE FROM person_organization_schema -- ISO 10303-41
+  (organization,
+   person_and_organization,
+   personal_address,
+   organizational_address);
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,9 @@
+(* N854 - ISO/CD TS - 10303-1040 Process property assignment - EXPRESS MIM *)
+   SCHEMA Process_property_assignment_mim;
+  USE FROM Foundation_representation_mim;               -- ISO/TS 10303-1006
+  USE FROM Independent_property_usage_mim;              -- ISO/TS 10303-1037
+  USE FROM Work_order_mim;                              -- ISO/TS 10303-1043
+  USE FROM process_property_representation_schema  -- ISO 10303-49      (action_property_representation);
+  USE FROM process_property_schema                 -- ISO 10303-49      (action_property,       characterized_action_definition);
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

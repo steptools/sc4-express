@@ -1,0 +1,62 @@
+(* N832 - ISO/CD TS - 10303-1032 Shape property assignment - EXPRESS ARM *)
+   
+SCHEMA Shape_property_assignment_arm;
+
+   
+USE FROM Property_assignment_arm;  -- ISO/TS 10303-1030
+   
+TYPE item_shape_or_shape_element_select = EXTENSIBLE SELECT
+	BASED_ON property_assignment_select WITH 
+	(Item_shape, Shape_element );
+END_TYPE;
+
+   
+TYPE shape_property_assignment = SELECT 
+	BASED_ON property_assignment_select WITH 
+	(shape_select);
+	END_TYPE;
+
+   
+TYPE shape_select = SELECT
+    (Item_shape, 
+     Shape_element, 
+     Shape_element_relationship);
+END_TYPE;
+
+   
+ENTITY Assembly_component_shape
+SUBTYPE OF (Element_property);
+WHERE
+  WR1: 'PRODUCT_VIEW_DEFINITION_STRUCTURE_PROPERTIES_ARM.PRODUCT_VIEW_DEFINITION_STRUCTURE_PROPERTY_ASSIGNMENT'
+       IN TYPEOF(SELF\Element_property.described_element);
+END_ENTITY;
+
+   
+ENTITY Item_shape
+  SUBTYPE OF (Element_property);
+END_ENTITY;
+
+   
+ENTITY Property_of_shape SUBTYPE OF (Element_property);
+WHERE
+  WR1: 'SHAPE_PROPERTY_ASSIGNMENT_ARM.SHAPE_PROPERTY_ASSIGNMENT'
+       IN TYPEOF(SELF\Property_of_shape.described_element);
+END_ENTITY;
+
+   
+ENTITY Shape_element;
+  description  : OPTIONAL STRING;
+  composition  : Item_shape;
+  element_name : OPTIONAL STRING;
+END_ENTITY;
+
+   
+ENTITY Shape_element_relationship;
+  relating      : Shape_element;
+  related       : Shape_element;
+  description   : OPTIONAL STRING;
+  relation_type :  OPTIONAL STRING;
+END_ENTITY;
+
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

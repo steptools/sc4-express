@@ -1,0 +1,5 @@
+(* N842 - ISO/CD TS - 10303-1035 Product view definition structure properties - EXPRESS MIM *)
+   SCHEMA Product_view_definition_structure_properties_mim;
+  USE FROM Product_view_definition_structure_mim;  -- ISO/TS 10303-1041
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

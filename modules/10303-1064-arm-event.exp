@@ -1,0 +1,62 @@
+(* N793 - ISO/CD TS - 10303-1064 Event - EXPRESS ARM *)
+   
+SCHEMA Event_arm;
+
+   
+USE FROM Date_time_assignment_arm; -- ISO/TS 10303-1014
+USE FROM Person_organisation_assignment_arm; -- ISO/TS 10303-1013
+
+   
+TYPE event_item = EXTENSIBLE SELECT
+  ();
+END_TYPE;
+
+   
+TYPE event_organisation_or_person_in_organisation_item = SELECT
+  BASED_ON organisation_or_person_in_organisation_item WITH
+  (Event);
+END_TYPE;
+
+   
+TYPE event_date_or_date_time_item = SELECT
+  BASED_ON date_or_date_time_item WITH
+  (Event);
+END_TYPE;
+
+   
+ENTITY Event;
+  id             : STRING;
+  name           : STRING;
+  description    : OPTIONAL STRING;
+INVERSE
+  identifer      : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
+  planned_date   : SET [0:1] OF  date_or_date_time_select;
+  actual_date    : SET [0:1] OF  date_or_date_time_select;  
+END_ENTITY;
+
+   
+ENTITY Event_assignment;
+  assigned_event    : Event;
+  role              : STRING;
+  items             : SET [1:?] OF event_item;
+END_ENTITY;
+
+   
+ENTITY Event_relationship;
+  relation_type : STRING;
+  description   : OPTIONAL STRING;
+  event1        : Event;
+  event2        : Event;
+END_ENTITY;
+
+   
+ENTITY Relative_event
+  SUBTYPE OF (Event);
+  related_event  : Event;
+  offset         : STRING;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

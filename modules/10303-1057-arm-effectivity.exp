@@ -1,0 +1,65 @@
+(* N781 - ISO/CD TS - 10303-1057 Effectivity - EXPRESS ARM *)
+   
+SCHEMA Effectivity_arm;
+
+   
+USE FROM Person_organisation_assignment_arm; -- ISO/TS 10303-1013
+USE FROM Date_time_arm;  -- ISO/TS 10303-1010
+USE FROM Event_arm;  -- ISO/TS 10303-1064
+
+   
+TYPE effectivity_organisation_or_person_in_organisation_item = SELECT
+  BASED_ON organisation_or_person_in_organisation_item WITH
+  (Effectivity);
+END_TYPE;
+
+   
+ENTITY Effectivity
+  SUPERTYPE OF (ONEOF (Serial_effectivity, Dated_effectivity,
+    Lot_effectivity, Time_interval_effectivity));
+  id             : STRING;
+  name           : STRING;
+  description    : OPTIONAL STRING;
+INVERSE
+  identifier      : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
+END_ENTITY;
+
+   
+ENTITY Effectivity_relationship;
+  relation_type : STRING;
+  description   : OPTIONAL STRING;
+  effectivity1  : Effectivity;
+  effectivity2  : Effectivity;
+END_ENTITY;
+
+   
+ENTITY Serial_effectivity
+  SUBTYPE OF (Effectivity);
+  start : STRING;
+  end   : OPTIONAL STRING;
+END_ENTITY;
+
+   
+ENTITY Dated_effectivity
+  SUBTYPE OF (Effectivity);
+  start_date : date_or_date_time_select;
+  end_date   : OPTIONAL date_or_date_time_select;
+END_ENTITY;
+
+   
+ENTITY Time_interval_effectivity
+  SUBTYPE OF (Effectivity);
+  interval : Time_interval;
+END_ENTITY;
+
+   
+ENTITY Lot_effectivity
+  SUBTYPE OF (Effectivity);
+  lot_id    : STRING;
+  lot_size  : STRING;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

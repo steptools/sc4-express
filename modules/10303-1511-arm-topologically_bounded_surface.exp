@@ -1,0 +1,16 @@
+(* N889 - ISO/CD TS - 10303-1511 Topologically bounded surface - EXPRESS ARM *)
+   
+SCHEMA Topologically_bounded_surface_arm;
+
+   
+USE FROM Geometric_shape_with_topology_arm; -- ISO/CD TS 10303-1028
+
+   
+ENTITY Advanced_face
+  SUBTYPE OF (Geometry_with_topology);
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

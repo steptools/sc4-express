@@ -1,0 +1,9 @@
+(* N743 - ISO/CD TS - 10303-1023 Part view definition - EXPRESS MIM *)
+   
+SCHEMA Part_view_definition_mim;
+USE FROM Part_and_version_identification_mim; -- ISO 10303-1022
+USE FROM Product_view_definition_mim; -- ISO 10303-1018
+USE FROM Alias_identification_mim;  -- ISO 10303-1025
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

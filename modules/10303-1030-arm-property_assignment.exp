@@ -1,0 +1,18 @@
+(* N826 - ISO/CD TS - 10303-1030 Property assignment - EXPRESS ARM *)
+   
+SCHEMA Property_assignment_arm;
+
+   
+TYPE property_assignment_select  = EXTENSIBLE SELECT
+    ();
+END_TYPE;
+
+   
+ENTITY Element_property;
+  name              : OPTIONAL STRING;
+  description       : OPTIONAL STRING;
+  described_element : property_assignment_select;
+END_ENTITY;
+
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

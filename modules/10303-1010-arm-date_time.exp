@@ -1,0 +1,41 @@
+(* N706 - ISO/CD TS - 10303-1010 Date time - EXPRESS ARM *)
+   
+SCHEMA Date_time_arm;
+
+   
+TYPE date_or_date_time_select = SELECT
+  (Calendar_date,
+   Date_time);
+END_TYPE;
+
+   
+ENTITY Calendar_date;
+  month : INTEGER;
+  day   : INTEGER;
+  year  : INTEGER;
+WHERE
+  WR1: year <> 0;
+END_ENTITY;
+
+   
+ENTITY Date_time;
+  date   : Calendar_date;
+  hour   : INTEGER;
+  minute : OPTIONAL INTEGER;
+  second : OPTIONAL INTEGER;
+  offset : Time_offset;
+END_ENTITY;
+
+   
+ENTITY Time_offset;
+  hour      : INTEGER;
+  minute    : OPTIONAL INTEGER;
+  direction : STRING;
+WHERE
+  WR1: SELF.direction IN ['ahead', 'exact', 'behind'];
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

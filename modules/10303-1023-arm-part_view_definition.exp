@@ -1,0 +1,28 @@
+(* N742 - ISO/CD TS - 10303-1023 Part view definition - EXPRESS ARM *)
+   
+SCHEMA Part_view_definition_arm;
+
+   
+USE FROM Part_and_version_identification_arm; -- ISO/TS 10303-1022
+USE FROM Product_view_definition_arm; -- ISO/TS 10303-1023
+USE FROM Alias_identification_arm;  -- ISO/TS 10303-1025
+
+   
+TYPE part_view_definition_alias_identification_item = EXTENSIBLE SELECT
+  BASED_ON alias_identification_item WITH
+  (Part_view_definition);
+END_TYPE;
+
+   
+ENTITY Part_view_definition
+  SUBTYPE OF (Product_view_definition);
+INVERSE
+  idalias : SET [0:1] OF Alias_identification FOR items; 
+WHERE
+  WR1: SELF.defintion_for.of_product.product_type.name IN ['part', 'raw material'];
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

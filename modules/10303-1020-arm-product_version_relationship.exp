@@ -1,0 +1,38 @@
+(* N754 - ISO/CD TS - 10303-1020 Product version structure - EXPRESS ARM *)
+   
+SCHEMA Product_version_structure_arm;
+
+   
+USE FROM Product_version_arm; -- ISO/TS 10303-1018
+
+   
+ENTITY Version_relationship;
+  version1 : Product_version;
+  version2 : Product_version;
+END_ENTITY;
+
+   
+ENTITY Version_sequence_relationship
+  SUBTYPE OF (Version_relationship);
+WHERE
+  WR1: NOT (('PRODUCT_VERSION_STRUCTURE_ARM.PRODUCT_ITERATION' IN TYPEOF(version1)) OR
+         ('PRODUCT_VERSION_STRUCTURE_ARM.PRODUCT_ITERATION' IN TYPEOF(version2)));
+END_ENTITY;
+
+   
+ENTITY Product_iteration
+  SUBTYPE OF (Product_version);
+END_ENTITY;
+
+   
+ENTITY Version_iteration_relationship
+  SUBTYPE OF (Version_relationship);
+WHERE
+  WR1: (('PRODUCT_VERSION_STRUCTURE_ARM.PRODUCT_ITERATION' IN TYPEOF(version1)) OR
+         ('PRODUCT_VERSION_STRUCTURE_ARM.PRODUCT_ITERATION' IN TYPEOF(version2)));
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

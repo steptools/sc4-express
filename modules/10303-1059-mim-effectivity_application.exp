@@ -1,0 +1,40 @@
+(* N788 - ISO/CD TS - 10303-1059 Effectivity application - EXPRESS MIM *)
+   
+SCHEMA Effectivity_application_mim;
+USE FROM End_item_identification_mim; -- End item identification
+USE FROM Product_version_mim; -- Product version
+USE FROM Product_view_definition_mim; -- Product view definition
+USE FROM Product_view_definition_structure_mim; -- Product view definition structure
+USE FROM Effectivity_mim; -- Effectivity
+USE FROM management_resources_schema -- ISO 10303-41
+  (effectivity_assignment,
+   effectivity_context_assignment);
+USE FROM basic_attribute_schema -- ISO 10303-41
+  (object_role);
+
+   
+TYPE effectivity_item = EXTENSIBLE SELECT 
+  (product_definition_formation,
+  product_definition,
+  product_definition_relationship);
+END_TYPE;
+
+   
+TYPE effectivity_context_item = EXTENSIBLE SELECT 
+  (configuration_item);
+END_TYPE;
+
+   
+ENTITY applied_effectivity_assignment
+  SUBTYPE OF (effectivity_assignment);
+  items : SET [1:?] of effectivity_item;
+END_ENTITY;
+
+   
+ENTITY applied_effectivity_context_assignment
+  SUBTYPE OF (effectivity_context_assignment);
+  items : SET [1:?] of effectivity_context_item;
+END_ENTITY;
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

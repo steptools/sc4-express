@@ -1,0 +1,5 @@
+(* N839 - ISO/CD TS - 10303-1034 Product view definition properties - EXPRESS MIM *)
+   SCHEMA Product_view_definition_properties_mim;
+  USE FROM Product_view_definition_mim;  -- ISO/TS 10303-1019
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

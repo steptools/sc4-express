@@ -1,0 +1,5 @@
+(* N827 - ISO/CD TS - 10303-1030 Property assignment - EXPRESS MIM *)
+   SCHEMA Property_assignment_mim;
+  USE FROM product_property_definition_schema  -- ISO 10303-41      (property_definition);
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

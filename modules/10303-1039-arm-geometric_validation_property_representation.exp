@@ -1,0 +1,18 @@
+(* N823 - ISO/CD TS - 10303-1039 Geometric validation property representation - EXPRESS ARM *)
+   
+SCHEMA Geometric_validation_property_representation_arm;
+
+   
+USE FROM Shape_property_representation_arm;
+
+   
+ENTITY Geometric_validation_property_representation SUBTYPE OF (
+Shape_dependent_property_representation);
+	property_type : String;
+	property_value : Representation_item;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

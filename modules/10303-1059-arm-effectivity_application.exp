@@ -1,0 +1,35 @@
+(* N787 - ISO/CD TS - 10303-1059 Effectivity application - EXPRESS ARM *)
+   
+SCHEMA Effectivity_application_arm;
+
+   
+USE FROM End_item_identification_arm; -- ISO/TS 10303-1046
+USE FROM Product_version_arm; -- ISO/TS 10303-1018
+USE FROM Product_view_definition_arm; -- ISO/TS 10303-1019
+USE FROM Product_view_definition_structure_arm; -- ISO/TS 10303-1041
+USE FROM Effectivity_arm; -- ISO/TS 10303-1057
+
+   
+TYPE effectivity_context_select = EXTENSIBLE SELECT
+  (Configuration_item);
+END_TYPE;
+
+   
+TYPE effectivity_item = EXTENSIBLE SELECT
+  (Product_view_definition,
+   Product_version,
+   View_definition_relationship);
+END_TYPE;
+
+   
+ENTITY Effectivity_assignment;
+  assigned_effectivity  : Effectivity;
+  role                  : STRING;
+  context               : OPTIONAL effectivity_context_select;
+  items                 : SET [1:?] OF effectivity_item;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

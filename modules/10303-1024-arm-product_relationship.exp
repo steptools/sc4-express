@@ -1,0 +1,17 @@
+(* N757 - ISO/CD TS - 10303-1024 Product structure - EXPRESS ARM *)
+   
+SCHEMA Product_structure_arm;
+
+   
+USE FROM Product_identification_arm; -- Product identification
+
+   
+ENTITY Product_relationship;
+  product1 : Product;
+  product2 : Product;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,9 @@
+(* N755 - ISO/CD TS - 10303-1020 Product version structure - EXPRESS MIM *)
+   
+SCHEMA Product_version_structure_mim;
+USE FROM Product_version_mim; -- ISO 10303-1018
+USE FROM product_definition_schema -- ISO 10303-41
+  (product_definition_formation_relationship);
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

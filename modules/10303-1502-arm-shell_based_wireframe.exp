@@ -1,0 +1,16 @@
+(* N877 - ISO/CD TS - 10303-1502 Shell based wireframe - EXPRESS ARM *)
+   
+SCHEMA Shell_based_wireframe_arm;
+
+   
+USE FROM Geometric_shape_with_topology_arm; -- ISO/CD TS 10303-1028
+
+   
+ENTITY Shell_based_wireframe_shape_representation
+  SUBTYPE OF (Geometric_model);
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

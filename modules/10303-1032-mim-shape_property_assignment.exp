@@ -1,0 +1,6 @@
+(* N833 - ISO/CD TS - 10303-1032 Shape property assignment - EXPRESS MIM *)
+   SCHEMA Shape_property_assignment_mim;
+  USE FROM Property_assignment_mim;                 -- ISO/TS 10303-1030
+  USE FROM product_property_definition_schema  -- ISO 10303-41      (characterized_definition,       product_definition_shape,       shape_aspect,       shape_aspect_relationship,       shape_definition);
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

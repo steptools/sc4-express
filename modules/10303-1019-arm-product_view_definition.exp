@@ -1,0 +1,55 @@
+(* N733 - ISO/CD TS - 10303-1019 Product view definition - EXPRESS ARM *)
+   
+SCHEMA Product_view_definition_arm;
+
+   
+USE FROM Product_version_arm; -- ISO/TS 10303-1018
+USE FROM Approval_arm; -- ISO/TS 10303-1012
+USE FROM Person_organisation_assignment_arm; -- ISO/TS 10303-1011
+USE FROM Date_time_assignment_arm; -- ISO/TS 10303-1014
+
+   
+TYPE product_view_definition_organisation_or_person_in_organisation_item = SELECT
+  BASED_ON organisation_or_person_in_organisation_item WITH
+  (Product_view_definition);
+END_TYPE;
+
+   
+TYPE product_view_definition_date_or_date_time_item = SELECT
+  BASED_ON date_or_date_time_item WITH
+  (Product_view_definition);
+END_TYPE;
+
+   
+TYPE product_view_definition_approval_item = SELECT
+  BASED_ON approval_item WITH 
+  (Product_view_definition);
+END_TYPE;
+
+   
+ENTITY Product_view_definition;
+  id               : STRING;
+  description      : OPTIONAL STRING;
+  defining_context : View_definition_context;
+  using_contexts   : OPTIONAL SET [1:?] OF View_definition_context;
+  definition_for   : Product_version;
+INVERSE
+  creator        : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
+  creation_date  : SET [0:1] OF Date_or_date_time_assignment FOR items;
+  approval       : SET [0:?] OF Approval_assignment FOR items;
+WHERE
+  WR1: SELF.creator.role = 'creator' OR NOT EXISTS(creator); 
+  WR2: SELF.creation_date.role = 'creation date' OR NOT EXISTS(creation_date); 
+END_ENTITY;
+
+   
+ENTITY View_definition_context;
+  view_name        : STRING;
+  life_cycle_stage : STRING;
+  relevant_role    : OPTIONAL STRING;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,9 @@
+(* N872 - ISO/CD TS - 10303-1069 Faceted boundary representation model - EXPRESS MIM *)
+   
+SCHEMA Faceted_boundary_representation_model_mim;
+USE FROM Boundary_representation_model_mim; -- ISO/CD TS 10303-1029
+USE FROM geometric_model_schema -- ISO 10303-42
+  (faceted_brep);
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

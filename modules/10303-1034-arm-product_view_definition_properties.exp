@@ -1,0 +1,14 @@
+(* N838 - ISO/CD TS - 10303-1034 Product view definition properties - EXPRESS ARM *)
+   
+SCHEMA Product_view_definition_properties_arm;
+
+   
+USE FROM Product_view_definition_arm;  -- ISO/TS 10303-1019
+   
+TYPE product_view_definition_property_assignment = SELECT
+	BASED ON property_assignment_select WITH
+	(Product_view_definition);
+	END_TYPE;
+
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

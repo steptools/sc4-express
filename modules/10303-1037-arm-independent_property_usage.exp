@@ -1,0 +1,20 @@
+(* N847 - ISO/CD TS - 10303-1037 Independent property usage - EXPRESS ARM *)
+   
+SCHEMA Independent_property_usage_arm;
+
+   
+USE FROM Independent_property_arm;  -- ISO/TS 10303-1036
+USE FROM Property_assignment_arm;   -- ISO/TS 10303-1030
+   
+TYPE independent_property_usage_select  = EXTENSIBLE SELECT
+    (Element_property);
+END_TYPE;
+
+   
+ENTITY Independent_property_usage;
+  assigned_to       : independent_property_usage_select;
+  assigned_property : Independent_property;
+END_ENTITY; -- Independent_property_usage
+
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

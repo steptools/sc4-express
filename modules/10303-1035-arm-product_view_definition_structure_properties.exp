@@ -1,0 +1,14 @@
+(* N841 - ISO/CD TS - 10303-1035 Product view definition structure properties - EXPRESS ARM *)
+   
+SCHEMA Product_view_definition_structure_properties_arm;
+
+   
+USE FROM Product_view_definition_structure_arm;  -- ISO/TS 10303-1041
+   
+TYPE product_view_definition_structure_property_assignment = SELECT
+	BASED ON property_assignment_select WITH
+	(View_definition_relationship);
+	END_TYPE;
+
+   END_SCHEMA;
+(* Last update -  15 Aug 2001 *)

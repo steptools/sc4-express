@@ -1,0 +1,20 @@
+(* N784 - ISO/CD TS - 10303-1058 Configuration effectivity - EXPRESS ARM *)
+   
+SCHEMA Configuration_effectivity_arm;
+
+   
+USE FROM Effectivity_arm; -- ISO/TS 10303-1057
+USE FROM End_item_identification_arm; -- ISO/TS 10303-1046
+USE FROM Product_view_definition_structure_arm; -- ISO/TS 10303-1041
+
+   
+ENTITY Configuration_effectivity
+  SUBTYPE OF (Effectivity);
+  usage           : View_definition_relationship;
+  configuration   : Configuration_item;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

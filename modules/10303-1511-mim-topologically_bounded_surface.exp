@@ -1,0 +1,8 @@
+(* N890 - ISO/CD TS - 10303-1511 Topologically bounded surface - EXPRESS MIM *)
+   
+SCHEMA Topologically_bounded_surface_mim;
+USE FROM Geometric_shape_with_topology_mim; -- ISO 10303-1028
+USE FROM aic_topologically_bounded_surface; -- ISO 10303-511
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,37 @@
+(* N808 - ISO/CD TS - 10303-1124 Document structure - EXPRESS ARM *)
+   
+SCHEMA Document_structure_arm;
+
+   
+USE FROM Document_definition_arm;  -- ISO/CD TS 10303-1123 
+USE FROM Document_and_version_identification_arm;  -- ISO/CD TS 10303-1121
+USE FROM File_identification_arm;  -- ISO/CD TS 10303-1127
+
+   
+ENTITY Document_version_relationship;
+  relation_type             : STRING;
+  description		    : OPTIONAL STRING;
+  relating_document_version : Document_version;
+  related_document_version  : Document_version;
+END_ENTITY;
+
+   
+ENTITY Document_definition_relationship;
+  relation_type                : STRING;
+  description		       : OPTIONAL STRING;
+  relating_document_definition : Document_definition;
+  related_document_definition  : Document_definition;
+END_ENTITY;
+
+   
+ENTITY File_relationship;
+  relation_type          : STRING;
+  description		 : OPTIONAL STRING;
+  relating_document_file : File;
+  related_document_file  : File;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,13 @@
+(* N764 - ISO/CD TS - 10303-1027 Part occurrence - EXPRESS MIM *)
+   
+SCHEMA Part_occurrence_mim;
+USE FROM Part_structure_mim; -- Part structure
+USE FROM Product_view_definition_structure_properties_mim; -- Product view definition structure properties
+USE FROM Shape_property_representation_mim; -- Shape_property_representation
+USE FROM product_property_representation_schema -- ISO 10303-41
+  (context_dependent_shape_representation);
+USE FROM product_structure_schema -- ISO 10303-44
+  (specified_higher_usage_occurrence);
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

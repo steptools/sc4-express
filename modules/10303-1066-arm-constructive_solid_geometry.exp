@@ -1,0 +1,71 @@
+(* N865 - ISO/CD TS - 10303-1066 Constructive solid geometry - EXPRESS ARM *)
+   
+SCHEMA Constructive_solid_geometry_arm;
+
+   
+USE FROM Solid_model_arm; -- ISO/TS 10303-1045.
+USE FROM Shape_property_assignment_arm; -- ISO/TS 10303-1032.
+
+   
+TYPE boolean_operator = ENUMERATION OF
+  (union,
+   intersection,
+   difference);
+END_TYPE;
+
+   
+TYPE boolean_operand = EXTENSIBLE SELECT
+  (Solid_model,
+  Boolean_result,
+   csg_primitive);
+END_TYPE;
+
+   
+TYPE csg_select = SELECT
+  (Boolean_result,
+   csg_primitive);
+END_TYPE;
+
+   
+TYPE csg_primitive = EXTENSIBLE SELECT
+  ();
+END_TYPE;
+
+   
+ENTITY CSG_model
+  SUBTYPE OF (Solid_model);
+  tree_root_expression : csg_select; 
+END_ENTITY;
+
+   
+ENTITY CSG_shape_representation
+  SUBTYPE OF (Geometric_model);
+WHERE
+  WR1: (SIZEOF(QUERY ( it <* SELF.items | (NOT (SIZEOF([
+        'CONSTRUCTIVE_SOLID_GEOMETRY_REPRESENTATION_ARM.CSG_MODEL',
+        'CONSTRUCTIVE_SOLID_GEOMETRY_REPRESENTATION_ARM.TEMPLATE_INSTANCE'] * TYPEOF(it)) =
+        1)) )) = 0);
+END_ENTITY;
+
+   
+ENTITY Boolean_result 
+  SUBTYPE OF (detailed_geometric_model_element);
+  operator       : boolean_operator;
+  first_operand  : boolean_operand;
+  second_operand : boolean_operand;
+END_ENTITY;
+
+   
+ENTITY Edge_transition
+  SUBTYPE OF(Shape_element_relationship); 
+END_ENTITY;
+
+   
+ENTITY Face_transition
+  SUBTYPE OF(Shape_element_relationship); 
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

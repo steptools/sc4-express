@@ -1,0 +1,31 @@
+(* N818 - ISO/CD TS - 10303-1127 File identification - EXPRESS MIM *)
+   
+SCHEMA File_identification_mim;
+USE FROM Alias_identification_mim; -- ISO 10303-1025
+USE FROM document_schema -- ISO 10303-41
+  (document,
+   document_representation_type);
+USE FROM product_property_definition_schema -- ISO 10303-41
+  (characterized_object);
+
+   
+TYPE file_alias_identification_item = SELECT
+  BASED_ON alias_identification_item WITH 
+  (document_file);
+END_TYPE;
+
+   
+ENTITY document_file
+  SUBTYPE OF (document, characterized_object);
+WHERE
+  WR1:  SELF\characterized_object.name = '';    
+  WR2:  NOT EXISTS(SELF\characterized_object.description);    
+  WR3:  SIZEOF( QUERY( drt <* SELF\document.representation_types |
+               drt.name IN ['digital','physical']
+              )) = 1;
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

@@ -1,0 +1,73 @@
+(* N772 - ISO/CD TS - 10303-1042 Work request - EXPRESS ARM *)
+   
+SCHEMA work_request_arm;
+
+   
+USE FROM Approval_arm; -- ISO/TS 10303-1012
+USE FROM Date_time_assignment_arm; -- ISO/TS 10303-1014
+USE FROM Product_version_arm; -- ISO/TS 10303-1018
+USE FROM Product_view_definition_structure_arm; -- ISO/TS 10303-1041
+USE FROM Person_organisation_assignment_arm; -- ISO/TS 10303-1013
+
+   
+TYPE affected_item_select = SELECT
+  (Product_version, 
+   Product_view_definition, 
+   View_definition_relationship);
+END_TYPE;
+
+   
+TYPE status_value = ENUMERATION
+  (proposed, 
+   in-work, 
+   issued, 
+   hold);
+END_TYPE;
+
+   
+TYPE work_request_organisation_or_person_in_organisation_item = SELECT
+  BASED_ON organisation_or_person_in_organisation_item WITH
+  (Work_request);
+END_TYPE;
+
+   
+TYPE work_request_date_or_date_time_item = SELECT
+  BASED_ON date_or_date_time_item WITH
+  (Work_request);
+END_TYPE;
+
+   
+TYPE work_request_approval_item = SELECT
+  BASED_ON approval_item WITH 
+  (Work_request);
+END_TYPE;
+
+   
+ENTITY Activity_method
+  name        : STRING;
+  description : OPTIONAL STRING;
+  consequence : STRING;
+  purpose     : STRING;
+END_ENTITY;
+
+   
+ENTITY Work_request
+  request_id          : STRING;
+  version_id          : STRING;
+  status              : status_value;
+  purpose             : STRING;
+  potential_solutions : SET [0:?] OF Activity_method;
+  affected_items      : SET [0:?] OF affected_item_select;
+INVERSE
+  requestor           : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
+  request_date        : SET [0:1] OF Date_or_date_time_assignment FOR items;
+  approval            : SET [0:?] OF Approval_assignment FOR items;
+WHERE
+  WR1: SELF.requestor.role = 'requestor' OR NOT EXISTS(requestor); 
+  WR2: SELF.request_date.role = 'request date' OR NOT EXISTS(request_date); 
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

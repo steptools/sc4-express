@@ -1,0 +1,22 @@
+(* N725 - ISO/CD TS - 10303-1016 Product categorisation - EXPRESS MIM *)
+   
+SCHEMA Product_categorisation_mim;
+USE FROM Person_organisation_assignment_mim; -- ISO 10303-1013
+USE FROM product_definition_schema -- ISO 10303-41
+  (product_category,
+   product_category_relationship);
+
+   
+TYPE product_categorisation_organization_item = SELECT 
+  BASED_ON organization_item WITH 
+  (product_category);
+END_TYPE;
+
+   
+TYPE product_categorisation_person_and_organization_item = SELECT 
+  BASED_ON person_and_organization_item WITH
+  (product_category);
+END_TYPE;
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)

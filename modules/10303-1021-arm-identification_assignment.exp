@@ -1,0 +1,34 @@
+(* N736 - ISO/CD TS - 10303-1021 Identification assignment - EXPRESS ARM *)
+   
+SCHEMA Identification_assignment_arm;
+
+   
+USE FROM Person_organisation_assignment_arm; --ISO/TS 10303-1013
+
+   
+TYPE identification_item = EXTENSIBLE SELECT
+  ();
+END_TYPE;
+
+   
+TYPE identification_organisation_or_person_in_organisation_item = SELECT
+  BASED_ON organisation_or_person_in_organisation_item WITH
+  (Identification_assignment);
+END_TYPE;
+
+   
+ENTITY Identification_assignment;
+  identifier  : STRING;
+  role        : OPTIONAL STRING;
+  description : OPTIONAL STRING;
+  items       : SET [1:?] OF identification_item;
+INVERSE
+  owner       : SET [0:1] OF Organisation_or_person_in_organisation_assignment FOR items;
+WHERE
+  WR1: SELF.owner.role = 'identification owner';
+END_ENTITY;
+
+   
+END_SCHEMA;
+
+(* Last update -  15 Aug 2001 *)
