@@ -7,7 +7,7 @@ END_TYPE;
  
 ENTITY Security_classification;
   classification_level  : STRING;
-  description     : OPTIONAL STRING;
+  description           : OPTIONAL STRING;
 END_ENTITY; 
    
 ENTITY Security_classification_assignment;
@@ -16,4 +16,3 @@ ENTITY Security_classification_assignment;
 END_ENTITY;
  
 END_SCHEMA;
-

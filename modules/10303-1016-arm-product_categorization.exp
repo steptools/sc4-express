@@ -4,8 +4,8 @@
 SCHEMA Product_categorization_arm;   
 
 ENTITY Product_category;  
-  id		: OPTIONAL STRING;
-  name	: STRING;
+  id          : OPTIONAL STRING;
+  name        : STRING;
   description : OPTIONAL STRING;  
 END_ENTITY;   
 
