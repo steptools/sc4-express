@@ -1,13 +1,13 @@
 (*
-ISO TC184/SC4/WG12 N1912 - ISO/CD-TS 10303-1001 Appearance assignment - EXPRESS MIM
+ISO TC184/SC4/WG12 N2691 - ISO/TS 10303-1001 Appearance assignment - EXPRESS MIM
 *) 
 
 
-SCHEMA Appearance_assignment_mim; 
+SCHEMA Appearance_assignment_mim;
 
-USE FROM aic_associative_draughting_elements;    -- ISO 10303-520
+USE FROM aic_associative_draughting_elements;    -- 10303-520
 
-USE FROM aic_mechanical_design_geometric_presentation;    -- ISO 10303-517
+USE FROM aic_mechanical_design_geometric_presentation;    -- 10303-517
 
 USE FROM Elemental_geometric_shape_mim;    -- ISO/TS 10303-1004
 
@@ -15,7 +15,7 @@ USE FROM Foundation_representation_mim;    -- ISO/TS 10303-1006
 
 USE FROM Identification_assignment_mim;    -- ISO/TS 10303-1021
 
-USE FROM presentation_appearance_schema   -- ISO 10303-46
+USE FROM presentation_appearance_schema   -- 10303-46
   (invisibility,
    over_riding_styled_item,
    presentation_style_assignment,
