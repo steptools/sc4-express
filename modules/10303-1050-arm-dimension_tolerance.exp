@@ -1,17 +1,21 @@
 (*
-ISO TC184/SC4/WG12 N1547 - ISO/CD-TS 10303-1050 Dimension tolerance - EXPRESS ARM
+$Id$
+ISO TC184/SC4/WG12 N2873 - ISO/TS 10303-1050 Dimension tolerance - EXPRESS ARM
+Supersedes ISO TC184/SC4/WG12 N1547
 *) 
 
 
-SCHEMA Dimension_tolerance_arm; 
+SCHEMA Dimension_tolerance_arm;
 
-USE FROM Construction_geometry_arm;    -- ISO/CD-TS 10303-1131
+USE FROM Construction_geometry_arm;    -- ISO/TS 10303-1131
 
-USE FROM Derived_shape_element_arm;    -- ISO/CD-TS 10303-1130
+USE FROM Derived_shape_element_arm;    -- ISO/TS 10303-1130
+
+USE FROM Document_assignment_arm;    -- ISO/TS 10303-1122
 
 USE FROM Elemental_geometric_shape_arm;    -- ISO/TS 10303-1004
 
-USE FROM Extended_measure_representation_arm;    -- ISO/CD-TS 10303-1106
+USE FROM Extended_measure_representation_arm;    -- ISO/TS 10303-1106
 
 USE FROM Measure_representation_arm;    -- ISO/TS 10303-1118
 
@@ -20,11 +24,15 @@ USE FROM Shape_property_assignment_arm;    -- ISO/TS 10303-1032
 USE FROM Value_with_unit_arm;    -- ISO/TS 10303-1054
 
 
+TYPE dimension_tolerance_document_element_select = EXTENSIBLE SELECT BASED_ON documented_element_select WITH 
+   (Externally_defined_size_dimension);
+END_TYPE; 
+
 TYPE dimension_value_select = SELECT
    (Dimension_value_with_limitation, 
     Numerical_item_with_unit, 
-    Value_limit, 
-    Value_range);
+    Tolerance_range, 
+    Value_limit);
 END_TYPE; 
 
 TYPE element_with_dimension_select = EXTENSIBLE GENERIC_ENTITY SELECT
@@ -44,7 +52,7 @@ END_TYPE;
 
 ENTITY Angular_location_dimension
   SUBTYPE OF (Location_dimension);
-  orientation : OPTIONAL Axis_placement;
+  orientation : Axis_placement;
 END_ENTITY;
 
 ENTITY Angular_size_dimension
@@ -58,14 +66,22 @@ ENTITY Curved_distance_dimension
   used_path : Measurement_path;
 END_ENTITY;
 
-ENTITY Dimension_value_with_limitation;
-  defined_by : limitation_definition_select;
-  envelope_principle : OPTIONAL BOOLEAN;
+ENTITY Curved_size_dimension
+  SUBTYPE OF (Size_dimension);
 END_ENTITY;
 
-ENTITY General_size_dimension
+ENTITY Diameter_size_dimension
   SUBTYPE OF (Size_dimension);
-  dimension_type : STRING;
+END_ENTITY;
+
+ENTITY Dimension_value_with_limitation;
+  defined_by : limitation_definition_select;
+  limited_value : Numerical_item_with_unit;
+END_ENTITY;
+
+ENTITY Externally_defined_size_dimension
+  SUBTYPE OF (Size_dimension);
+  name : STRING;
   used_path : OPTIONAL Measurement_path;
 END_ENTITY;
 
@@ -74,6 +90,17 @@ ENTITY Geometric_dimension
                                 Size_dimension));
   id : STRING;
   dimension_value : dimension_value_select;
+  notes : SET[0:?] OF STRING;
+END_ENTITY;
+
+ENTITY Height_size_dimension
+  SUBTYPE OF (Size_dimension);
+  used_path : OPTIONAL Measurement_path;
+END_ENTITY;
+
+ENTITY Length_size_dimension
+  SUBTYPE OF (Size_dimension);
+  used_path : OPTIONAL Measurement_path;
 END_ENTITY;
 
 ENTITY Limits_and_fits;
@@ -84,7 +111,7 @@ END_ENTITY;
 
 ENTITY Linear_distance_dimension
   SUBTYPE OF (Location_dimension);
-  orientation : OPTIONAL Line;
+  orientation : OPTIONAL Axis_placement;
 END_ENTITY;
 
 ENTITY Location_dimension
@@ -92,8 +119,8 @@ ENTITY Location_dimension
                                 Curved_distance_dimension,
                                 Linear_distance_dimension))
   SUBTYPE OF (Geometric_dimension);
-  description : STRING;
-  directed : BOOLEAN;
+  description : OPTIONAL STRING;
+  directed : OPTIONAL BOOLEAN;
   origin : placed_element_select;
   target : placed_element_select;
 END_ENTITY;
@@ -105,18 +132,40 @@ ENTITY Plus_minus_bounds;
   value_determination : OPTIONAL STRING;
 END_ENTITY;
 
-ENTITY Size_dimension
-  ABSTRACT SUPERTYPE OF (ONEOF (Angular_size_dimension,
-                                General_size_dimension,
-                                Thickness_dimension))
-  SUBTYPE OF (Geometric_dimension);
-  applied_to : element_with_dimension_select;
-  envelope_principle : OPTIONAL BOOLEAN;
+ENTITY Radial_size_dimension
+  SUBTYPE OF (Size_dimension);
+  radius_type : STRING;
 END_ENTITY;
 
-ENTITY Thickness_dimension
+ENTITY Size_dimension
+  ABSTRACT SUPERTYPE OF (ONEOF (Angular_size_dimension,
+                                Curved_size_dimension,
+                                Diameter_size_dimension,
+                                Externally_defined_size_dimension,
+                                Height_size_dimension,
+                                Length_size_dimension,
+                                Radial_size_dimension,
+                                Thickness_size_dimension,
+                                Width_size_dimension))
+  SUBTYPE OF (Geometric_dimension);
+  envelope_principle : OPTIONAL BOOLEAN;
+  is_applied_to : element_with_dimension_select;
+END_ENTITY;
+
+ENTITY Thickness_size_dimension
   SUBTYPE OF (Size_dimension);
-  used_path : Measurement_path;
+  used_path : OPTIONAL Measurement_path;
+END_ENTITY;
+
+ENTITY Tolerance_range;
+  lower_range : Numerical_item_with_unit;
+  significant_digits : OPTIONAL INTEGER;
+  upper_range : Numerical_item_with_unit;
+END_ENTITY;
+
+ENTITY Width_size_dimension
+  SUBTYPE OF (Size_dimension);
+  used_path : OPTIONAL Measurement_path;
 END_ENTITY;
 
 END_SCHEMA;  -- Dimension_tolerance_arm
