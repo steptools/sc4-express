@@ -1,6 +1,6 @@
- (* part 521 Manifold subsurface AIC EXPRESS listing WG12 N971
- 2001-09-03 *)
- SCHEMA aic_manifold_subsurface;  --- extracted from part 521 WG12 N970
+ (* part 521 Manifold subsurface AIC EXPRESS listing WG12 N1308
+ 2002-07-23 *)
+ SCHEMA aic_manifold_subsurface;  --- extracted from part 521 IS WG12 N1307
   USE FROM aic_topologically_bounded_surface; -- ISO 10303-511
 
   USE FROM geometry_schema    -- ISO  10303-42
@@ -18,6 +18,7 @@
 
   USE FROM product_property_representation_schema   -- ISO  10303-41
       (shape_representation);
+
  ENTITY manifold_subsurface_shape_representation
  SUBTYPE OF (shape_representation);
  WHERE
@@ -41,10 +42,10 @@
            'AIC_MANIFOLD_SUBSURFACE.CONNECTED_FACE_SUB_SET' IN TYPEOF(it)) |
           NOT( (('AIC_MANIFOLD_SUBSURFACE.CONNECTED_FACE_SUB_SET' IN
                    TYPEOF(cfss.parent_face_set)) AND
-            (SIZEOF (QUERY (fac <* cfss.parent_face_set | NOT
+            (SIZEOF (QUERY (fac <* cfss.parent_face_set.cfs_faces | NOT
                  advanced_face_properties(fac))) = 0)) OR
-             (SIZEOF (QUERY (fac <* cfss.parent_face_set | NOT
-              'AIC_MANIFOLD_SUBSURFACE.ADVANCED_FACE' IN TYPEOF(fac))) = 0)
+             (SIZEOF (QUERY (fac <* cfss.parent_face_set.cfs_faces | NOT
+              ('AIC_MANIFOLD_SUBSURFACE.ADVANCED_FACE' IN TYPEOF(fac)))) = 0)
                     ))) = 0;
    WR6: SIZEOF (QUERY (cfss <* QUERY (it <* SELF.items |
            'AIC_MANIFOLD_SUBSURFACE.CONNECTED_FACE_SUB_SET' IN TYPEOF(it)) |
@@ -53,7 +54,7 @@
    WR7: SIZEOF (QUERY (cfss <* QUERY (it <* SELF.items |
           'AIC_MANIFOLD_SUBSURFACE.CONNECTED_FACE_SUB_SET' IN TYPEOF(it)) |
              NOT (SIZEOF (QUERY(fcs <* cfss\connected_face_set.cfs_faces |
-              'AIC_MANIFOLD_SUBSURFACE.SUBFACE' IN TYPEOF(fcs) AND
+               ('AIC_MANIFOLD_SUBSURFACE.SUBFACE' IN TYPEOF(fcs)) AND
             NOT (SIZEOF(QUERY (elp_fbnds <* QUERY (bnds <* fcs.bounds |
          'AIC_MANIFOLD_SUBSURFACE.EDGE_LOOP' IN TYPEOF(bnds.bound)) |
                 NOT (SIZEOF (QUERY (oe <* elp_fbnds.bound\path.edge_list |
@@ -67,7 +68,7 @@
    WR8: SIZEOF (QUERY (cfss <* QUERY (it <* SELF.items |
            'AIC_MANIFOLD_SUBSURFACE.CONNECTED_FACE_SUBSET' IN TYPEOF(it)) |
              NOT (SIZEOF (QUERY(fcs <* cfss\connected_face_set.cfs_faces |
-           'AIC_MANIFOLD_SUBSURFACE.SUBFACE' IN TYPEOF(fcs) AND
+           ('AIC_MANIFOLD_SUBSURFACE.SUBFACE' IN TYPEOF(fcs)) AND
                NOT (SIZEOF(QUERY (elp_fbnds <* QUERY (bnds <* fcs.bounds |
          'AIC_MANIFOLD_SUBSURFACE.EDGE_LOOP' IN TYPEOF(bnds.bound)) |
                  NOT (SIZEOF (QUERY (oe <* elp_fbnds.bound\path.edge_list |
@@ -86,7 +87,7 @@
          NOT (SIZEOF (['AIC_MANIFOLD_SUBSURFACE.EDGE_LOOP',
                 'AIC_MANIFOLD_SUBSURFACE.VERTEX_LOOP'] *
                    TYPEOF(bnds.bound)) = 1 )
-                   ))) = 0
+                   )) = 0)
                  ))) = 0
              ))) = 0;
    WR10: SIZEOF (QUERY (cfss <* QUERY (it <* SELF.items |
@@ -140,6 +141,7 @@
                    )))) = 0
                     ))) = 0;
  END_ENTITY;
+
 FUNCTION advanced_face_properties (testface : face) : BOOLEAN;
 (* return TRUE if testface is of type advanced_face *)
 IF 'AIC_MANIFOLD_SUBSURFACE.ADVANCED_FACE' IN TYPEOF(testface) THEN
@@ -152,4 +154,5 @@ IF  ('AIC_MANIFOLD_SUBSURFACE.SUBFACE' IN TYPEOF(testface)) THEN
    ELSE  RETURN (FALSE);
 END_IF;
 END_FUNCTION;
-   END_SCHEMA; -- end AIC_MANIFOLD_SUBSURFACE SCHEMA
+
+END_SCHEMA; -- end AIC_MANIFOLD_SUBSURFACE SCHEMA
