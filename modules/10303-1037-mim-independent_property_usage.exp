@@ -1,7 +1,0 @@
-(* N848 - ISO/CD TS - 10303-1037 Independent property usage - EXPRESS MIM *)
-   SCHEMA Independent_property_usage_mim;
-  USE FROM Independent_property_mim;                -- ISO/TS 10303-1036
-  USE FROM Property_assignment_mim;                 -- ISO/TS 10303-1030
-  USE FROM product_property_definition_schema  -- ISO 10303-41      (general_property_association);
-   END_SCHEMA;
-(* Last update -  15 Aug 2001 *)
