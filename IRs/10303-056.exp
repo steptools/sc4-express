@@ -1,0 +1,88 @@
+(*
+$Id$
+  WG12N1821 - ISO 10303-56 state_observed_schema
+*)
+
+SCHEMA state_observed_schema; 
+
+USE FROM state_type_schema;    -- ISO 10303-56
+
+
+TYPE state_of_item = EXTENSIBLE GENERIC_ENTITY SELECT;
+END_TYPE; 
+
+ENTITY applied_state_assignment;
+  assigned_state : state_observed;
+  item_set : SET[1:?] OF state_of_item;
+  role : state_role;
+END_ENTITY;
+
+ENTITY ascribable_state;
+  name : STRING;
+  description : OPTIONAL STRING;
+  pertaining_state : state_type;
+  ascribed_state : state_observed;
+END_ENTITY;
+
+ENTITY ascribable_state_relationship;
+  name : STRING;
+  description : OPTIONAL STRING;
+  relating_ascribable_state : ascribable_state;
+  related_ascribable_state : ascribable_state;
+END_ENTITY;
+
+ENTITY state_observed;
+  name : STRING;
+  description : OPTIONAL STRING;
+END_ENTITY;
+
+ENTITY state_observed_relationship;
+  name : STRING;
+  description : OPTIONAL STRING;
+  relating_state_observed : SET[1:?] OF state_observed;
+  related_state_observed : SET[1:?] OF state_observed;
+  role : STRING;
+END_ENTITY;
+
+ENTITY state_role;
+  name : STRING;
+  description : OPTIONAL STRING;
+END_ENTITY;
+
+END_SCHEMA;  -- state_observed_schema
+(*
+$Id$
+  WG12N1821 - ISO 10303-56 state_type_schema
+*)
+
+SCHEMA state_type_schema; 
+
+
+TYPE state_type_of_item = EXTENSIBLE GENERIC_ENTITY SELECT;
+END_TYPE; 
+
+ENTITY applied_state_type_assignment;
+  assigned_state_type : state_type;
+  item_set : SET[1:?] OF state_type_of_item;
+  role : state_type_role;
+END_ENTITY;
+
+ENTITY state_type;
+  name : STRING;
+  description : OPTIONAL STRING;
+END_ENTITY;
+
+ENTITY state_type_relationship;
+  name : STRING;
+  description : OPTIONAL STRING;
+  relating_state_type : SET[1:?] OF state_type;
+  related_state_type : SET[1:?] OF state_type;
+  role : STRING;
+END_ENTITY;
+
+ENTITY state_type_role;
+  name : STRING;
+  description : OPTIONAL STRING;
+END_ENTITY;
+
+END_SCHEMA;  -- state_type_schema
