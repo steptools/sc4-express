@@ -1,3 +1,8 @@
+(*  
+    The following EXPRESS is for ISO 10303-46:1994 Technical Corrigendum 1
+
+    This is document ISO TC184/SC4/WG12 N313
+*)
 
 SCHEMA presentation_organization_schema;
  
@@ -5,7 +10,15 @@ REFERENCE FROM presentation_resource_schema
     (colour,
      planar_box,
      presentation_scaled_placement);
- 
+
+REFERENCE FROM presentation_definition_schema
+    (annotation_occurrence,
+     symbol_representation,
+     symbol_representation_relationship);
+
+REFERENCE FROM presentation_appearance_schema
+    (styled_item);
+
 REFERENCE FROM geometry_schema
     (axis2_placement_2d,
      axis2_placement_3d,
@@ -19,7 +32,8 @@ REFERENCE FROM geometry_schema
      );
  
 REFERENCE FROM representation_schema
-    (item_defined_transformation,
+    (founded_item,
+     item_defined_transformation,
      item_in_context,
      mapped_item,
      representation,
@@ -266,7 +280,8 @@ WHERE
   WR2: SELF\geometric_representation_item.dim = 3;
 END_ENTITY;
 
-ENTITY view_volume;
+ENTITY view_volume
+  SUBTYPE OF (founded_item);
   projection_type            : central_or_parallel;
   projection_point           : cartesian_point;
   view_plane_distance        : length_measure;
@@ -302,7 +317,7 @@ ENTITY light_source
   light_colour : colour;
 WHERE
   WR1: SIZEOF(USEDIN(SELF,'PRESENTATION_APPEARANCE_SCHEMA.'+
-                         'STYLED_ITEM')) = 0;
+                         'STYLED_ITEM.ITEM')) = 0;
 END_ENTITY;
 
 ENTITY light_source_ambient
@@ -397,7 +412,6 @@ FUNCTION acyclic_presentation_representation_relationship
 
   LOCAL
     x : SET OF presentation_representation_relationship;
-    i : INTEGER;
     local_children : SET OF presentation_representation;
   END_LOCAL;
 
@@ -407,9 +421,9 @@ FUNCTION acyclic_presentation_representation_relationship
     END_IF;
   END_REPEAT;
 
-  x := USEDIN ( relation\representation_relationship.rep_1,
+  x := bag_to_set (USEDIN ( relation\representation_relationship.rep_1,
                   'REPRESENTATION_SCHEMA.'+
-                  'REPRESENTATION_RELATIONSHIP.REP_2');
+                  'REPRESENTATION_RELATIONSHIP.REP_2'));
   local_children := children + relation\representation_relationship.rep_1;
 
   IF SIZEOF (x) > 0 THEN
@@ -466,7 +480,8 @@ REFERENCE FROM representation_schema
 
 REFERENCE FROM support_resource_schema
     (label,
-     text);
+     text,
+     bag_to_set);
 
 TYPE text_delineation = label;
 END_TYPE;
@@ -578,7 +593,7 @@ WHERE
                             'REPRESENTATION_RELATIONSHIP.REP_2')) > 0)
                         OR
        (SIZEOF( QUERY( map_item <* USEDIN(SELF, 'REPRESENTATION_SCHEMA.'+
-                                                'MAPPED_ITEM.MAPPING_SOURCE.'+
+                                                'REPRESENTATION_MAP.'+
                                                 'MAPPED_REPRESENTATION') |
          'PRESENTATION_DEFINITION_SCHEMA.TABLE_REPRESENTATION' IN
          TYPEOF (using_representations (map_item)) )) > 0);
@@ -591,7 +606,7 @@ WHERE
                             'REPRESENTATION_RELATIONSHIP.REP_2')) > 0)
                         OR
        (SIZEOF( QUERY( map_item <* USEDIN(SELF, 'REPRESENTATION_SCHEMA.'+
-                                                'MAPPED_ITEM.MAPPING_SOURCE.'+
+                                                'REPRESENTATION_MAP.'+
                                                 'MAPPED_REPRESENTATION') |
                                                 'PRESENTATION_DEFINITION_SCHEMA.' +
                                                 'TABLE_RECORD_REPRESENTATION' IN
@@ -939,7 +954,6 @@ FUNCTION acyclic_symbol_representation_relationship
    children : SET OF symbol_representation ) : BOOLEAN;
   LOCAL
     x : SET OF symbol_representation_relationship;
-    i : INTEGER;
     local_children : SET OF symbol_representation;
   END_LOCAL;
  
@@ -949,9 +963,9 @@ FUNCTION acyclic_symbol_representation_relationship
     END_IF;
   END_REPEAT;
  
-  x := USEDIN ( relation\representation_relationship.rep_1,
+  x := bag_to_set (USEDIN ( relation\representation_relationship.rep_1,
                 'REPRESENTATION_SCHEMA.'+
-                'REPRESENTATION_RELATIONSHIP.'+ 'REP_2');
+                'REPRESENTATION_RELATIONSHIP.'+ 'REP_2'));
   local_children := children + relation\representation_relationship.rep_1;
  
   IF SIZEOF (x) > 0 THEN
@@ -970,11 +984,10 @@ END_FUNCTION;
 FUNCTION field_in_table (field : table_record_field_representation;
                          table : annotation_table_occurrence): BOOLEAN;
   LOCAL
-    i : INTEGER;
     table_rep : table_representation;
-    symbol_rep_rel_set : SET [1:?] OF symbol_representation_relationship;
-    mapped_item_set : SET [1:?] OF mapped_item;
-    table_record_rep_set : SET [1:?] OF table_record_representation := [];
+    symbol_rep_rel_set : SET OF symbol_representation_relationship;
+    mapped_item_set : SET OF mapped_item;
+    table_record_rep_set : SET OF table_record_representation := [];
   END_LOCAL;
  
   table_rep := table\styled_item.item\mapped_item.mapping_source.
@@ -983,7 +996,7 @@ FUNCTION field_in_table (field : table_record_field_representation;
                        ('REPRESENTATION_SCHEMA.MAPPED_ITEM' IN
                         TYPEOF(item))
                                  AND
-                       ('PRESENTATION_DEFINITIONS_SCHEMA.'+
+                       ('PRESENTATION_DEFINITION_SCHEMA.'+
                         'TABLE_RECORD_REPRESENTATION' IN
                          TYPEOF(item\mapped_item.mapping_source.
                                     mapped_representation ))
@@ -994,9 +1007,9 @@ FUNCTION field_in_table (field : table_record_field_representation;
            mapped_item_set[i].mapping_source.mapped_representation;
   END_REPEAT;
  
-  symbol_rep_rel_set := USEDIN(table_rep, 
+  symbol_rep_rel_set := bag_to_set (USEDIN(table_rep, 
                                'REPRESENTATION_SCHEMA.'+
-                               'REPRESENTATION_RELATIONSHIP.REP_1');
+                               'REPRESENTATION_RELATIONSHIP.REP_1'));
  
   REPEAT i := 1 TO HIINDEX(symbol_rep_rel_set);
      table_record_rep_set := table_record_rep_set +
@@ -1004,10 +1017,16 @@ FUNCTION field_in_table (field : table_record_field_representation;
   END_REPEAT;
  
   IF SIZEOF(QUERY( table_record_rep <* table_record_rep_set |
-              (SIZEOF(QUERY( symbol_rep_rel <* USEDIN(table_record_rep,
-                            'PRESENTATION_DEFINITION_SCHEMA.'+
-                            'SYMBOL_REPRESENTATION_RELATIONSHIP') |
-                       symbol_rep_rel\representation_relationship.rep_2 :=: field
+--              (SIZEOF(QUERY( symbol_rep_rel <* USEDIN(table_record_rep,
+--                            'PRESENTATION_DEFINITION_SCHEMA.'+
+--                            'SYMBOL_REPRESENTATION_RELATIONSHIP.REP_1') |
+--                       symbol_rep_rel\representation_relationship.rep_2 :=: field
+              (SIZEOF(QUERY( rep_rel <* USEDIN(table_record_rep,
+                            'REPRESENTATION_SCHEMA.'+
+                            'REPRESENTATION_RELATIONSHIP.REP_1') |
+                       ('PRESENTATION_DEFINITION_SCHEMA.' +
+                       'SYMBOL_REPRESENTATION_RELATIONSHIP' IN TYPEOF(rep_rel)) AND  
+                       (rep_rel.rep_2 :=: field)
                        )) > 0)
                        OR
               (SIZEOF(QUERY(item <* table_record_rep.items |
@@ -1040,6 +1059,9 @@ REFERENCE FROM geometry_schema
      geometric_representation_item,
      point,
      vector);
+
+REFERENCE FROM group_schema
+  (group);
 
 REFERENCE FROM measure_schema
     (descriptive_measure,
@@ -1081,11 +1103,14 @@ REFERENCE FROM representation_schema
      using_representations);
 
 REFERENCE FROM support_resource_schema
-    (label);
+    (label,
+     bag_to_set);
  
 
 TYPE style_context_select = SELECT
-  (representation,
+  (group,
+   presentation_layer_assignment,
+   representation,
    representation_item,
    presentation_set);
 END_TYPE;
@@ -1326,7 +1351,7 @@ END_TYPE;
 TYPE invisible_item = SELECT 
   (styled_item,
    presentation_layer_assignment,
-   presentation_representation);
+   representation);
 END_TYPE;
 
 ENTITY styled_item
@@ -1761,7 +1786,6 @@ FUNCTION acyclic_occlusion_precedence
      set_of_lower : SET OF hiding_or_blanking_select ) : BOOLEAN;
    LOCAL
       x : SET OF occlusion_precedence;
-      i : INTEGER;
       local_set_of_lower : SET OF hiding_or_blanking_select;
    END_LOCAL;
    REPEAT i:=1 TO HIINDEX(set_of_lower);
@@ -1769,9 +1793,9 @@ FUNCTION acyclic_occlusion_precedence
          RETURN(FALSE);
       END_IF;
    END_REPEAT;
-   x := USEDIN ( relation.higher_precedence,
+   x := bag_to_set (USEDIN ( relation.higher_precedence,
                    'PRESENTATION_APPEARANCE_SCHEMA.'+
-           'OCCLUSION_PRECEDENCE.LOWER_PRECEDENCE');
+           'OCCLUSION_PRECEDENCE.LOWER_PRECEDENCE'));
    local_set_of_lower := set_of_lower + relation.higher_precedence;
    IF SIZEOF (x) > 0 THEN
       REPEAT i:=1 TO HIINDEX (x);
@@ -1915,7 +1939,7 @@ END_ENTITY;
 
 ENTITY colour_associated
   SUBTYPE OF (colour);
-  name : colour;
+  name : label;
   variable_to_be_shown : SET [1:?] OF REAL;
   mapping              : colour_association_table;
 END_ENTITY;
