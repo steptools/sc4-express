@@ -1,0 +1,14 @@
+(*  ISO/TC184/SC4 WG12N1862 - ISO/CD-TS - 10303-1177 composition_of_individual_activity - EXPRESS MIM*)
+
+SCHEMA Composition_of_individual_activity_mim;
+
+USE FROM Activity_mim;    -- ISO/TS 10303-1047
+USE FROM Individual_activity_mim;    -- ISO/TS 10303-1176
+
+ENTITY composition_of_individual_activity
+  SUBTYPE OF (action_relationship);
+  SELF\action_relationship.relating_action : individual_activity;
+  SELF\action_relationship.related_action : individual_activity;
+END_ENTITY;
+
+END_SCHEMA;

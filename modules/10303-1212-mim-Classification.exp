@@ -1,0 +1,13 @@
+(*  ISO/TC184/SC4 WG12N1871 - ISO/CD-TS - 10303-1212 classification - EXPRESS MIM *)
+
+SCHEMA Classification_mim; 
+
+USE FROM Class_mim;   -- ISO/TS 10303-1070
+
+USE FROM classification_schema   -- ISO/DIS 10303-54
+  (classification_select,
+  complete_membership_select,
+  classification,
+  complete_membership); 
+
+END_SCHEMA;  -- Classification_mim

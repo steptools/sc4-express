@@ -1,0 +1,22 @@
+(*  ISO/TC184/SC4 WG12N1880 - ISO/CD-TS - 10303-1091 maths_space - EXPRESS MIM *)
+
+SCHEMA Maths_space_mim;
+
+USE FROM Maths_value_mim;    -- ISO/TS 10303-1092
+
+USE FROM mathematical_functions_schema    -- ISO 10303-50
+  (elementary_space,
+  finite_integer_interval,
+  finite_real_interval,
+  finite_space,
+  integer_interval_from_min,
+  integer_interval_to_max,
+  listed_product_space,
+  maths_space,
+  product_space,
+  real_interval_from_min,
+  real_interval_to_max,
+  tuple_space,
+  uniform_product_space);
+
+END_SCHEMA;
