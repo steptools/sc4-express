@@ -119,9 +119,6 @@ ENTITY User_defined_terminator
   symbol : Geometric_model;
 END_ENTITY; -- User_defined_terminator
 
-EXPRESS specification:
-
-*)
 ENTITY Vector_appearance;
  terminator_type   : Terminator;
  vector_font       : Curve_font;
@@ -130,4 +127,3 @@ ENTITY Vector_appearance;
 END_ENTITY; -- Vector_appearance
 
 END_SCHEMA;
-
