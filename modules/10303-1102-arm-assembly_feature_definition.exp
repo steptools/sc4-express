@@ -1,0 +1,35 @@
+(* THIS IS DOCUMENT ISO TC184/SC4/WG12 N1388 *)
+
+SCHEMA assembly_feature_definition_arm;
+
+USE FROM product_property_feature_definition_arm
+   (product_property_instanced_feature) ; -- ISO 10303-1101
+
+ENTITY instanced_assembly_feature
+  SUBTYPE OF ( product_property_instanced_feature );
+END_ENTITY; --instanced_assembly_feature
+
+ENTITY instanced_assembly_feature_relationship;
+  relating_assembly_feature: instanced_assembly_feature;
+  related_assembly_feature: instanced_assebmly_feature;
+END_ENTITY; -- instanced_assembly_feature_relationship
+
+ENTITY instanced_assembly_feature_representation;
+END_ENTITY; --instanced_assembly_feature_representation 
+
+ENTITY instanced_assembly_feature_definition_representation;
+  definition: instanced_assembly_feature;
+  used_representation: instanced_assembly_feature_representation;
+END_ENTITY; -- instanced_assembly_feature_definition_representation
+
+ENTITY instanced_assembly_feature_representation_relationship;
+  rep_1: instanced_assemlby_feature_representation;
+  rep_2: instanced_assembly_feature_representation;
+END_ENTITY; -- instanced_assembly_feature_representation_relationship
+
+ENTITY instanced_assembly_feature_relationship_representation_association;
+  definition: instanced_assembly_feature_relationship;
+  used_representation: instanced_assembly_feature_representation_relationship;
+END_ENTITY; -- instanced_assembly_feature_relationship_representation_association
+
+END_SCHEMA;
