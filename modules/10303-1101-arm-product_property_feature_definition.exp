@@ -1,26 +1,13 @@
-(* THIS IS DOCUMENT ISO TC184/SC4/WG12 N1385 *)
+(* THIS DOCUMENT IS ISO TC184/SC4/WG12 N2654 *)
 
-SCHEMA product_property_feature_definition_arm;
+SCHEMA Product_property_feature_definition_arm;
 
-ENTITY product_property_feature_definition
+ENTITY Product_property_feature_definition
   ABSTRACT SUPERTYPE;
-END_ENTITY; --product_property_feature_definition
+END_ENTITY; --Product_property_feature_definition
 
-ENTITY product_property_instanced_feature
-  SUBTYPE OF (product_property_feature_definition);
-END_ENTITY; --product_property_instanced_feature
-
-ENTITY product_property_instanced_feature_relationship;
-  id: identifier;
-  relating_feature: product_property_instanced_feature;
-  related_feature: product_property_instanced_feature;
-UNIQUE
-  UR1: id, 
-       relating_feature,
-       related_feature;
-WHERE
-  WR1: relating_feature :<>: related_feature;
-END_ENTITY; --product_property_instanced_feature_relationship
+ENTITY Product_property_instanced_feature
+  SUBTYPE OF (Product_property_feature_definition);
+END_ENTITY; --Product_property_instanced_feature
 
 END_SCHEMA;
-
