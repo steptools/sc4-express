@@ -1,3 +1,7 @@
+(* THIS IS DOCUMENT ISO TC184/SC4/WG12 N2671, CONTAINING EXPRESS FOR *)
+(* ISO 10303-108, 'PARAMETERIZATION AND CONSTRAINTS FOR EXPLICIT     *)
+(* GEOMETRIC PRODUCT MODELS'                                         *)                                          
+
 SCHEMA parameterization_schema;
 
 REFERENCE FROM support_resource_schema             -- ISO 10303-41
@@ -298,6 +302,7 @@ REFERENCE FROM representation_schema                  -- ISO 10303-43
 REFERENCE FROM parameterization_schema                -- ISO 10303-108
   (bound_model_parameter,
    fixed_instance_attribute_set,
+   instance_attribute_reference,
    unbound_model_parameter);
 
 REFERENCE FROM explicit_constraint_schema             -- ISO 10303-108
@@ -308,8 +313,7 @@ REFERENCE FROM explicit_geometric_constraint_schema   -- ISO 10303-108
   (explicit_geometric_constraint);
 
 REFERENCE FROM ISO13584_generic_expressions_schema    -- ISO 13584-20
-  (generic_variable,
-   used_variables);
+  (generic_variable);
 
 ENTITY variational_representation_item
   ABSTRACT SUPERTYPE OF (auxiliary_geometric_representation_item)
@@ -365,22 +369,26 @@ FUNCTION invalidate_vrep_item(item : variational_representation_item)
                                    : BOOLEAN;
 
   LOCAL
-    result  : BOOLEAN := FALSE; -- item is initially assumed to be valid
     reps    : SET[1:?] OF representation := using_representations(item);
     svri    : SET[1:?] OF variational_representation_item;
+    iar     : instance_attribute_reference;
     i       : INTEGER;
     n       : INTEGER := HIINDEX(reps);
   END_LOCAL;
 
-IF ('PARAMETERIZATION_SCHEMA.BOUND_MODEL_PARAMETER' IN TYPEOF(item))
+  IF ('PARAMETERIZATION_SCHEMA.BOUND_MODEL_PARAMETER' IN TYPEOF(item))
   THEN
-    IF (reps <> using_representations(
-      item\generic_variable.interpretation.semantics.owning_instance))
-    THEN 
+    IF 'PARAMETERIZATION_SCHEMA.INSTANCE_ATTRIBUTE_REFERENCE' 
+      IN TYPEOF(item\generic_variable.interpretation.semantics)
+    THEN
       BEGIN
-        result := TRUE;
-        RETURN(result);
+        iar := item\generic_variable.interpretation.semantics;
+        IF (reps <> using_representations(iar.owning_instance))
+        THEN
+          RETURN(TRUE);
+        END_IF;
       END;
+    ELSE RETURN(TRUE); -- parameter not attached to an instance attribute
     END_IF;
   END_IF;
 
@@ -391,73 +399,51 @@ IF ('PARAMETERIZATION_SCHEMA.BOUND_MODEL_PARAMETER' IN TYPEOF(item))
         svri := QUERY(q <* reps[i].items | 
           'EXPLICIT_CONSTRAINT_SCHEMA.FREE_FORM_CONSTRAINT' IN TYPEOF(q));
         IF SIZEOF(QUERY(r <* svri | 
-          item IN used_variables(r.constraining_expression))) = 0
+          item IN (r.reference_elements + r.constrained_elements))) = 0
         THEN 
-          BEGIN
-            result := TRUE;
-            RETURN(result);
-          END;
+          RETURN(TRUE);
         END_IF;
       END_REPEAT;
     END;
   END_IF;
 
-  IF ('PARAMETERIZATION_SCHEMA.FIXED_INSTANCE_ATTRIBUTE_SET' IN TYPEOF(item))
+  IF ('PARAMETERIZATION_SCHEMA.FIXED_INSTANCE_ATTRIBUTE_SET' 
+    IN TYPEOF(item))
   THEN
     REPEAT i := 1 TO SIZEOF(item.fixed_attributes);
       IF (reps <> using_representations(item.fixed_attributes[i]))
       THEN
-        BEGIN
-          result := TRUE;
-          RETURN(result);
-        END;
+        RETURN(TRUE);
       END_IF;
     END_REPEAT;
   END_IF;
 
-IF ('EXPLICIT_CONSTRAINT_SCHEMA.EXPLICIT_CONSTRAINT' IN TYPEOF(item))
+  IF ('EXPLICIT_CONSTRAINT_SCHEMA.EXPLICIT_CONSTRAINT' IN TYPEOF(item))
   THEN
     IF SIZEOF(QUERY(q <* 
       (item.reference_elements + item.constrained_elements) |
       reps <> using_representations(q))) > 0
     THEN
-      BEGIN
-        result := TRUE;
-        RETURN(result);
-      END;
+      RETURN(TRUE);
     END_IF;
   END_IF;
 
-  IF ('VARIATIONAL_REPRESENTATION_SCHEMA.AUXILIARY_GEOMETRIC_REPRESENTATION_ITEM' 
-    IN TYPEOF(item))
+  IF ('VARIATIONAL_REPRESENTATION_SCHEMA.AUXILIARY_GEOMETRIC_REPRESENTATION_ITEM' IN TYPEOF(item))
   THEN
     BEGIN 
       REPEAT i := 1 TO n;
         svri := QUERY(q <* reps[i].items | 
-          'EXPLICIT_GEOMETRIC_CONSTRAINT_SCHEMA.EXPLICIT_GEOMETRIC_CONSTRAINT' 
-          IN TYPEOF(q));
+          'EXPLICIT_GEOMETRIC_CONSTRAINT_SCHEMA.EXPLICIT_GEOMETRIC_CONSTRAINT' IN TYPEOF(q));
         IF SIZEOF(QUERY(r <* svri | 
           item IN r.reference_elements)) = 0
         THEN
-          BEGIN
-            result := TRUE;
-            RETURN(result);
-          END;
-        ELSE
-          IF SIZEOF(QUERY(r <* svri | 
-            item IN r.constrained_elements)) > 0
-          THEN
-            BEGIN
-              result := TRUE;
-              RETURN(result);
-            END;
-          END_IF;
+          RETURN(TRUE);
         END_IF;
       END_REPEAT;
     END;
   END_IF;
 
-  RETURN(result); -- FALSE if no invalid cases have been found
+  RETURN(FALSE); -- no invalid cases have been found
 
 END_FUNCTION;
 
@@ -925,9 +911,7 @@ REFERENCE FROM topology_schema                        -- ISO 10303-42
   (face_surface);
 
 REFERENCE FROM geometric_model_schema                 -- ISO 10303-42
-  (geometric_curve_set,
-   geometric_set,
-   solid_model,
+  (solid_model,
    surface_model);
 
 REFERENCE FROM representation_schema                  -- ISO 10303-43
@@ -949,6 +933,24 @@ TYPE surface_or_solid_model = SELECT
    solid_model);
 END_TYPE;
 
+TYPE planar_curve_select = SELECT
+  (line,
+   conic,
+   trimmed_curve,
+   pcurve,
+   surface_curve);
+WHERE
+  WR1: SELF\geometric_representation_item.dim = 3;
+  WR2: check_curve_planarity(SELF);
+END_TYPE;
+
+TYPE sketch_element_select = EXTENSIBLE SELECT
+  (point,
+   curve);
+WHERE
+  WR1: 'GEOMETRY_SCHEMA.GEOMETRIC_REPRESENTATION_ITEM' IN TYPEOF(SELF);
+END_TYPE;
+
 TYPE sketch_basis_select = SELECT
   (planar_curve_select,
    curve_bounded_surface,
@@ -959,17 +961,6 @@ TYPE sketch_type_select = SELECT
   (neutral_sketch_representation,
    positioned_sketch,
    subsketch);
-END_TYPE;
-
-TYPE planar_curve_select = SELECT
-  (line,
-   conic,
-   trimmed_curve,
-   pcurve,
-   surface_curve);
-WHERE
-  WR1: SELF\geometric_representation_item.dim = 3;
-  WR2: check_curve_planarity(SELF);
 END_TYPE;
 
 TYPE curves_or_area = ENUMERATION OF
@@ -1053,16 +1044,9 @@ END_ENTITY;
 ENTITY neutral_sketch_representation
   SUBTYPE OF (shape_representation);
   neutral_sketch_semantics  : curves_or_area; 
-  SELF\representation.items : SET[1:1] OF geometric_curve_set;
+  SELF\representation.items : SET[1:?] OF sketch_element_select;
 WHERE
-  WR1: SELF\representation.items[1].dim = 2;
-  WR2: (neutral_sketch_semantics = curves) OR
-    (SIZEOF(QUERY(q <* SELF\representation.items[1].elements | 
-    NOT ((SIZEOF(TYPEOF(q) * ['GEOMETRY_SCHEMA.CIRCLE',
-     'GEOMETRY_SCHEMA.ELLIPSE']) > 0) OR ((SIZEOF(TYPEOF(q) * 
-    ['GEOMETRY_SCHEMA.COMPOSITE_CURVE',
-     'GEOMETRY_SCHEMA.B_SPLINE_CURVE']) > 0)
-    AND (q.closed_curve = TRUE))))) = 0);
+  WR1: SIZEOF(QUERY(q <* SELF\representation.items | q.dim <> 2)) = 0;
 END_ENTITY;
 
 ENTITY positioned_sketch
@@ -1111,18 +1095,18 @@ END_ENTITY;
 
 ENTITY subsketch
   SUBTYPE OF (geometric_representation_item);
-  subsketch_elements : geometric_curve_set; 
+  subsketch_elements : SET[1:?] OF sketch_element_select; 
   owning_sketch      : sketch_type_select;
 WHERE
   WR1: (('SKETCH_SCHEMA.NEUTRAL_SKETCH_REPRESENTATION' 
     IN TYPEOF(owning_sketch)) AND (SIZEOF(QUERY(q <* 
-    subsketch_elements\geometric_set.elements | NOT (owning_sketch IN 
+    subsketch_elements | NOT (owning_sketch IN 
     using_representations(q)))) = 0))
     XOR
     ((SIZEOF(TYPEOF(owning_sketch) *
      ['SKETCH_SCHEMA.POSITIONED_SKETCH','SKETCH_SCHEMA.SUBSKETCH']) = 1)
     AND 
-    (SIZEOF(QUERY(q <* subsketch_elements\geometric_set.elements |
+    (SIZEOF(QUERY(q <* subsketch_elements |
      NOT (owning_sketch IN using_items(q,[])))) = 0));
 END_ENTITY;
 
