@@ -1,6 +1,4 @@
-(*
-  AIM EXPRESS long form for ISO/IS 10303-203
-*)
+
 
 SCHEMA config_control_design;
 
@@ -834,8 +832,7 @@ ENTITY cartesian_point
 END_ENTITY; -- cartesian_point
 
 ENTITY cartesian_transformation_operator
-  SUPERTYPE OF (ONEOF (cartesian_transformation_operator_2d,
-    cartesian_transformation_operator_3d))
+  SUPERTYPE OF (cartesian_transformation_operator_3d)
   SUBTYPE OF (geometric_representation_item,
     functionally_defined_transformation);
   axis1        : OPTIONAL direction;
@@ -847,16 +844,6 @@ DERIVE
 WHERE
   WR1: scl > 0;
 END_ENTITY; -- cartesian_transformation_operator
-
-ENTITY cartesian_transformation_operator_2d
-  SUBTYPE OF (cartesian_transformation_operator);
-DERIVE
-  u : LIST [2:2] OF direction := base_axis(2,SELF\
-      cartesian_transformation_operator.axis1,SELF\
-      cartesian_transformation_operator.axis2,?);
-WHERE
-  WR1: SELF\cartesian_transformation_operator.dim = 2;
-END_ENTITY; -- cartesian_transformation_operator_2d
 
 ENTITY cartesian_transformation_operator_3d
   SUBTYPE OF (cartesian_transformation_operator);
@@ -1080,7 +1067,7 @@ ENTITY coordinated_universal_time_offset;
 END_ENTITY; -- coordinated_universal_time_offset
 
 ENTITY curve
-  SUPERTYPE OF (ONEOF (line, conic, pcurve, surface_curve, offset_curve_2d,
+  SUPERTYPE OF (ONEOF (line, conic, pcurve, surface_curve, 
     offset_curve_3d, curve_replica))
   SUBTYPE OF (geometric_representation_item);
 END_ENTITY; -- curve
@@ -1161,6 +1148,13 @@ WHERE
   WR3: reference_to_curve\representation.items[1]\
        geometric_representation_item.dim = 2;
 END_ENTITY; -- degenerate_pcurve
+
+ENTITY degenerate_toroidal_surface
+  SUBTYPE OF (toroidal_surface);
+    select_outer : BOOLEAN;
+  WHERE
+    wr1: (major_radius < minor_radius);
+END_ENTITY; -- degenerate_toroidal_surface
 
 ENTITY design_context
   SUBTYPE OF (product_definition_context);
@@ -1529,9 +1523,10 @@ WHERE
        )) >= 1;
   WR3: SIZEOF (QUERY (gcs <* QUERY (it <* SELF\representation.items |
        'CONFIG_CONTROL_DESIGN.GEOMETRIC_CURVE_SET' IN TYPEOF (it)) |
-       NOT (SIZEOF (QUERY (elem <* gcs\geometric_set.elements |
-       NOT (valid_geometrically_bounded_wf_curve
-       (elem, 'CONFIG_CONTROL_DESIGN')))) = 0))) = 0;
+       NOT (SIZEOF (QUERY (curv <* QUERY (elem <* gcs\geometric_set.elements |
+       'CONFIG_CONTROL_DESIGN.CURVE' IN TYPEOF (elem)) |
+       NOT (valid_geometrically_bounded_wf_curve 
+       (curv, 'CONFIG_CONTROL_DESIGN')))) = 0))) =0;
   WR4: SIZEOF (QUERY (gcs <* QUERY (it <* SELF\representation.items |
        'CONFIG_CONTROL_DESIGN.GEOMETRIC_CURVE_SET' IN TYPEOF (it)) |
        NOT (SIZEOF (QUERY (pnts <* QUERY (elem <*
@@ -1837,15 +1832,6 @@ END_ENTITY; -- named_unit
 ENTITY next_assembly_usage_occurrence
   SUBTYPE OF (assembly_component_usage);
 END_ENTITY; -- next_assembly_usage_occurrence
-
-ENTITY offset_curve_2d
-  SUBTYPE OF (curve);
-  basis_curve    : curve;
-  distance       : length_measure;
-  self_intersect : LOGICAL;
-WHERE
-  WR1: basis_curve.dim = 2;
-END_ENTITY; -- offset_curve_2d
 
 ENTITY offset_curve_3d
   SUBTYPE OF (curve);
@@ -3971,7 +3957,7 @@ END_FUNCTION; -- basis_surface_check
 
 FUNCTION boolean_choose
   (b: BOOLEAN;
-  choice1, choice2: GENERIC): GENERIC;
+  choice1, choice2: GENERIC:item): GENERIC:item;
 IF b THEN
   RETURN(choice1);
 ELSE
@@ -4546,141 +4532,136 @@ RETURN(x_axis);
 
 END_FUNCTION; -- first_proj_axis
 
-FUNCTION gbsf_check_curve
-  (cv : curve; schema_name : STRING) : BOOLEAN;
-
-  -- check whether the input has the right type
-
-  IF NOT (schema_name + '.CURVE' IN TYPEOF (cv)) THEN RETURN(TRUE);
-  END_IF;
-
-
-  -- let those types pass that do not have any further references
-  -- respectively rules to be applied
-
-  IF SIZEOF ([schema_name + '.CIRCLE', schema_name + '.ELLIPSE']
-    * TYPEOF(cv)) = 1 THEN RETURN(TRUE);
-  ELSE
-
-    -- the b_spline_curve shall not self intersect
-
-    IF (schema_name + '.B_SPLINE_CURVE' IN TYPEOF(cv))
-      THEN RETURN(NOT (cv\b_spline_curve.self_intersect));
-    ELSE
-
+FUNCTION gbsf_check_curve (cv : curve; schema_name : STRING) : BOOLEAN;  
+ 
+  -- check whether the input has the right type 
+  
+  IF NOT (schema_name + '.CURVE' IN TYPEOF (cv)) THEN RETURN(TRUE);  
+  END_IF;  
+ 
+  -- let those types pass that do not have any further references  
+  -- respectively rules to be applied  
+ 
+  IF SIZEOF ([schema_name + '.CIRCLE', schema_name + '.ELLIPSE']  
+    * TYPEOF(cv)) = 1 THEN RETURN(TRUE);  
+  ELSE  
+ 
+    -- the b_spline_curve shall not self intersect  
+ 
+    IF (schema_name + '.B_SPLINE_CURVE' IN TYPEOF(cv))  
+      THEN RETURN(NOT (cv\b_spline_curve.self_intersect)); 
+    ELSE  
+ 
       -- if the curve is a composite_curve, all of its segments shall be valid
 
-
-
-      IF schema_name + '.COMPOSITE_CURVE' IN TYPEOF(cv) THEN
+      IF schema_name + '.COMPOSITE_CURVE' IN TYPEOF(cv) THEN  
         RETURN (SIZEOF (QUERY (seg <* cv\composite_curve.segments |
-        NOT (gbsf_check_curve(seg.parent_curve, schema_name)))) = 0);
-      ELSE
+        NOT (gbsf_check_curve(seg.parent_curve, schema_name)))) = 0); 
+      ELSE  
+ 
+        -- the curve_replica references other curves that need to be checked  
+        IF schema_name + '.CURVE_REPLICA' IN TYPEOF(cv) THEN  
+          RETURN (gbsf_check_curve  
+          (cv\curve_replica.parent_curve, schema_name)); 
+        ELSE 
+ 
+     -- offset_curve_3d references a curve and shall not self intersect
 
-        -- the curve_replica references other curves that need to be checked
-
-        IF schema_name + '.CURVE_REPLICA' IN TYPEOF(cv) THEN
-          RETURN (gbsf_check_curve
-          (cv\curve_replica.parent_curve, schema_name));
-        ELSE
-
-          -- offset_curve_3d references a curve and shall not self intersect
-
-          IF schema_name + '.OFFSET_CURVE_3D' IN TYPEOF(cv) THEN
+          IF schema_name + '.OFFSET_CURVE_3D' IN TYPEOF(cv) THEN  
             RETURN ((gbsf_check_curve
-            (cv\offset_curve_3d.basis_curve, schema_name))
-            AND
-            (NOT cv\offset_curve_3d.self_intersect));
-          ELSE
-
-            -- pcurve references a curve - indirectly, and a basis_surface
-
-            IF schema_name + '.PCURVE' IN TYPEOF(cv) THEN
+            (cv\offset_curve_3d.basis_curve, schema_name))  
+            AND  
+            (NOT cv\offset_curve_3d.self_intersect));  
+          ELSE  
+ 
+         -- pcurve references a curve - indirectly, and a basis_surface 
+ 
+            IF schema_name + '.PCURVE' IN TYPEOF(cv) THEN  
               RETURN
-              ((gbsf_check_curve
-              (cv\pcurve.reference_to_curve\representation.items[1],
-              schema_name)) AND
-              (gbsf_check_surface
-              (cv\pcurve.basis_surface, schema_name)));
-            ELSE
+              ((gbsf_check_curve 
+              (cv\pcurve.reference_to_curve\representation.items[1],  
+              schema_name)) AND  
+              (gbsf_check_surface 
+              (cv\pcurve.basis_surface, schema_name)));  
+            ELSE  
+ 
+              -- polyline shall have at least 3 points and shall only  
+              -- be used to represent an intersection_curve  
+ 
+              IF schema_name + '.POLYLINE' IN TYPEOF(cv) THEN  
+                IF (SIZEOF (cv\polyline.points) >= 3)  AND 
+                  (SIZEOF ((bag_to_set (USEDIN (cv,'')) - 
+                  bag_to_set (USEDIN (cv,  
+                  schema_name +  
+                  '.INTERSECTION_CURVE.CURVE_3D')))) = 0) 
+                  THEN RETURN (TRUE);  
+                END_IF;  
+              ELSE  
+ 
+                -- surface_curve references a curve_3d and one or two  
+                -- pcurves or one or two surface_curves or one of each  
+ 
+                IF schema_name + '.SURFACE_CURVE' IN TYPEOF(cv) THEN  
+ 
+                  -- if the curve reference is correct, check also the rest 
 
-              -- polyline shall have at least 3 points and shall only
-              -- be used to represent an intersection_curve
-
-              IF schema_name + '.POLYLINE' IN TYPEOF(cv) THEN
-                IF (SIZEOF (cv\polyline.points) > 3)  AND
-                  (SIZEOF ((bag_to_set (USEDIN (cv,'')) -
-                  bag_to_set (USEDIN (cv,
-                  schema_name +
-                  '.INTERSECTION_CURVE.BASIS_CURVE')))) = 0)
-                  THEN RETURN (TRUE);
-                END_IF;
-              ELSE
-
-                -- surface_curve references a curve_3d and one or two
-                -- pcurves or one or two surface_curves or one of each
-
-                IF schema_name + '.SURFACE_CURVE' IN TYPEOF(cv) THEN
-
-                  -- if the curve reference is correct, check also the rest
-
-                  IF gbsf_check_curve
-                  (cv\surface_curve.curve_3d, schema_name) THEN
-                    REPEAT i := 1 TO SIZEOF
-                    (cv\surface_curve.associated_geometry);
-
-                    -- do for one or two associated_geometrys:
-
+                  IF gbsf_check_curve  
+                  (cv\surface_curve.curve_3d, schema_name) THEN  
+                    REPEAT i := 1 TO SIZEOF 
+                    (cv\surface_curve.associated_geometry);  
+ 
+                    -- do for one or two associated_geometrys:  
+ 
                     IF schema_name + '.SURFACE' IN TYPEOF
-                      (cv\surface_curve.associated_geometry[i]) THEN
+                      (cv\surface_curve.associated_geometry[i]) THEN  
                       IF NOT gbsf_check_surface
-                        (cv\surface_curve.associated_geometry[i],
-                        schema_name) THEN
-                        RETURN(FALSE);
-                      END_IF;
-                    ELSE
-                      IF schema_name + '.PCURVE' IN TYPEOF
-                        (cv\surface_curve.associated_geometry[i]) THEN
-                        IF NOT gbsf_check_curve
-                          (cv\surface_curve.associated_geometry[i],
-                          schema_name) THEN
-                          RETURN(FALSE);
-                        END_IF;
-                      END_IF;
-                    END_IF;
-                  END_REPEAT;
-                  RETURN(TRUE);
-                END_IF;
-              ELSE
-
-                -- if the curve is a trimmed_curve
-
-                IF (schema_name + '.TRIMMED_CURVE') IN TYPEOF (cv) THEN
-
-                -- if a line, parabola or hyperbola is being trimmed,
-                -- then valid
-
-                  IF SIZEOF ([schema_name + '.LINE',
-                  schema_name + '.PARABOLA',
+                        (cv\surface_curve.associated_geometry[i],    
+                        schema_name) THEN  
+                        RETURN(FALSE);  
+                      END_IF;  
+                    ELSE 
+                      IF schema_name + '.PCURVE' IN TYPEOF  
+                        (cv\surface_curve.associated_geometry[i]) THEN  
+                        IF NOT gbsf_check_curve 
+                          (cv\surface_curve.associated_geometry[i],    
+                          schema_name) THEN  
+                          RETURN(FALSE);  
+                        END_IF;  
+                      END_IF;  
+                    END_IF;  
+                  END_REPEAT;  
+                  RETURN(TRUE);  
+                END_IF;  
+              ELSE  
+ 
+                -- if the curve is a trimmed_curve  
+                                                         
+                IF (schema_name + '.TRIMMED_CURVE') IN TYPEOF (cv) THEN  
+   
+                -- if a line, parabola or hyperbola is being trimmed,  
+                -- then valid  
+ 
+                  IF SIZEOF ([schema_name + '.LINE', 
+                  schema_name + '.PARABOLA', 
                   schema_name + '.HYPERBOLA'] *
-                  TYPEOF (cv\trimmed_curve.basis_curve)) = 1
-                  THEN RETURN (TRUE);
+                  TYPEOF (cv\trimmed_curve.basis_curve)) = 1 
+                  THEN RETURN (TRUE); 
 
-                    -- otherwise, recursively check the basis curve
-
-                    ELSE RETURN (gbsf_check_curve
+                    -- otherwise, recursively check the basis curve  
+   
+                    ELSE RETURN (gbsf_check_curve 
                       (cv\trimmed_curve.basis_curve, schema_name));
-                    END_IF;
-                  END_IF;
-                END_IF;
-              END_IF;
-            END_IF;
-          END_IF;
-        END_IF;
-      END_IF;
-    END_IF;
-  END_IF;
-  RETURN(FALSE);
+                    END_IF; 
+                  END_IF;  
+                END_IF;  
+              END_IF;  
+            END_IF;  
+          END_IF;   
+        END_IF;  
+      END_IF;  
+    END_IF;  
+  END_IF;  
+  RETURN(FALSE);  
 END_FUNCTION; -- gbsf_check_curve
 
 FUNCTION gbsf_check_point (pnt : point; schema_name : STRING) : BOOLEAN;
@@ -4731,114 +4712,112 @@ FUNCTION gbsf_check_point (pnt : point; schema_name : STRING) : BOOLEAN;
   RETURN(FALSE);
 END_FUNCTION; -- gbsf_check_point
 
-FUNCTION gbsf_check_surface (sf : surface; schema_name : STRING) : BOOLEAN;
-
-  -- check whether the input has the right type
-
-  IF NOT (schema_name + '.SURFACE') IN TYPEOF (sf) THEN RETURN(TRUE);
-  END_IF;
-
-  -- b_spline_surface has a self_intersect attribute that shall be false
-
-  IF schema_name + '.B_SPLINE_SURFACE' IN TYPEOF(sf) THEN
+FUNCTION gbsf_check_surface (sf : surface; schema_name : STRING) : BOOLEAN;  
+  -- check whether the input has the right type  
+ 
+  IF NOT schema_name + '.SURFACE' IN TYPEOF (sf) THEN RETURN(TRUE);  
+  END_IF;  
+ 
+  -- b_spline_surface has a self_intersect attribute that shall be false  
+ 
+  IF schema_name + '.B_SPLINE_SURFACE' IN TYPEOF(sf) THEN  
     RETURN(NOT (sf\b_spline_surface.self_intersect));
-  ELSE
-
-    -- basis surface types return true
-
-    IF SIZEOF ([schema_name + '.SPHERICAL_SURFACE',
+  ELSE  
+ 
+    -- basis surface types return true 
+ 
+    IF SIZEOF ([schema_name + '.SPHERICAL_SURFACE',  
       schema_name + '.TOROIDAL_SURFACE'] * TYPEOF(sf)) = 3 THEN
-      RETURN(TRUE);
-    ELSE
-
-      IF schema_name + '.CURVE_BOUNDED_SURFACE' IN TYPEOF(sf) THEN
-
-      -- if there is a simple basis_surface, check the curves
-
-        IF SIZEOF ([schema_name + '.CONICAL_SURFACE',
-          schema_name + '.CYLINDRICAL_SURFACE',
-          schema_name + '.PLANE'] * TYPEOF(sf)) = 1 THEN
-          RETURN(SIZEOF (QUERY (bcurve <*
+      RETURN(TRUE);  
+    ELSE  
+  
+      IF schema_name + '.CURVE_BOUNDED_SURFACE' IN TYPEOF(sf) THEN  
+ 
+      -- if there is a simple basis_surface, check the curves  
+ 
+        IF SIZEOF ([schema_name + '.CONICAL_SURFACE',  
+          schema_name + '.CYLINDRICAL_SURFACE',  
+          schema_name + '.PLANE'] * TYPEOF
+     (sf\curve_bounded_surface.basis_surface)) = 1 THEN   
+          RETURN(SIZEOF (QUERY (bcurve <*  
           sf\curve_bounded_surface.boundaries |
           NOT (gbsf_check_curve(bcurve, schema_name)))) = 0);
-
-        ELSE
-
-        -- recursively check the basis_surface and then the curves
-
+        ELSE  
+ 
+        -- recursively check the basis_surface and then the curves 
+ 
           IF gbsf_check_surface
-          (sf\curve_bounded_surface.basis_surface, schema_name) THEN
+          (sf\curve_bounded_surface.basis_surface, schema_name) THEN  
             RETURN(SIZEOF (QUERY (bcurve <*
-            sf\curve_bounded_surface.boundaries |
+            sf\curve_bounded_surface.boundaries | 
             NOT (gbsf_check_curve(bcurve, schema_name)))) = 0);
-          END_IF;
-        END_IF;
-      ELSE
-
-        -- offset_surface references a surface and shall not self_intersect
-
-        IF schema_name + '.OFFSET_SURFACE' IN TYPEOF(sf) THEN
-          RETURN ((gbsf_check_surface
+          END_IF;  
+        END_IF;  
+      ELSE  
+ 
+        -- offset_surface references a surface and shall not self_intersect 
+ 
+        IF schema_name + '.OFFSET_SURFACE' IN TYPEOF(sf) THEN              
+          RETURN ((gbsf_check_surface 
           (sf\offset_surface.basis_surface, schema_name))
-          AND
-          (NOT (sf\offset_surface.self_intersect)));
-        ELSE
-
-          -- rectangular_composite_surface references a matrix of surfaces
-
-          IF schema_name + '.RECTANGULAR_COMPOSITE_SURFACE' IN TYPEOF(sf) THEN
-
-
+          AND  
+          (NOT (sf\offset_surface.self_intersect)));  
+        ELSE  
+ 
+          -- rectangular_composite_surface references a matrix of surfaces  
+ 
+       IF schema_name + '.RECTANGULAR_COMPOSITE_SURFACE' IN TYPEOF(sf) THEN
             REPEAT i := 1 TO SIZEOF
-              (sf\rectangular_composite_surface.segments);
+              (sf\rectangular_composite_surface.segments);  
               REPEAT j := 1 TO SIZEOF
-                (sf\rectangular_composite_surface.segments[i]);
+                (sf\rectangular_composite_surface.segments[i]);  
                 IF NOT (gbsf_check_surface
                   (sf\rectangular_composite_surface.segments[i][j].
                   parent_surface, schema_name))
-                  THEN RETURN (FALSE);
-                END_IF;
-              END_REPEAT;
-            END_REPEAT;
-            RETURN(TRUE);
-          ELSE
+                  THEN RETURN (FALSE);  
+                END_IF;  
+              END_REPEAT;  
+            END_REPEAT;  
+            RETURN(TRUE);  
+          ELSE  
+ 
+            -- rectangular_trimmed_surface has a basis_surface  
+ 
+         IF schema_name + '.RECTANGULAR_TRIMMED_SURFACE' IN TYPEOF(sf) THEN
 
-            -- rectangular_trimmed_surface has a basis_surface
-
-            IF schema_name + '.RECTANGULAR_TRIMMED_SURFACE' IN TYPEOF(sf) THEN
-
-              IF  SIZEOF ([schema_name + '.CONICAL_SURFACE',
-                schema_name + '.CYLINDRICAL_SURFACE',
+              IF  SIZEOF ([schema_name + '.CONICAL_SURFACE',  
+                schema_name + '.CYLINDRICAL_SURFACE',  
                 schema_name + '.PLANE'] * TYPEOF
-                (sf\rectangular_trimmed_surface.basis_surface)) = 1 THEN
-                RETURN (TRUE);
-              ELSE
+                (sf\rectangular_trimmed_surface.basis_surface)) = 1 THEN 
+                RETURN (TRUE); 
+              ELSE 
                 RETURN(gbsf_check_surface
-                (sf\rectangular_trimmed_surface.basis_surface, schema_name));
-              END_IF;
-            ELSE
+                (sf\rectangular_trimmed_surface.basis_surface,                 
+ schema_name)); 
+              END_IF;  
+            ELSE  
+ 
+              -- parent_surfaces need to be checked for their validity 
+  
+              IF schema_name + '.SURFACE_REPLICA' IN TYPEOF (sf) THEN 
+                RETURN (gbsf_check_surface 
+                (sf\surface_replica.parent_surface, schema_name)); 
+              ELSE  
+ 
+                -- and the swept_surface must have a valid swept_curve  
 
-              -- parent_surfaces need to be checked for their validity
-
-              IF schema_name + '.SURFACE_REPLICA' IN TYPEOF (sf) THEN
-                RETURN (gbsf_check_surface
-                (sf\surface_replica.parent_surface, schema_name));
-              ELSE
-
-                -- and the swept_surface must have a valid swept_curve
-
-                IF schema_name + '.SWEPT_SURFACE' IN TYPEOF(sf) THEN
-                  RETURN(gbsf_check_curve
-                  (sf\swept_surface.swept_curve, schema_name));
-                END_IF;
-              END_IF;
-            END_IF;
-          END_IF;
-        END_IF;
-      END_IF;
-    END_IF;
-  END_IF;
-  RETURN(FALSE);
+                IF schema_name + '.SWEPT_SURFACE' IN TYPEOF(sf) THEN  
+                  RETURN(gbsf_check_curve 
+                  (sf\swept_surface.swept_curve, schema_name)); 
+                END_IF;    
+              END_IF;    
+            END_IF;     
+          END_IF;  
+        END_IF;  
+      END_IF;  
+    END_IF;  
+  END_IF;  
+  RETURN(FALSE);  
 END_FUNCTION; -- gbsf_check_surface
 
 FUNCTION get_basis_surface
@@ -5422,28 +5401,25 @@ END_FUNCTION; -- using_representations
 
 FUNCTION valid_calendar_date
   (date: calendar_date): LOGICAL;
-IF NOT ((1 <= date.day_component) AND (date.day_component <= 31))
-     THEN
-  RETURN(FALSE);
-END_IF;
-CASE date.month_component OF
-  4 :         RETURN((1 <= date.day_component) AND (date.day_component
-        <= 30));
-  6 :         RETURN((1 <= date.day_component) AND (date.day_component
-        <= 30));
-  9 :         RETURN((1 <= date.day_component) AND (date.day_component
-        <= 30));
-  11  :         RETURN((1 <= date.day_component) AND (date.
-        day_component <= 30));
-  2 :         BEGIN
+  IF NOT ((1 <= date.day_component) AND (date.day_component <= 31))
+  THEN
+    RETURN(FALSE);
+  END_IF;
+  CASE date.month_component OF
+    4 : RETURN((1 <= date.day_component) AND (date.day_component <= 30));
+    6 : RETURN((1 <= date.day_component) AND (date.day_component <= 30));
+    9 : RETURN((1 <= date.day_component) AND (date.day_component <= 30));
+    11: RETURN((1 <= date.day_component) AND (date.day_component <= 30));
+    2 :      
+    BEGIN
       IF leap_year(date.year_component) THEN
         RETURN((1 <= date.day_component) AND (date.day_component <= 29));
       ELSE
         RETURN((1 <= date.day_component) AND (date.day_component <= 28));
       END_IF;
     END;
+    OTHERWISE : RETURN(TRUE);
   END_CASE;
-
 END_FUNCTION; -- valid_calendar_date
 
 FUNCTION valid_geometrically_bounded_wf_curve 
