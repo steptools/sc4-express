@@ -5,6 +5,7 @@ SCHEMA Security_classification_mim;
 USE FROM security_classification_schema -- ISO 10303-41
   (security_classification,
    security_classification_level);
+   
 USE FROM management_resources_schema -- ISO 10303-41
   (security_classification_assignment);
   
@@ -17,9 +18,3 @@ ENTITY applied_security_classification_assignment
 END_ENTITY;
 
 END_SCHEMA;
-
-
-
-
-
-

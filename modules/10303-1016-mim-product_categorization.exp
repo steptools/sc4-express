@@ -3,6 +3,7 @@
 SCHEMA Product_categorization_mim; 
 
 USE FROM product_definition_schema -- ISO 10303-41   
-	(product_category,    
-	 product_category_relationship);      
+          (product_category,    
+           product_category_relationship);
+           
 END_SCHEMA;  
