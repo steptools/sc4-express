@@ -1,0 +1,23 @@
+(*  ISO/TC184/SC4 WG12N1870 - ISO/CD-TS - 10303-1212 classification - EXPRESS ARM *)
+
+SCHEMA Classification_arm; 
+
+USE FROM Class_arm;    -- ISO/TS 10303-1070
+
+TYPE classification_select = EXTENSIBLE SELECT;
+END_TYPE; 
+
+TYPE complete_membership_select = EXTENSIBLE SELECT;
+END_TYPE; 
+
+ENTITY Classification;
+  classified : classification_select;
+  classifier : Class;
+END_ENTITY;
+
+ENTITY Complete_membership;
+  containing_set : Class;
+  members : SET[0:?] OF complete_membership_select;
+END_ENTITY;
+
+END_SCHEMA;  -- Classification_arm
