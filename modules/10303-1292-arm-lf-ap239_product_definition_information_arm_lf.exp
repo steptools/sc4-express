@@ -1,0 +1,4906 @@
+(*
+ $Id$
+ ISO TC184/SC4/WG3 N1224 - ISO/CD-TS 10303-1292 Ap239 product definition information - EXPRESS ARM Long form
+*)
+SCHEMA ap239_product_definition_information_arm_lf;
+
+  CONSTANT
+  schema_name : STRING := 'AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF';
+  END_CONSTANT;
+
+  TYPE alias_identification_item = SELECT
+    (interface_connector_design,
+     requirement,
+     digital_file,
+     approval_status,
+     interface_specification_definition,
+     interface_connector_version,
+     requirement_version,
+     product_as_planned,
+     slot_definition,
+     requirement_assignment,
+     requirement_collection_relationship,
+     tracing_relationship,
+     part,
+     product_as_realized,
+     slot_version,
+     physical_document_definition,
+     breakdown,
+     organization,
+     certification,
+     part_view_definition,
+     interface_connector,
+     digital_document_definition,
+     interface_specification_version,
+     requirement_source,
+     interface_connector_definition,
+     requirement_view_definition,
+     document,
+     part_version,
+     project,
+     document_version,
+     hardcopy,
+     event,
+     breakdown_version,
+     requirement_version_relationship,
+     slot,
+     interface_connector_as_planned,
+     security_classification,
+     breakdown_element,
+     interface_specification,
+     interface_connector_as_realized);
+  END_TYPE; -- alias_identification_item
+
+  TYPE any_number_value = NUMBER;
+  END_TYPE; -- any_number_value
+
+  TYPE any_string_value = STRING;
+  END_TYPE; -- any_string_value
+
+  TYPE ap239_dm_approval_item = SELECT
+    (document_assignment);
+  END_TYPE; -- ap239_dm_approval_item
+
+  TYPE ap239_dm_classification_item = SELECT
+    (applied_information_usage_right,
+     content_item,
+     descriptive_document_property,
+     digital_document_definition,
+     digital_file,
+     document,
+     document_assignment,
+     document_definition_relationship,
+     document_location_identification,
+     document_property_representation,
+     document_version,
+     envelope,
+     envelope_association,
+     external_item_identification,
+     external_source_identification,
+     file_location_identification,
+     file_relationship,
+     hardcopy,
+     information_right,
+     information_usage_right,
+     information_usage_right_relationship,
+     message,
+     message_association,
+     numerical_document_property,
+     partial_document_assignment,
+     physical_document_definition);
+  END_TYPE; -- ap239_dm_classification_item
+
+  TYPE ap239_dm_classified_attribute_select = SELECT
+    (content_item,
+     descriptive_document_property,
+     digital_file,
+     document_assignment,
+     document_definition_relationship,
+     document_location_identification,
+     document_property_representation,
+     envelope,
+     envelope_association,
+     external_item_identification,
+     external_source_identification,
+     file_location_identification,
+     file_relationship,
+     hardcopy,
+     information_right,
+     information_usage_right,
+     information_usage_right_relationship,
+     message,
+     message_association,
+     numerical_document_property,
+     partial_document_assignment);
+  END_TYPE; -- ap239_dm_classified_attribute_select
+
+  TYPE ap239_dm_contract_item = SELECT
+    (document,
+     message);
+  END_TYPE; -- ap239_dm_contract_item
+
+  TYPE ap239_dm_date_or_date_time_item = SELECT
+    (applied_information_usage_right,
+     document,
+     document_assignment);
+  END_TYPE; -- ap239_dm_date_or_date_time_item
+
+  TYPE ap239_dm_documented_element_select = SELECT
+    (certification,
+     contract,
+     identification_assignment,
+     information_right,
+     information_usage_right,
+     organization,
+     person);
+  END_TYPE; -- ap239_dm_documented_element_select
+
+  TYPE ap239_dm_information_usage_right_item = SELECT
+    (certification,
+     certification_assignment,
+     digital_document_definition,
+     digital_file,
+     document,
+     document_definition_relationship,
+     document_version,
+     file_relationship,
+     hardcopy,
+     message,
+     physical_document_definition);
+  END_TYPE; -- ap239_dm_information_usage_right_item
+
+  TYPE ap239_dm_organization_or_person_in_organization = SELECT
+    (document_assignment);
+  END_TYPE; -- ap239_dm_organization_or_person_in_organization
+
+  TYPE ap239_dm_security_classification_item = SELECT
+    (document_assignment);
+  END_TYPE; -- ap239_dm_security_classification_item
+
+  TYPE ap239_dm_state_definition_of_item = SELECT
+    (digital_document_definition,
+     digital_file,
+     document,
+     document_version,
+     file_location_identification,
+     hardcopy,
+     physical_document_definition);
+  END_TYPE; -- ap239_dm_state_definition_of_item
+
+  TYPE ap239_dm_state_of_item = SELECT
+    (digital_document_definition,
+     digital_file,
+     document,
+     document_version,
+     file_location_identification,
+     hardcopy,
+     physical_document_definition);
+  END_TYPE; -- ap239_dm_state_of_item
+
+  TYPE ap239_dm_string_select = SELECT
+    (envelope,
+     envelope_association,
+     information_right,
+     information_usage_right,
+     message,
+     message_association,
+     part_view_definition,
+     interface_connector_version,
+     interface_connector_definition,
+     part_version,
+     connector_on,
+     interface_connector,
+     part);
+  END_TYPE; -- ap239_dm_string_select
+
+  TYPE ap239_mri_alias_identification_item = SELECT
+    (approval_status,
+     certification,
+     event,
+     organization,
+     project,
+     security_classification);
+  END_TYPE; -- ap239_mri_alias_identification_item
+
+  TYPE ap239_mri_approval_item = SELECT
+    (contract_assignment,
+     event,
+     event_assignment,
+     identification_assignment,
+     project,
+     project_assignment);
+  END_TYPE; -- ap239_mri_approval_item
+
+  TYPE ap239_mri_certification_item = SELECT
+    (project);
+  END_TYPE; -- ap239_mri_certification_item
+
+  TYPE ap239_mri_classification_item = SELECT
+    (address,
+     address_assignment,
+     approval,
+     approval_assignment,
+     approval_relationship,
+     approval_status,
+     approving_person_organization,
+     attribute_translation_assignment,
+     calendar_date,
+     certification,
+     certification_assignment,
+     contract,
+     contract_assignment,
+     date_or_date_time_assignment,
+     date_time,
+     event,
+     event_assignment,
+     event_relationship,
+     identification_assignment,
+     language,
+     organization,
+     organization_or_person_in_organization_assignment,
+     organization_relationship,
+     person_in_organization,
+     project,
+     project_assignment,
+     project_relationship,
+     security_classification,
+     security_classification_assignment);
+  END_TYPE; -- ap239_mri_classification_item
+
+  TYPE ap239_mri_classified_attribute_select = SELECT
+    (address_assignment,
+     approval,
+     approval_assignment,
+     approval_relationship,
+     approval_status,
+     approving_person_organization,
+     certification,
+     certification_assignment,
+     contract,
+     date_or_date_time_assignment,
+     event_assignment,
+     event_relationship,
+     identification_assignment,
+     language,
+     organization_or_person_in_organization_assignment,
+     organization_relationship,
+     person_in_organization,
+     project_assignment,
+     project_relationship,
+     security_classification,
+     state_relationship,
+     state_definition,
+     state_definition_relationship,
+     state,
+     applied_state_assignment,
+     applied_state_definition_assignment);
+  END_TYPE; -- ap239_mri_classified_attribute_select
+
+  TYPE ap239_mri_date_or_date_time_item = SELECT
+    (address_assignment,
+     alias_identification,
+     certification_assignment,
+     contract_assignment,
+     identification_assignment);
+  END_TYPE; -- ap239_mri_date_or_date_time_item
+
+  TYPE ap239_mri_event_item = SELECT
+    (certification,
+     project);
+  END_TYPE; -- ap239_mri_event_item
+
+  TYPE ap239_mri_identification_item = SELECT
+    (approval_status,
+     certification,
+     event,
+     organization,
+     project,
+     security_classification);
+  END_TYPE; -- ap239_mri_identification_item
+
+  TYPE ap239_mri_organization_or_person_in_organization_item = SELECT
+    (certification,
+     certification_assignment,
+     contract_assignment,
+     event,
+     event_assignment,
+     project,
+     project_assignment);
+  END_TYPE; -- ap239_mri_organization_or_person_in_organization_item
+
+  TYPE ap239_mri_string_select = SELECT
+    (event);
+  END_TYPE; -- ap239_mri_string_select
+
+  TYPE ap239_padi_alias_identification_item = SELECT
+    (interface_connector,
+     interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_definition,
+     interface_connector_design,
+     interface_connector_version,
+     interface_specification,
+     interface_specification_definition,
+     interface_specification_version,
+     part,
+     part_version,
+     part_view_definition,
+     product_as_planned,
+     product_as_realized);
+  END_TYPE; -- ap239_padi_alias_identification_item
+
+  TYPE ap239_padi_approval_item = SELECT
+    (interface_connection,
+     interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_definition,
+     interface_connector_design,
+     interface_connector_design_to_planned,
+     interface_connector_design_to_realized,
+     interface_connector_planned_to_realized,
+     interface_connector_version,
+     interface_specification_definition,
+     interface_specification_version,
+     part,
+     part_version,
+     part_view_definition,
+     product_as_planned,
+     product_as_realized,
+     product_concept,
+     product_design_to_individual,
+     product_planned_to_realized);
+  END_TYPE; -- ap239_padi_approval_item
+
+  TYPE ap239_padi_certification_item = SELECT
+    (document,
+     document_version,
+     interface_connection,
+     interface_connector_version,
+     interface_specification_version,
+     part,
+     part_version,
+     product_as_planned,
+     product_as_realized,
+     product_version_relationship);
+  END_TYPE; -- ap239_padi_certification_item
+
+  TYPE ap239_padi_classification_item = SELECT
+    (interface_connection,
+     interface_connector,
+     interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_definition,
+     interface_connector_design,
+     interface_connector_design_to_planned,
+     interface_connector_design_to_realized,
+     interface_connector_planned_to_realized,
+     interface_connector_version,
+     interface_definition_for,
+     interface_specification,
+     interface_specification_definition,
+     interface_specification_version,
+     market,
+     part,
+     part_version,
+     part_view_definition,
+     product,
+     product_as_planned,
+     product_as_realized,
+     product_category,
+     product_concept,
+     product_design_to_individual,
+     product_planned_to_realized,
+     product_version,
+     product_version_relationship,
+     product_view_definition,
+     requirement,
+     requirement_assignment,
+     requirement_collection_relationship,
+     requirement_source,
+     requirement_version,
+     requirement_version_relationship,
+     requirement_view_definition,
+     supplied_part_relationship,
+     tracing_relationship,
+     view_definition_context);
+  END_TYPE; -- ap239_padi_classification_item
+
+  TYPE ap239_padi_classified_attribute_select = SELECT
+    (interface_connection,
+     interface_connector_definition,
+     interface_specification_definition,
+     market,
+     part_view_definition,
+     product_category,
+     product_concept,
+     product_version_relationship,
+     requirement_version_relationship,
+     requirement_view_definition,
+     view_definition_context,
+     view_definition_relationship);
+  END_TYPE; -- ap239_padi_classified_attribute_select
+
+  TYPE ap239_padi_condition_evaluation_parameter_item = SELECT
+    (approval_assignment,
+     assigned_property,
+     calendar_date,
+     certification_assignment,
+     classification_assignment,
+     contract_assignment,
+     date_or_date_time_assignment,
+     date_time,
+     document_assignment,
+     identification_assignment,
+     organization_or_person_in_organization_assignment,
+     product,
+     product_as_individual,
+     product_category_assignment,
+     product_version,
+     product_view_definition);
+  END_TYPE; -- ap239_padi_condition_evaluation_parameter_item
+
+  TYPE ap239_padi_condition_parameter_item = SELECT
+    (condition_relationship,
+     approval_assignment,
+     assigned_property,
+     calendar_date,
+     certification_assignment,
+     classification_assignment,
+     contract_assignment,
+     date_or_date_time_assignment,
+     date_time,
+     document_assignment,
+     identification_assignment,
+     organization_or_person_in_organization_assignment,
+     product,
+     product_as_individual,
+     product_category_assignment,
+     product_version,
+     product_view_definition);
+  END_TYPE; -- ap239_padi_condition_parameter_item
+
+  TYPE ap239_padi_contract_item = SELECT
+    (interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_design,
+     interface_connector_version,
+     interface_specification_version,
+     part,
+     part_version,
+     product_as_planned,
+     product_as_realized,
+     project);
+  END_TYPE; -- ap239_padi_contract_item
+
+  TYPE ap239_padi_date_and_time_item = SELECT
+    (interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_definition,
+     interface_connector_design_to_planned,
+     interface_connector_design_to_realized,
+     interface_connector_planned_to_realized,
+     interface_connector_version,
+     interface_specification_definition,
+     interface_specification_version,
+     part,
+     part_version,
+     part_view_definition,
+     product_as_planned,
+     product_as_realized,
+     product_concept,
+     product_design_to_individual,
+     product_planned_to_realized,
+     project_assignment);
+  END_TYPE; -- ap239_padi_date_and_time_item
+
+  TYPE ap239_padi_documented_element_select = SELECT
+    (document,
+     document_definition,
+     document_version,
+     interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_design,
+     interface_connector_design_to_planned,
+     interface_connector_design_to_realized,
+     interface_connector_planned_to_realized,
+     interface_connector_version,
+     interface_specification_version,
+     part,
+     part_version,
+     part_view_definition,
+     product_as_planned,
+     product_as_realized,
+     product_concept,
+     product_design_to_individual,
+     product_planned_to_realized,
+     product_version_relationship,
+     product_view_definition,
+     project,
+     requirement,
+     requirement_version);
+  END_TYPE; -- ap239_padi_documented_element_select
+
+  TYPE ap239_padi_identification_item = SELECT
+    (interface_connector,
+     interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_definition,
+     interface_connector_design,
+     interface_connector_version,
+     interface_specification,
+     interface_specification_definition,
+     interface_specification_version,
+     part,
+     part_version,
+     part_view_definition,
+     product_as_planned,
+     product_as_realized);
+  END_TYPE; -- ap239_padi_identification_item
+
+  TYPE ap239_padi_information_usage_right_item = SELECT
+    (interface_connection,
+     interface_connector,
+     interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_definition,
+     interface_connector_design,
+     interface_connector_version,
+     interface_specification,
+     interface_specification_definition,
+     interface_specification_version,
+     part,
+     part_version,
+     part_view_definition,
+     product_as_planned,
+     product_as_realized,
+     requirement,
+     requirement_assignment,
+     requirement_version,
+     requirement_view_definition,
+     security_classification,
+     security_classification_assignment,
+     supplied_part_relationship);
+  END_TYPE; -- ap239_padi_information_usage_right_item
+
+  TYPE ap239_padi_organization_or_person_in_organization = SELECT
+    (alias_identification,
+     interface_connector,
+     interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_definition,
+     interface_connector_version,
+     interface_specification,
+     interface_specification_definition,
+     interface_specification_version,
+     part,
+     part_version,
+     part_view_definition,
+     product_as_planned,
+     product_as_realized);
+  END_TYPE; -- ap239_padi_organization_or_person_in_organization
+
+  TYPE ap239_padi_project_item = SELECT
+    (product_concept);
+  END_TYPE; -- ap239_padi_project_item
+
+  TYPE ap239_padi_property_assignment_select = SELECT
+    (part_view_definition);
+  END_TYPE; -- ap239_padi_property_assignment_select
+
+  TYPE ap239_padi_requirement_assignment_item = SELECT
+    (document_version,
+     interface_specification,
+     part_version,
+     product_as_planned,
+     product_as_realized,
+     project);
+  END_TYPE; -- ap239_padi_requirement_assignment_item
+
+  TYPE ap239_padi_requirement_source_item = SELECT
+    (document_version,
+     part_version,
+     product_as_individual);
+  END_TYPE; -- ap239_padi_requirement_source_item
+
+  TYPE ap239_padi_security_classification_item = SELECT
+    (interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_definition,
+     interface_connector_design,
+     interface_connector_version,
+     interface_specification_definition,
+     interface_specification_version,
+     part_version,
+     part_view_definition,
+     product_as_planned,
+     product_as_realized);
+  END_TYPE; -- ap239_padi_security_classification_item
+
+  TYPE ap239_padi_state_definition_of_item = SELECT
+    (certification,
+     connector_on,
+     contract,
+     interface_connection,
+     interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_definition,
+     interface_connector_design,
+     interface_connector_version,
+     interface_specification,
+     interface_specification_definition,
+     interface_specification_version,
+     organization,
+     part,
+     part_version,
+     part_view_definition,
+     person_in_organization,
+     product_as_planned,
+     product_as_realized,
+     product_category,
+     project,
+     security_classification);
+  END_TYPE; -- ap239_padi_state_definition_of_item
+
+  TYPE ap239_padi_state_of_item = SELECT
+    (certification,
+     connector_on,
+     contract,
+     interface_connection,
+     interface_connector_as_planned,
+     interface_connector_as_realized,
+     interface_connector_definition,
+     interface_connector_design,
+     interface_connector_version,
+     interface_specification,
+     interface_specification_definition,
+     interface_specification_version,
+     organization,
+     part,
+     part_version,
+     part_view_definition,
+     person_in_organization,
+     product_as_planned,
+     product_as_realized,
+     project,
+     security_classification);
+  END_TYPE; -- ap239_padi_state_of_item
+
+  TYPE ap239_padi_string_select = SELECT
+    (message_association,
+     information_usage_right,
+     envelope_association,
+     envelope,
+     message,
+     information_right,
+     connector_on,
+     interface_connector,
+     interface_connector_definition,
+     interface_connector_version,
+     part,
+     part_version,
+     part_view_definition);
+  END_TYPE; -- ap239_padi_string_select
+
+  TYPE ap239_prdi_alias_identification_item = SELECT
+    (breakdown,
+     breakdown_element,
+     breakdown_version,
+     slot,
+     slot_definition,
+     slot_version);
+  END_TYPE; -- ap239_prdi_alias_identification_item
+
+  TYPE ap239_prdi_approval_item = SELECT
+    (alternate_product_relationship,
+     assembly_component_relationship,
+     breakdown,
+     breakdown_element,
+     breakdown_element_definition,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_element_version,
+     breakdown_version,
+     in_zone,
+     product_in_slot,
+     selected_item_assignment,
+     slot_as_planned,
+     slot_as_realized,
+     slot_design,
+     slot_design_to_planned,
+     slot_design_to_realized,
+     slot_on_product,
+     slot_planned_to_realized);
+  END_TYPE; -- ap239_prdi_approval_item
+
+  TYPE ap239_prdi_certification_item = SELECT
+    (breakdown);
+  END_TYPE; -- ap239_prdi_certification_item
+
+  TYPE ap239_prdi_classification_item = SELECT
+    (alternate_part_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     breakdown_context,
+     breakdown_element,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_element_version,
+     selected_item,
+     selected_item_assignment,
+     slot_design_to_planned,
+     slot_design_to_realized,
+     slot_planned_to_realized);
+  END_TYPE; -- ap239_prdi_classification_item
+
+  TYPE ap239_prdi_classified_attribute_select = SELECT
+    (alternate_part_relationship,
+     breakdown_context,
+     breakdown_element_realization,
+     breakdown_element_usage);
+  END_TYPE; -- ap239_prdi_classified_attribute_select
+
+  TYPE ap239_prdi_contract_item = SELECT
+    (breakdown,
+     breakdown_element,
+     breakdown_version);
+  END_TYPE; -- ap239_prdi_contract_item
+
+  TYPE ap239_prdi_date_or_date_time_item = SELECT
+    (alternate_part_relationship,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     breakdown_element,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_version,
+     selected_item,
+     selected_item_assignment,
+     slot,
+     slot_definition,
+     slot_design_to_planned,
+     slot_design_to_realized,
+     slot_planned_to_realized,
+     slot_version);
+  END_TYPE; -- ap239_prdi_date_or_date_time_item
+
+  TYPE ap239_prdi_documented_element_select = SELECT
+    (alternate_part_relationship,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     breakdown_element,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_version,
+     selected_item,
+     slot,
+     slot_design_to_planned,
+     slot_design_to_realized,
+     slot_planned_to_realized,
+     slot_version);
+  END_TYPE; -- ap239_prdi_documented_element_select
+
+  TYPE ap239_prdi_effectivity_item = SELECT
+    (alternate_part_relationship,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     breakdown_element,
+     breakdown_element_definition,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_element_version,
+     breakdown_of,
+     breakdown_version,
+     document,
+     document_assignment,
+     document_definition,
+     document_definition_relationship,
+     document_location_identification,
+     document_version,
+     file,
+     part,
+     part_version,
+     part_view_definition,
+     product_in_slot,
+     requirement,
+     requirement_assignment,
+     requirement_collection_relationship,
+     requirement_source,
+     requirement_version,
+     requirement_version_relationship,
+     requirement_view_definition,
+     security_classification_assignment,
+     slot,
+     slot_as_planned,
+     slot_as_realized,
+     slot_definition,
+     slot_design,
+     slot_design_to_planned,
+     slot_design_to_realized,
+     slot_on_product,
+     slot_planned_to_realized,
+     slot_version);
+  END_TYPE; -- ap239_prdi_effectivity_item
+
+  TYPE ap239_prdi_identification_item = SELECT
+    (breakdown,
+     breakdown_element,
+     breakdown_version,
+     slot,
+     slot_definition,
+     slot_version);
+  END_TYPE; -- ap239_prdi_identification_item
+
+  TYPE ap239_prdi_information_usage_right_item = SELECT
+    (alternate_part_relationship,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     breakdown_element,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_version,
+     slot_definition,
+     slot_design_to_planned,
+     slot_design_to_realized,
+     slot_on_product,
+     slot_version);
+  END_TYPE; -- ap239_prdi_information_usage_right_item
+
+  TYPE ap239_prdi_organization_or_person_in_organization_item = SELECT
+    (alternate_part_relationship,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     breakdown_element,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_version,
+     selected_item,
+     selected_item_assignment);
+  END_TYPE; -- ap239_prdi_organization_or_person_in_organization_item
+
+  TYPE ap239_prdi_project_item = SELECT
+    (breakdown);
+  END_TYPE; -- ap239_prdi_project_item
+
+  TYPE ap239_prdi_requirement_assignment_item = SELECT
+    (alternate_part_relationship,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     breakdown_element,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_element_version,
+     breakdown_version,
+     product_in_slot,
+     slot,
+     slot_version);
+  END_TYPE; -- ap239_prdi_requirement_assignment_item
+
+  TYPE ap239_prdi_security_classification_item = SELECT
+    (alternate_part_relationship,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     breakdown_element_definition,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_element_version,
+     slot_design_to_planned,
+     slot_design_to_realized,
+     slot_on_product,
+     slot_planned_to_realized,
+     slot_version);
+  END_TYPE; -- ap239_prdi_security_classification_item
+
+  TYPE ap239_prdi_selected_item_context_items = SELECT
+    (contract,
+     part,
+     product_concept,
+     project);
+  END_TYPE; -- ap239_prdi_selected_item_context_items
+
+  TYPE ap239_prdi_selected_item_select = SELECT
+    (product,
+     product_version);
+  END_TYPE; -- ap239_prdi_selected_item_select
+
+  TYPE ap239_prdi_state_definition_of_item = SELECT
+    (alternate_part_relationship,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     breakdown_element,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_element_version,
+     slot,
+     slot_definition,
+     slot_design_to_planned,
+     slot_design_to_realized,
+     slot_on_product,
+     slot_planned_to_realized,
+     slot_version);
+  END_TYPE; -- ap239_prdi_state_definition_of_item
+
+  TYPE ap239_prdi_state_of_item = SELECT
+    (alternate_part_relationship,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     breakdown_element,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_element_version,
+     slot,
+     slot_definition,
+     slot_design_to_planned,
+     slot_design_to_realized,
+     slot_on_product,
+     slot_planned_to_realized,
+     slot_version);
+  END_TYPE; -- ap239_prdi_state_of_item
+
+  TYPE ap239_prdi_string_select = SELECT
+    (alternate_part_relationship,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     breakdown_element,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     breakdown_element_version,
+     document,
+     part,
+     product_as_individual,
+     slot,
+     slot_definition,
+     slot_design_to_planned,
+     slot_design_to_realized,
+     slot_on_product,
+     slot_planned_to_realized,
+     slot_version);
+  END_TYPE; -- ap239_prdi_string_select
+
+  TYPE ap239_props_approval_item = SELECT
+    (assigned_property,
+     independent_property,
+     independent_property_relationship);
+  END_TYPE; -- ap239_props_approval_item
+
+  TYPE ap239_props_classification_item = SELECT
+    (assigned_property,
+     independent_property,
+     property_representation,
+     representation,
+     representation_context,
+     representation_item);
+  END_TYPE; -- ap239_props_classification_item
+
+  TYPE ap239_props_classified_attribute_select = SELECT
+    (assigned_property,
+     independent_property,
+     property_representation,
+     representation,
+     representation_context,
+     representation_item);
+  END_TYPE; -- ap239_props_classified_attribute_select
+
+  TYPE ap239_props_date_or_date_time_item = SELECT
+    (assigned_property,
+     independent_property,
+     independent_property_relationship,
+     representation);
+  END_TYPE; -- ap239_props_date_or_date_time_item
+
+  TYPE ap239_props_identification_item = SELECT
+    (assigned_property,
+     independent_property,
+     independent_property_relationship);
+  END_TYPE; -- ap239_props_identification_item
+
+  TYPE ap239_props_organization_or_person_in_organization_item = SELECT
+    (assigned_property,
+     independent_property,
+     independent_property_relationship,
+     representation);
+  END_TYPE; -- ap239_props_organization_or_person_in_organization_item
+
+  TYPE ap239_props_string_select = SELECT
+    (assigned_property,
+     independent_property,
+     independent_property_relationship,
+     representation_item);
+  END_TYPE; -- ap239_props_string_select
+
+  TYPE approval_item = SELECT
+    (part_view_definition,
+     independent_property_relationship,
+     slot_as_planned,
+     product_as_realized,
+     slot_as_realized,
+     condition_evaluation_assignment,
+     interface_connector_design_to_planned,
+     event,
+     part,
+     product_design_to_individual,
+     assembly_component_relationship,
+     interface_specification_definition,
+     identification_assignment,
+     interface_connector_definition,
+     interface_connector_as_realized,
+     document_assignment,
+     breakdown_element_definition,
+     slot_design_to_planned,
+     condition_evaluation,
+     condition,
+     interface_connector_design,
+     slot_planned_to_realized,
+     product_in_slot,
+     interface_connector_design_to_realized,
+     interface_connector_planned_to_realized,
+     message,
+     in_zone,
+     breakdown_element_version,
+     breakdown_version,
+     product_as_planned,
+     event_assignment,
+     slot_design_to_realized,
+     breakdown_element,
+     certification,
+     product_planned_to_realized,
+     project,
+     breakdown,
+     selected_item_assignment,
+     interface_specification_version,
+     assigned_property,
+     condition_assignment,
+     breakdown_element_realization,
+     interface_connector_version,
+     independent_property,
+     contract,
+     interface_connection,
+     part_version,
+     contract_assignment,
+     slot_on_product,
+     slot_design,
+     envelope,
+     interface_connector_as_planned,
+     alternate_product_relationship,
+     breakdown_element_usage,
+     project_assignment,
+     product_concept);
+  END_TYPE; -- approval_item
+
+  TYPE assigned_document_select = SELECT
+    (document,
+     document_definition,
+     document_version,
+     file);
+  END_TYPE; -- assigned_document_select
+
+  TYPE assigned_name_select = SELECT
+    (external_class_library);
+  END_TYPE; -- assigned_name_select
+
+  TYPE breakdown_item = SELECT
+    (breakdown_element_definition,
+     breakdown_element_usage);
+  END_TYPE; -- breakdown_item
+
+  TYPE cartesian_transformation = SELECT
+    (cartesian_transformation_2d,
+     cartesian_transformation_3d);
+  END_TYPE; -- cartesian_transformation
+
+  TYPE certification_item = SELECT
+    (project,
+     breakdown,
+     product_as_realized,
+     interface_connector_version,
+     part_version,
+     product_as_planned,
+     interface_specification_version,
+     document,
+     part,
+     product_version_relationship,
+     document_version,
+     interface_connection);
+  END_TYPE; -- certification_item
+
+  TYPE characterized_activity_definition = SELECT
+    (activity,
+     activity_method,
+     condition,
+     condition_relationship,
+     condition_evaluation);
+  END_TYPE; -- characterized_activity_definition
+
+  TYPE classification_item = SELECT
+    (content_item,
+     event_relationship,
+     certification,
+     tracing_relationship,
+     assembly_relationship_substitution,
+     requirement_view_definition,
+     product_category,
+     document_property_representation,
+     requirement_source,
+     security_classification,
+     approval_relationship,
+     applied_state_assignment,
+     event_assignment,
+     identification_assignment,
+     descriptive_document_property,
+     organization_relationship,
+     applied_information_usage_right,
+     file_location_identification,
+     address,
+     product_design_to_individual,
+     state_definition_relationship,
+     interface_definition_for,
+     condition,
+     requirement_collection_relationship,
+     project_relationship,
+     breakdown_element_usage,
+     condition_parameter,
+     numerical_document_property,
+     document_definition_relationship,
+     representation,
+     external_item_identification,
+     digital_file,
+     state_definition,
+     selected_item_assignment,
+     state,
+     interface_connector_design_to_planned,
+     condition_evaluation_assignment,
+     property_representation,
+     document_version,
+     slot_design_to_realized,
+     date_time,
+     interface_specification,
+     product_as_planned,
+     representation_context,
+     interface_specification_version,
+     external_source_identification,
+     digital_document_definition,
+     product_planned_to_realized,
+     state_relationship,
+     information_usage_right,
+     requirement_assignment,
+     interface_connector_planned_to_realized,
+     approval_assignment,
+     document_assignment,
+     view_definition_context,
+     assigned_property,
+     breakdown_context,
+     organization_or_person_in_organization_assignment,
+     requirement_version,
+     breakdown_element_realization,
+     date_or_date_time_assignment,
+     breakdown,
+     interface_connector,
+     message_association,
+     breakdown_element_version,
+     requirement,
+     person_in_organization,
+     condition_evaluation,
+     interface_connector_as_planned,
+     approval_status,
+     slot_design_to_planned,
+     interface_connector_design_to_realized,
+     hardcopy,
+     product_view_definition,
+     breakdown_element,
+     message,
+     calendar_date,
+     security_classification_assignment,
+     language,
+     project_assignment,
+     organization,
+     applied_state_definition_assignment,
+     interface_connector_version,
+     product_version_relationship,
+     information_right,
+     interface_connector_definition,
+     interface_connection,
+     approving_person_organization,
+     event,
+     part,
+     condition_relationship,
+     condition_assignment,
+     physical_document_definition,
+     independent_property,
+     contract_assignment,
+     product_version,
+     interface_connector_as_realized,
+     envelope,
+     alternate_part_relationship,
+     contract,
+     information_usage_right_relationship,
+     product_as_realized,
+     envelope_association,
+     product,
+     document_location_identification,
+     requirement_version_relationship,
+     document,
+     certification_assignment,
+     slot_planned_to_realized,
+     selected_item,
+     file_relationship,
+     condition_evaluation_parameter,
+     related_condition_parameter,
+     approval,
+     partial_document_assignment,
+     attribute_translation_assignment,
+     part_view_definition,
+     address_assignment,
+     interface_connector_design,
+     product_concept,
+     supplied_part_relationship,
+     representation_item,
+     project,
+     interface_specification_definition,
+     market,
+     part_version);
+  END_TYPE; -- classification_item
+
+  TYPE classified_attribute_select = SELECT
+    (view_definition_relationship,
+     information_usage_right,
+     representation_item,
+     interface_connection,
+     numerical_document_property,
+     independent_property,
+     property_representation,
+     alternate_part_relationship,
+     project_assignment,
+     address_assignment,
+     descriptive_document_property,
+     certification,
+     document_property_representation,
+     document_assignment,
+     identification_assignment,
+     approval_status,
+     organization_relationship,
+     product_concept,
+     requirement_view_definition,
+     envelope,
+     contract,
+     approval,
+     product_category,
+     information_right,
+     representation,
+     message_association,
+     security_classification,
+     interface_specification_definition,
+     event_assignment,
+     event_relationship,
+     external_source_identification,
+     certification_assignment,
+     approval_assignment,
+     hardcopy,
+     file_location_identification,
+     breakdown_element_usage,
+     language,
+     document_location_identification,
+     envelope_association,
+     view_definition_context,
+     breakdown_context,
+     requirement_version_relationship,
+     assigned_property,
+     organization_or_person_in_organization_assignment,
+     market,
+     product_version_relationship,
+     breakdown_element_realization,
+     partial_document_assignment,
+     document_definition_relationship,
+     content_item,
+     project_relationship,
+     date_or_date_time_assignment,
+     digital_file,
+     interface_connector_definition,
+     external_item_identification,
+     representation_context,
+     file_relationship,
+     approving_person_organization,
+     message,
+     part_view_definition,
+     person_in_organization,
+     approval_relationship,
+     information_usage_right_relationship);
+  END_TYPE; -- classified_attribute_select
+
+  TYPE component_item = SELECT
+    (product_view_definition);
+  END_TYPE; -- component_item
+
+  TYPE condition_approval_item = SELECT
+    (condition,
+     condition_assignment);
+  END_TYPE; -- condition_approval_item
+
+  TYPE condition_assignment_classification_item = SELECT
+    (condition_evaluation,
+     condition_evaluation_assignment,
+     condition_evaluation_parameter,
+     related_condition_parameter);
+  END_TYPE; -- condition_assignment_classification_item
+
+  TYPE condition_characterized_activity_definition = SELECT
+    (activity_method,
+     activity,
+     condition,
+     condition_relationship);
+  END_TYPE; -- condition_characterized_activity_definition
+
+  TYPE condition_classification_item = SELECT
+    (condition,
+     condition_assignment,
+     condition_parameter,
+     condition_relationship);
+  END_TYPE; -- condition_classification_item
+
+  TYPE condition_date_or_date_time_item = SELECT
+    (condition,
+     condition_assignment);
+  END_TYPE; -- condition_date_or_date_time_item
+
+  TYPE condition_evaluation_approval_item = SELECT
+    (condition_evaluation,
+     condition_evaluation_assignment);
+  END_TYPE; -- condition_evaluation_approval_item
+
+  TYPE condition_evaluation_characterized_activity_definition = SELECT
+    (activity_method,
+     activity,
+     condition_evaluation);
+  END_TYPE; -- condition_evaluation_characterized_activity_definition
+
+  TYPE condition_evaluation_date_or_date_time_item = SELECT
+    (condition_evaluation,
+     condition_evaluation_assignment);
+  END_TYPE; -- condition_evaluation_date_or_date_time_item
+
+  TYPE condition_evaluation_identification_item = SELECT
+    (condition_evaluation);
+  END_TYPE; -- condition_evaluation_identification_item
+
+  TYPE condition_evaluation_item = SELECT
+    (state_assessment,
+     state_assertion);
+  END_TYPE; -- condition_evaluation_item
+
+  TYPE condition_evaluation_organization_or_person_in_organization_item =
+                    SELECT
+    (condition_evaluation,
+     condition_evaluation_assignment);
+  END_TYPE; -- condition_evaluation_organization_or_person_in_organization_item
+
+  TYPE condition_evaluation_parameter_item = SELECT
+    (organization_or_person_in_organization_assignment,
+     assigned_property,
+     contract_assignment,
+     date_time,
+     calendar_date,
+     product_version,
+     identification_assignment,
+     approval_assignment,
+     classification_assignment,
+     date_or_date_time_assignment,
+     product_as_individual,
+     certification_assignment,
+     product_category_assignment,
+     document_assignment,
+     product,
+     product_view_definition);
+  END_TYPE; -- condition_evaluation_parameter_item
+
+  TYPE condition_identification_item = SELECT
+    (condition);
+  END_TYPE; -- condition_identification_item
+
+  TYPE condition_item = SELECT
+    (state_definition,
+     state_definition_relationship);
+  END_TYPE; -- condition_item
+
+  TYPE condition_organization_or_person_in_organization_item = SELECT
+    (condition,
+     condition_assignment);
+  END_TYPE; -- condition_organization_or_person_in_organization_item
+
+  TYPE condition_parameter_item = SELECT
+    (condition_relationship,
+     date_time,
+     product_as_individual,
+     contract_assignment,
+     approval_assignment,
+     product_view_definition,
+     document_assignment,
+     product_category_assignment,
+     certification_assignment,
+     date_or_date_time_assignment,
+     product,
+     classification_assignment,
+     calendar_date,
+     product_version,
+     identification_assignment,
+     assigned_property,
+     organization_or_person_in_organization_assignment);
+  END_TYPE; -- condition_parameter_item
+
+  TYPE connector_on_item = SELECT
+    (product_view_definition,
+     view_definition_relationship,
+     slot_definition);
+  END_TYPE; -- connector_on_item
+
+  TYPE contract_item = SELECT
+    (interface_connector_as_planned,
+     breakdown_element,
+     part_version,
+     requirement_collection_relationship,
+     breakdown_version,
+     product_as_planned,
+     document,
+     interface_connector_design,
+     part,
+     document_version,
+     interface_connector_as_realized,
+     project,
+     tracing_relationship,
+     interface_connector_version,
+     breakdown,
+     requirement,
+     information_usage_right,
+     interface_specification_version,
+     requirement_source,
+     requirement_version,
+     requirement_version_relationship,
+     requirement_assignment,
+     product_as_realized,
+     message,
+     requirement_view_definition);
+  END_TYPE; -- contract_item
+
+  TYPE date_or_date_time_item = SELECT
+    (envelope,
+     interface_connector_design_to_planned,
+     project_assignment,
+     slot_version,
+     contract,
+     slot_design_to_planned,
+     part,
+     slot_definition,
+     alias_identification,
+     interface_connector_planned_to_realized,
+     interface_connector_definition,
+     slot,
+     contract_assignment,
+     independent_property,
+     interface_specification_definition,
+     interface_connector_as_realized,
+     condition_assignment,
+     condition,
+     document_assignment,
+     representation,
+     product_as_realized,
+     alternate_part_relationship,
+     breakdown_element,
+     independent_property_relationship,
+     certification,
+     breakdown_version,
+     message,
+     certification_assignment,
+     slot_design_to_realized,
+     slot_planned_to_realized,
+     interface_connector_as_planned,
+     condition_evaluation,
+     identification_assignment,
+     part_view_definition,
+     product_as_planned,
+     interface_connector_design_to_realized,
+     organization_or_person_in_organization_assignment,
+     selected_item_assignment,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     breakdown,
+     part_version,
+     address_assignment,
+     applied_information_usage_right,
+     selected_item,
+     product_planned_to_realized,
+     interface_specification_version,
+     document,
+     interface_connector_version,
+     breakdown_element_realization,
+     breakdown_element_usage,
+     assigned_property,
+     condition_evaluation_assignment,
+     product_concept,
+     security_classification_assignment,
+     product_design_to_individual);
+  END_TYPE; -- date_or_date_time_item
+
+  TYPE date_or_date_time_select = SELECT
+    (calendar_date,
+     date_time);
+  END_TYPE; -- date_or_date_time_select
+
+  TYPE date_or_event = SELECT
+    (calendar_date,
+     date_time,
+     event);
+  END_TYPE; -- date_or_event
+
+  TYPE day_in_month_number = INTEGER;
+  WHERE
+    wr1: ((1 <= SELF) AND (SELF <= 31));
+  END_TYPE; -- day_in_month_number
+
+  TYPE descriptive_or_numerical = SELECT
+    (descriptive_document_property,
+     numerical_document_property);
+  END_TYPE; -- descriptive_or_numerical
+
+  TYPE document_location_select = SELECT
+    (document_definition);
+  END_TYPE; -- document_location_select
+
+  TYPE document_management_alias_identification_item = SELECT
+    (digital_document_definition,
+     digital_file,
+     document,
+     document_version,
+     hardcopy,
+     physical_document_definition);
+  END_TYPE; -- document_management_alias_identification_item
+
+  TYPE document_management_approval_item = SELECT
+    (certification,
+     contract,
+     digital_document_definition,
+     document_definition_relationship,
+     document_version,
+     physical_document_definition);
+  END_TYPE; -- document_management_approval_item
+
+  TYPE document_management_contract_item = SELECT
+    (document_version);
+  END_TYPE; -- document_management_contract_item
+
+  TYPE document_management_date_or_date_time_item = SELECT
+    (contract,
+     certification,
+     organization_or_person_in_organization_assignment,
+     security_classification_assignment,
+     digital_document_definition,
+     digital_file,
+     document_definition_relationship,
+     document_version,
+     hardcopy,
+     physical_document_definition);
+  END_TYPE; -- document_management_date_or_date_time_item
+
+  TYPE document_management_identification_item = SELECT
+    (contract,
+     security_classification,
+     organization,
+     digital_document_definition,
+     digital_file,
+     document,
+     document_version,
+     hardcopy,
+     physical_document_definition);
+  END_TYPE; -- document_management_identification_item
+
+  TYPE document_management_person_and_organization_item = SELECT
+    (contract,
+     security_classification_assignment,
+     identification_assignment,
+     digital_document_definition,
+     digital_file,
+     document,
+     document_version,
+     hardcopy,
+     physical_document_definition);
+  END_TYPE; -- document_management_person_and_organization_item
+
+  TYPE document_management_security_classification_item = SELECT
+    (digital_document_definition,
+     digital_file,
+     document,
+     document_version,
+     hardcopy,
+     physical_document_definition);
+  END_TYPE; -- document_management_security_classification_item
+
+  TYPE document_management_string_select = SELECT
+    (approval,
+     approval_relationship,
+     certification,
+     identification_assignment,
+     date_or_date_time_assignment,
+     contract,
+     project_assignment,
+     person_in_organization,
+     project,
+     project_relationship,
+     approval_status,
+     organization_relationship,
+     digital_document_definition,
+     document,
+     document_assignment,
+     document_definition_relationship,
+     document_version,
+     external_item_identification,
+     external_source_identification,
+     file_relationship,
+     physical_document_definition,
+     product_category);
+  END_TYPE; -- document_management_string_select
+
+  TYPE document_property_item = SELECT
+    (document_definition,
+     file);
+  END_TYPE; -- document_property_item
+
+  TYPE documented_element_select = SELECT
+    (part,
+     person,
+     product_as_planned,
+     document,
+     document_version,
+     assembly_relationship_substitution,
+     interface_connector_design_to_realized,
+     project,
+     breakdown,
+     organization,
+     interface_connector_as_planned,
+     product_planned_to_realized,
+     certification,
+     information_right,
+     interface_connector_version,
+     interface_specification_version,
+     part_version,
+     interface_connector_design,
+     slot_design_to_realized,
+     interface_connector_planned_to_realized,
+     slot_version,
+     breakdown_element,
+     product_as_realized,
+     breakdown_element_realization,
+     identification_assignment,
+     breakdown_element_usage,
+     contract,
+     part_view_definition,
+     slot,
+     alternate_part_relationship,
+     breakdown_version,
+     slot_planned_to_realized,
+     interface_connector_design_to_planned,
+     slot_design_to_planned,
+     product_version_relationship,
+     assembly_component_relationship,
+     product_view_definition,
+     product_design_to_individual,
+     information_usage_right,
+     selected_item,
+     product_concept,
+     interface_connector_as_realized,
+     requirement,
+     document_definition,
+     requirement_version);
+  END_TYPE; -- documented_element_select
+
+  TYPE effectivity_item = SELECT
+    (document_location_identification,
+     document_definition,
+     requirement_assignment,
+     document_definition_relationship,
+     slot_definition,
+     part_view_definition,
+     slot,
+     security_classification_assignment,
+     slot_design_to_planned,
+     document_assignment,
+     slot_as_realized,
+     part,
+     slot_planned_to_realized,
+     slot_design_to_realized,
+     breakdown_element,
+     document_version,
+     assembly_relationship_substitution,
+     slot_as_planned,
+     breakdown,
+     alternate_part_relationship,
+     requirement_collection_relationship,
+     document,
+     breakdown_of,
+     requirement_version_relationship,
+     breakdown_version,
+     product_in_slot,
+     assembly_component_relationship,
+     requirement_source,
+     requirement_view_definition,
+     slot_on_product,
+     breakdown_element_realization,
+     breakdown_element_version,
+     slot_design,
+     breakdown_element_definition,
+     file,
+     requirement_version,
+     slot_version,
+     part_version,
+     requirement,
+     breakdown_element_usage);
+  END_TYPE; -- effectivity_item
+
+  TYPE envelope_approval_select = SELECT
+    (envelope);
+  END_TYPE; -- envelope_approval_select
+
+  TYPE envelope_date_time_select = SELECT
+    (envelope);
+  END_TYPE; -- envelope_date_time_select
+
+  TYPE envelope_person_organization_select = SELECT
+    (envelope);
+  END_TYPE; -- envelope_person_organization_select
+
+  TYPE envelope_property_select = SELECT
+    (envelope);
+  END_TYPE; -- envelope_property_select
+
+  TYPE event_item = SELECT
+    (certification,
+     project);
+  END_TYPE; -- event_item
+
+  TYPE external_class_assigned_name_select = SELECT
+    (external_class_library);
+  END_TYPE; -- external_class_assigned_name_select
+
+  TYPE external_identification_item = SELECT
+    (document_definition,
+     file);
+  END_TYPE; -- external_identification_item
+
+  TYPE geometric_mapping_target = SELECT
+    (axis_placement,
+     cartesian_transformation);
+  END_TYPE; -- geometric_mapping_target
+
+  TYPE hour_in_day = INTEGER;
+  WHERE
+    wr1: ((0 <= SELF) AND (SELF <= 24));
+  END_TYPE; -- hour_in_day
+
+  TYPE identification_item = SELECT
+    (slot_definition,
+     breakdown_version,
+     approval_status,
+     project,
+     independent_property_relationship,
+     interface_connector_design,
+     assigned_property,
+     requirement_view_definition,
+     contract,
+     interface_specification_version,
+     interface_connector_definition,
+     organization,
+     independent_property,
+     breakdown,
+     state_definition_relationship,
+     condition_evaluation,
+     interface_connector_version,
+     part,
+     interface_specification_definition,
+     event,
+     interface_connector_as_realized,
+     requirement,
+     slot,
+     part_view_definition,
+     product_as_planned,
+     product_as_realized,
+     condition,
+     interface_connector,
+     product_as_individual,
+     certification,
+     breakdown_element,
+     requirement_version,
+     security_classification,
+     interface_specification,
+     interface_connector_as_planned,
+     part_version,
+     state_definition,
+     slot_version);
+  END_TYPE; -- identification_item
+
+  TYPE in_zone_item = SELECT
+    (product_view_definition);
+  END_TYPE; -- in_zone_item
+
+  TYPE information_usage_right_item = SELECT
+    (interface_specification,
+     breakdown,
+     slot_design_to_realized,
+     security_classification,
+     security_classification_assignment,
+     slot_version,
+     certification,
+     breakdown_element,
+     part_view_definition,
+     supplied_part_relationship,
+     interface_connector_version,
+     interface_specification_version,
+     slot_design_to_planned,
+     interface_connector_definition,
+     slot_definition,
+     requirement,
+     interface_connector_as_planned,
+     part_version,
+     requirement_version,
+     slot_on_product,
+     document_definition_relationship,
+     alternate_part_relationship,
+     interface_connector_design,
+     hardcopy,
+     message,
+     document,
+     product_as_realized,
+     breakdown_version,
+     interface_connector_as_realized,
+     interface_specification_definition,
+     interface_connection,
+     physical_document_definition,
+     digital_file,
+     requirement_assignment,
+     file_relationship,
+     interface_connector,
+     assembly_component_relationship,
+     breakdown_element_usage,
+     part,
+     digital_document_definition,
+     product_as_planned,
+     requirement_view_definition,
+     assembly_relationship_substitution,
+     breakdown_element_realization,
+     certification_assignment,
+     document_version);
+  END_TYPE; -- information_usage_right_item
+
+  TYPE interface_on_slot_item = SELECT
+    (view_definition_relationship,
+     product_view_definition,
+     slot_definition);
+  END_TYPE; -- interface_on_slot_item
+
+  TYPE length_measure = NUMBER;
+  END_TYPE; -- length_measure
+
+  TYPE limit_qualifier_list = ENUMERATION OF
+    (minimum,
+     maximum);
+  END_TYPE; -- limit_qualifier_list
+
+  TYPE located_select = SELECT
+    (file);
+  END_TYPE; -- located_select
+
+  TYPE measure_value = SELECT
+    (any_number_value,
+     any_string_value,
+     length_measure);
+  END_TYPE; -- measure_value
+
+  TYPE message_approval_select = SELECT
+    (message);
+  END_TYPE; -- message_approval_select
+
+  TYPE message_date_time_select = SELECT
+    (message);
+  END_TYPE; -- message_date_time_select
+
+  TYPE message_definer_select = SELECT
+    (organization,
+     person_in_organization);
+  END_TYPE; -- message_definer_select
+
+  TYPE message_security_classification_select = SELECT
+    (message);
+  END_TYPE; -- message_security_classification_select
+
+  TYPE message_state_select = SELECT
+    (message);
+  END_TYPE; -- message_state_select
+
+  TYPE minute_in_hour = INTEGER;
+  WHERE
+    wr1: ((0 <= SELF) AND (SELF <= 59));
+  END_TYPE; -- minute_in_hour
+
+  TYPE month_in_year_number = INTEGER;
+  WHERE
+    wr1: ((1 <= SELF) AND (SELF <= 12));
+  END_TYPE; -- month_in_year_number
+
+  TYPE mri_approval_item = SELECT
+    (certification,
+     contract,
+     requirement_version,
+     tracing_relationship,
+     document_definition_relationship,
+     information_usage_right,
+     requirement,
+     digital_document_definition,
+     requirement_source,
+     requirement_view_definition,
+     requirement_collection_relationship,
+     physical_document_definition,
+     requirement_assignment,
+     requirement_version_relationship,
+     document_version,
+     applied_information_usage_right);
+  END_TYPE; -- mri_approval_item
+
+  TYPE mri_date_or_date_time_item = SELECT
+    (certification,
+     contract,
+     organization_or_person_in_organization_assignment,
+     security_classification_assignment,
+     applied_state_assignment,
+     state_assertion,
+     hardcopy,
+     state_assessment,
+     document_version,
+     state_definition_relationship,
+     information_usage_right,
+     digital_file,
+     requirement,
+     requirement_source,
+     state_relationship,
+     physical_document_definition,
+     state_definition,
+     document_definition_relationship,
+     tracing_relationship,
+     state,
+     requirement_assignment,
+     digital_document_definition,
+     requirement_collection_relationship,
+     requirement_version,
+     requirement_view_definition,
+     applied_state_definition_assignment,
+     requirement_version_relationship);
+  END_TYPE; -- mri_date_or_date_time_item
+
+  TYPE mri_identification_item = SELECT
+    (contract,
+     organization,
+     security_classification,
+     requirement_version_relationship,
+     state_relationship,
+     requirement_source,
+     digital_file,
+     tracing_relationship,
+     requirement_version,
+     physical_document_definition,
+     requirement_view_definition,
+     state_definition_relationship,
+     document_version,
+     requirement,
+     hardcopy,
+     requirement_collection_relationship,
+     digital_document_definition,
+     requirement_assignment,
+     document,
+     state_definition,
+     state);
+  END_TYPE; -- mri_identification_item
+
+  TYPE mri_organization_or_person_in_organization_item = SELECT
+    (contract,
+     identification_assignment,
+     security_classification_assignment,
+     state_assertion,
+     requirement_view_definition,
+     applied_state_definition_assignment,
+     state,
+     digital_document_definition,
+     hardcopy,
+     applied_state_assignment,
+     state_relationship,
+     state_definition,
+     state_definition_relationship,
+     requirement_source,
+     document_version,
+     physical_document_definition,
+     digital_file,
+     requirement_version_relationship,
+     requirement_assignment,
+     requirement_collection_relationship,
+     tracing_relationship,
+     requirement,
+     document,
+     requirement_version,
+     information_usage_right,
+     state_assessment);
+  END_TYPE; -- mri_organization_or_person_in_organization_item
+
+  TYPE mri_string_select = SELECT
+    (approval,
+     approval_relationship,
+     approval_status,
+     certification,
+     contract,
+     date_or_date_time_assignment,
+     identification_assignment,
+     organization_relationship,
+     person_in_organization,
+     project,
+     project_assignment,
+     project_relationship,
+     state_relationship,
+     state_definition,
+     document_definition_relationship,
+     state,
+     file_relationship,
+     requirement_assignment,
+     digital_document_definition,
+     requirement_version,
+     document_assignment,
+     requirement_source,
+     state_definition_relationship,
+     tracing_relationship,
+     requirement,
+     document,
+     physical_document_definition,
+     requirement_version_relationship,
+     document_version,
+     product_category,
+     external_item_identification,
+     requirement_collection_relationship,
+     requirement_view_definition,
+     external_source_identification);
+  END_TYPE; -- mri_string_select
+
+  TYPE offset_orientation = ENUMERATION OF
+    (ahead,
+     exact,
+     behind);
+  END_TYPE; -- offset_orientation
+
+  TYPE organization_or_person_in_organization_item = SELECT
+    (part,
+     breakdown_element,
+     identification_assignment,
+     part_version,
+     alternate_part_relationship,
+     assembly_component_relationship,
+     assembly_relationship_substitution,
+     independent_property,
+     assigned_property,
+     selected_item,
+     document_version,
+     part_view_definition,
+     interface_specification_definition,
+     interface_connector_as_planned,
+     interface_specification_version,
+     interface_connector,
+     document_assignment,
+     certification,
+     product_as_planned,
+     event_assignment,
+     contract_assignment,
+     interface_connector_definition,
+     independent_property_relationship,
+     breakdown_element_realization,
+     interface_connector_as_realized,
+     document_definition,
+     breakdown,
+     breakdown_element_usage,
+     alias_identification,
+     event,
+     product_as_realized,
+     project,
+     condition_evaluation,
+     selected_item_assignment,
+     document,
+     certification_assignment,
+     envelope,
+     condition_evaluation_assignment,
+     breakdown_version,
+     condition_assignment,
+     security_classification_assignment,
+     interface_connector_version,
+     representation,
+     contract,
+     condition,
+     interface_specification,
+     project_assignment);
+  END_TYPE; -- organization_or_person_in_organization_item
+
+  TYPE organization_or_person_in_organization_select = SELECT
+    (organization,
+     person_in_organization);
+  END_TYPE; -- organization_or_person_in_organization_select
+
+  TYPE product_as_individual_identification_item = SELECT
+    (product_as_individual);
+  END_TYPE; -- product_as_individual_identification_item
+
+  TYPE product_item = SELECT
+    (product_view_definition,
+     view_definition_relationship);
+  END_TYPE; -- product_item
+
+  TYPE product_property_assignment = SELECT
+    (product_view_definition,
+     view_definition_relationship);
+  END_TYPE; -- product_property_assignment
+
+  TYPE project_item = SELECT
+    (breakdown,
+     product_concept);
+  END_TYPE; -- project_item
+
+  TYPE property_assignment_select = SELECT
+    (part_view_definition,
+     view_definition_relationship,
+     document_definition,
+     state_definition_relationship,
+     envelope,
+     product_view_definition,
+     requirement_assignment,
+     state_definition,
+     file);
+  END_TYPE; -- property_assignment_select
+
+  TYPE property_value_qualifier = ENUMERATION OF
+    (nominal,
+     specified,
+     typical);
+  END_TYPE; -- property_value_qualifier
+
+  TYPE ps_product_property_assignment = SELECT
+    (view_definition_relationship);
+  END_TYPE; -- ps_product_property_assignment
+
+  TYPE requirement_alias_idenfication_item = SELECT
+    (requirement_assignment,
+     requirement_collection_relationship,
+     requirement_source,
+     requirement_version_relationship,
+     tracing_relationship);
+  END_TYPE; -- requirement_alias_idenfication_item
+
+  TYPE requirement_assignment_item = SELECT
+    (breakdown_element_usage,
+     breakdown_element_version,
+     breakdown_element_realization,
+     slot_version,
+     product_as_realized,
+     part_version,
+     breakdown_version,
+     slot,
+     product_as_planned,
+     product_in_slot,
+     alternate_part_relationship,
+     interface_specification,
+     breakdown,
+     assembly_component_relationship,
+     document_version,
+     project,
+     breakdown_element,
+     assembly_relationship_substitution);
+  END_TYPE; -- requirement_assignment_item
+
+  TYPE requirement_assignment_property_assignment_select = SELECT
+    (requirement_assignment);
+  END_TYPE; -- requirement_assignment_property_assignment_select
+
+  TYPE requirement_contract_item = SELECT
+    (requirement,
+     requirement_assignment,
+     requirement_collection_relationship,
+     requirement_source,
+     requirement_version,
+     requirement_version_relationship,
+     requirement_view_definition,
+     tracing_relationship);
+  END_TYPE; -- requirement_contract_item
+
+  TYPE requirement_identification_and_version_alias_identification_item =
+              SELECT
+    (requirement,
+     requirement_version);
+  END_TYPE; -- requirement_identification_and_version_alias_identification_item
+
+  TYPE requirement_identification_and_version_identification_item =
+              SELECT
+    (requirement,
+     requirement_version);
+  END_TYPE; -- requirement_identification_and_version_identification_item
+
+  TYPE requirement_mri_approval_item = SELECT
+    (certification,
+     contract,
+     requirement,
+     requirement_assignment,
+     requirement_collection_relationship,
+     requirement_source,
+     requirement_version,
+     requirement_version_relationship,
+     requirement_view_definition,
+     tracing_relationship);
+  END_TYPE; -- requirement_mri_approval_item
+
+  TYPE requirement_mri_date_or_date_time_item = SELECT
+    (contract,
+     certification,
+     organization_or_person_in_organization_assignment,
+     security_classification_assignment,
+     requirement,
+     requirement_assignment,
+     requirement_collection_relationship,
+     requirement_source,
+     requirement_version,
+     requirement_version_relationship,
+     requirement_view_definition,
+     tracing_relationship);
+  END_TYPE; -- requirement_mri_date_or_date_time_item
+
+  TYPE requirement_mri_identification_item = SELECT
+    (contract,
+     security_classification,
+     organization,
+     requirement,
+     requirement_assignment,
+     requirement_collection_relationship,
+     requirement_source,
+     requirement_version,
+     requirement_version_relationship,
+     requirement_view_definition,
+     tracing_relationship);
+  END_TYPE; -- requirement_mri_identification_item
+
+  TYPE requirement_mri_organization_or_person_in_organization_item =
+              SELECT
+    (contract,
+     security_classification_assignment,
+     identification_assignment,
+     requirement,
+     requirement_assignment,
+     requirement_collection_relationship,
+     requirement_source,
+     requirement_version,
+     requirement_version_relationship,
+     requirement_view_definition,
+     tracing_relationship);
+  END_TYPE; -- requirement_mri_organization_or_person_in_organization_item
+
+  TYPE requirement_mri_string_select = SELECT
+    (approval,
+     approval_relationship,
+     certification,
+     identification_assignment,
+     date_or_date_time_assignment,
+     contract,
+     project_assignment,
+     person_in_organization,
+     project,
+     project_relationship,
+     approval_status,
+     organization_relationship,
+     requirement,
+     requirement_assignment,
+     requirement_collection_relationship,
+     requirement_source,
+     requirement_version,
+     requirement_version_relationship,
+     requirement_view_definition,
+     tracing_relationship);
+  END_TYPE; -- requirement_mri_string_select
+
+  TYPE requirement_security_classification_item = SELECT
+    (requirement,
+     requirement_assignment,
+     requirement_collection_relationship,
+     requirement_source,
+     requirement_version,
+     requirement_version_relationship,
+     requirement_view_definition,
+     tracing_relationship);
+  END_TYPE; -- requirement_security_classification_item
+
+  TYPE requirement_source_item = SELECT
+    (product_as_individual,
+     part_version,
+     document_version);
+  END_TYPE; -- requirement_source_item
+
+  TYPE requirement_view_definition_alias_identification_item = SELECT
+    (requirement_view_definition);
+  END_TYPE; -- requirement_view_definition_alias_identification_item
+
+  TYPE requirement_view_definition_identification_item = SELECT
+    (requirement_view_definition);
+  END_TYPE; -- requirement_view_definition_identification_item
+
+  TYPE right_approval_item = SELECT
+    (certification,
+     contract,
+     applied_information_usage_right,
+     information_usage_right);
+  END_TYPE; -- right_approval_item
+
+  TYPE right_contract_item = SELECT
+    (information_usage_right);
+  END_TYPE; -- right_contract_item
+
+  TYPE right_date_item = SELECT
+    (contract,
+     certification,
+     organization_or_person_in_organization_assignment,
+     security_classification_assignment,
+     information_usage_right);
+  END_TYPE; -- right_date_item
+
+  TYPE right_person_organization_item = SELECT
+    (contract,
+     security_classification_assignment,
+     identification_assignment,
+     information_usage_right);
+  END_TYPE; -- right_person_organization_item
+
+  TYPE second_in_minute = REAL;
+  WHERE
+    wr1: ((0 <= SELF) AND (SELF <= 60));
+  END_TYPE; -- second_in_minute
+
+  TYPE security_classification_item = SELECT
+    (interface_connector_as_realized,
+     assembly_relationship_substitution,
+     breakdown_element_version,
+     document_version,
+     interface_specification_version,
+     document,
+     requirement,
+     slot_version,
+     requirement_version_relationship,
+     product_as_realized,
+     message,
+     physical_document_definition,
+     document_assignment,
+     tracing_relationship,
+     alternate_part_relationship,
+     interface_connector_definition,
+     interface_connector_as_planned,
+     hardcopy,
+     requirement_collection_relationship,
+     breakdown,
+     slot_design_to_planned,
+     assembly_component_relationship,
+     interface_connector_version,
+     requirement_assignment,
+     breakdown_element_realization,
+     interface_specification_definition,
+     requirement_source,
+     slot_on_product,
+     part_view_definition,
+     slot_design_to_realized,
+     breakdown_element_definition,
+     part_version,
+     breakdown_element_usage,
+     slot_planned_to_realized,
+     digital_file,
+     product_as_planned,
+     digital_document_definition,
+     requirement_view_definition,
+     interface_connector_design,
+     requirement_version);
+  END_TYPE; -- security_classification_item
+
+  TYPE selected_item_context_items = SELECT
+    (contract,
+     project,
+     product_concept,
+     part);
+  END_TYPE; -- selected_item_context_items
+
+  TYPE selected_item_select = SELECT
+    (product,
+     product_version);
+  END_TYPE; -- selected_item_select
+
+  TYPE shape_dependent_select = SELECT
+    (item_shape,
+     shape_element);
+  END_TYPE; -- shape_dependent_select
+
+  TYPE shape_model = SELECT
+    (external_geometric_model,
+     geometric_model);
+  END_TYPE; -- shape_model
+
+  TYPE shape_select = SELECT
+    (item_shape,
+     shape_element,
+     shape_element_relationship);
+  END_TYPE; -- shape_select
+
+  TYPE shapeable_item = SELECT
+    (characterizable_object,
+     product_view_definition,
+     view_definition_usage);
+  END_TYPE; -- shapeable_item
+
+  TYPE spr_documented_element_select = SELECT
+    (part_view_definition,
+     part,
+     part_version);
+  END_TYPE; -- spr_documented_element_select
+
+  TYPE spr_organization_or_person_in_organization_item = SELECT
+    (document,
+     document_version,
+     document_definition,
+     part,
+     part_view_definition,
+     part_version);
+  END_TYPE; -- spr_organization_or_person_in_organization_item
+
+  TYPE spr_product_property_assignment = SELECT
+    (part_view_definition);
+  END_TYPE; -- spr_product_property_assignment
+
+  TYPE state_classification_item = SELECT
+    (applied_state_assignment,
+     state,
+     state_relationship);
+  END_TYPE; -- state_classification_item
+
+  TYPE state_definition_classification_item = SELECT
+    (applied_state_definition_assignment,
+     state_definition,
+     state_definition_relationship);
+  END_TYPE; -- state_definition_classification_item
+
+  TYPE state_definition_condition_item = SELECT
+    (state_definition,
+     state_definition_relationship);
+  END_TYPE; -- state_definition_condition_item
+
+  TYPE state_definition_identification_item = SELECT
+    (state_definition,
+     state_definition_relationship);
+  END_TYPE; -- state_definition_identification_item
+
+  TYPE state_definition_of_item = SELECT
+    (product_category,
+     slot_planned_to_realized,
+     interface_specification_version,
+     breakdown,
+     hardcopy,
+     breakdown_element_version,
+     project,
+     breakdown_element_usage,
+     interface_connection,
+     part_version,
+     person_in_organization,
+     assembly_component_relationship,
+     interface_specification,
+     product_as_planned,
+     slot,
+     certification,
+     digital_document_definition,
+     interface_specification_definition,
+     interface_connector_as_realized,
+     security_classification,
+     slot_definition,
+     slot_on_product,
+     interface_connector_version,
+     slot_version,
+     connector_on,
+     slot_design_to_realized,
+     breakdown_element_realization,
+     interface_connector_as_planned,
+     physical_document_definition,
+     part,
+     interface_connector_definition,
+     interface_connector_design,
+     contract,
+     alternate_part_relationship,
+     document_version,
+     document,
+     assembly_relationship_substitution,
+     product_as_realized,
+     breakdown_element,
+     organization,
+     slot_design_to_planned,
+     file_location_identification,
+     digital_file,
+     part_view_definition);
+  END_TYPE; -- state_definition_of_item
+
+  TYPE state_definition_property_assignment = SELECT
+    (state_definition,
+     state_definition_relationship);
+  END_TYPE; -- state_definition_property_assignment
+
+  TYPE state_observed_condition_evaluation_item = SELECT
+    (state_assertion,
+     state_assessment);
+  END_TYPE; -- state_observed_condition_evaluation_item
+
+  TYPE state_of_item = SELECT
+    (assembly_component_relationship,
+     certification,
+     connector_on,
+     project,
+     part_view_definition,
+     interface_connection,
+     slot_design_to_realized,
+     interface_connector_definition,
+     assembly_relationship_substitution,
+     breakdown_element_version,
+     slot,
+     organization,
+     breakdown,
+     person_in_organization,
+     slot_design_to_planned,
+     part_version,
+     interface_specification,
+     digital_file,
+     interface_connector_design,
+     contract,
+     document,
+     part,
+     alternate_part_relationship,
+     digital_document_definition,
+     slot_definition,
+     interface_specification_definition,
+     interface_connector_version,
+     interface_connector_as_planned,
+     security_classification,
+     product_as_planned,
+     file_location_identification,
+     slot_on_product,
+     interface_specification_version,
+     document_version,
+     hardcopy,
+     product_as_realized,
+     physical_document_definition,
+     breakdown_element_realization,
+     breakdown_element,
+     slot_planned_to_realized,
+     interface_connector_as_realized,
+     slot_version,
+     message,
+     breakdown_element_usage);
+  END_TYPE; -- state_of_item
+
+  TYPE statechar_ap239_mri_classified_attribute_select = SELECT
+    (approval_status,
+     address_assignment,
+     contract,
+     approval_assignment,
+     organization_relationship,
+     certification,
+     event_assignment,
+     identification_assignment,
+     language,
+     event_relationship,
+     organization_or_person_in_organization_assignment,
+     approval,
+     date_or_date_time_assignment,
+     project_relationship,
+     approval_relationship,
+     security_classification,
+     person_in_organization,
+     project_assignment,
+     certification_assignment,
+     approving_person_organization,
+     applied_state_assignment,
+     applied_state_definition_assignment,
+     state,
+     state_definition,
+     state_definition_relationship,
+     state_relationship);
+  END_TYPE; -- statechar_ap239_mri_classified_attribute_select
+
+  TYPE statechar_mri_date_or_date_time_item = SELECT
+    (contract,
+     certification,
+     organization_or_person_in_organization_assignment,
+     security_classification_assignment,
+     applied_state_assignment,
+     applied_state_definition_assignment,
+     state,
+     state_assertion,
+     state_assessment,
+     state_definition,
+     state_definition_relationship,
+     state_relationship);
+  END_TYPE; -- statechar_mri_date_or_date_time_item
+
+  TYPE statechar_mri_identification_item = SELECT
+    (contract,
+     security_classification,
+     organization,
+     state,
+     state_definition,
+     state_definition_relationship,
+     state_relationship);
+  END_TYPE; -- statechar_mri_identification_item
+
+  TYPE statechar_mri_organization_or_person_in_organization_item = SELECT
+    (contract,
+     security_classification_assignment,
+     identification_assignment,
+     applied_state_assignment,
+     applied_state_definition_assignment,
+     state,
+     state_assertion,
+     state_assessment,
+     state_definition,
+     state_definition_relationship,
+     state_relationship);
+  END_TYPE; -- statechar_mri_organization_or_person_in_organization_item
+
+  TYPE statechar_mri_string_select = SELECT
+    (approval,
+     approval_relationship,
+     certification,
+     identification_assignment,
+     date_or_date_time_assignment,
+     contract,
+     project_assignment,
+     person_in_organization,
+     project,
+     project_relationship,
+     approval_status,
+     organization_relationship,
+     state,
+     state_definition,
+     state_definition_relationship,
+     state_relationship);
+  END_TYPE; -- statechar_mri_string_select
+
+  TYPE string_select = SELECT
+    (message,
+     representation_item,
+     certification,
+     envelope_association,
+     approval,
+     person_in_organization,
+     envelope,
+     assigned_property,
+     project,
+     message_association,
+     breakdown_element,
+     document,
+     slot_on_product,
+     project_relationship,
+     assembly_component_relationship,
+     alternate_part_relationship,
+     slot,
+     organization_relationship,
+     assembly_relationship_substitution,
+     independent_property,
+     breakdown_element_realization,
+     information_right,
+     slot_design_to_planned,
+     breakdown_element_version,
+     date_or_date_time_assignment,
+     breakdown_element_usage,
+     slot_definition,
+     slot_design_to_realized,
+     product_as_individual,
+     slot_version,
+     breakdown,
+     approval_status,
+     event,
+     identification_assignment,
+     approval_relationship,
+     slot_planned_to_realized,
+     part,
+     independent_property_relationship,
+     information_usage_right,
+     contract,
+     project_assignment);
+  END_TYPE; -- string_select
+
+  TYPE template_instance = SELECT
+    (mapping_based_template_instance,
+     transformation_based_template_instance);
+  END_TYPE; -- template_instance
+
+  TYPE version_or_definition = SELECT
+    (product_version,
+     product_view_definition);
+  END_TYPE; -- version_or_definition
+
+  TYPE year_number = INTEGER;
+  END_TYPE; -- year_number
+
+  ENTITY activity;
+      chosen_method : activity_method;
+      description   : OPTIONAL STRING;
+      id            : STRING;
+      name          : STRING;
+  END_ENTITY; -- activity
+
+  ENTITY activity_method;
+      consequence : OPTIONAL STRING;
+      description : OPTIONAL STRING;
+      name        : STRING;
+      purpose     : STRING;
+  END_ENTITY; -- activity_method
+
+  ENTITY activity_property;
+      described_element : characterized_activity_definition;
+      name              : STRING;
+      description       : STRING;
+  END_ENTITY; -- activity_property
+
+  ENTITY activity_property_representation;
+      description : OPTIONAL STRING;
+      property    : activity_property;
+      rep         : representation;
+      role        : STRING;
+  END_ENTITY; -- activity_property_representation
+
+  ENTITY activity_relationship;
+      description       : OPTIONAL STRING;
+      name              : STRING;
+      related_activity  : activity;
+      relating_activity : activity;
+  END_ENTITY; -- activity_relationship
+
+  ENTITY activity_status;
+      assigned_activity : activity;
+      status            : STRING;
+  END_ENTITY; -- activity_status
+
+  ENTITY address;
+      street_number           : OPTIONAL STRING;
+      street                  : OPTIONAL STRING;
+      postal_box              : OPTIONAL STRING;
+      town                    : OPTIONAL STRING;
+      region                  : OPTIONAL STRING;
+      postal_code             : OPTIONAL STRING;
+      country                 : OPTIONAL STRING;
+      internal_location       : OPTIONAL STRING;
+      facsimile_number        : OPTIONAL STRING;
+      telephone_number        : OPTIONAL STRING;
+      electronic_mail_address : OPTIONAL STRING;
+      telex_number            : OPTIONAL STRING;
+      url                     : OPTIONAL STRING;
+      name                    : OPTIONAL STRING;
+    WHERE
+      wr1: (EXISTS(street_number) OR EXISTS(street) OR EXISTS(postal_box) 
+               OR EXISTS(town) OR EXISTS(region) OR EXISTS(postal_code) OR 
+               EXISTS(country) OR EXISTS(internal_location) OR EXISTS(
+               facsimile_number) OR EXISTS(telephone_number) OR EXISTS(
+               electronic_mail_address) OR EXISTS(telex_number));
+  END_ENTITY; -- address
+
+  ENTITY address_assignment;
+      assigned_address             : address;
+      address_type                 : OPTIONAL STRING;
+      located_person_organizations : SET [1:?] OF organization_or_person_in_organization_select;
+  END_ENTITY; -- address_assignment
+
+  ENTITY alias_identification
+    SUBTYPE OF (identification_assignment);
+    DERIVE
+      SELF\identification_assignment.role : STRING := 'alias';
+    WHERE
+      wr1: (SIZEOF(QUERY ( item <* SELF\identification_assignment.items | 
+               (NOT ('AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.ALIAS_IDENTIFICATION_ITEM' 
+               IN TYPEOF(item))) )) = 0);
+  END_ENTITY; -- alias_identification
+
+  ENTITY alternate_part_relationship
+    SUBTYPE OF (alternate_product_relationship);
+      SELF\alternate_product_relationship.alternate_product : part;
+      SELF\alternate_product_relationship.base_product      : part;
+  END_ENTITY; -- alternate_part_relationship
+
+  ENTITY alternate_product_relationship;
+      name              : OPTIONAL STRING;
+      description       : OPTIONAL STRING;
+      alternate_product : product;
+      base_product      : product;
+      criteria          : STRING;
+    UNIQUE
+      ur1 : alternate_product, base_product;
+    WHERE
+      wr1: (alternate_product :<>: base_product);
+  END_ENTITY; -- alternate_product_relationship
+
+  ENTITY amount_of_substance_unit
+    SUBTYPE OF (unit);
+  END_ENTITY; -- amount_of_substance_unit
+
+  ENTITY and_state_cause_effect_definition
+    SUBTYPE OF (state_cause_effect_definition);
+  END_ENTITY; -- and_state_cause_effect_definition
+
+  ENTITY applied_independent_activity_property
+    SUBTYPE OF (activity_property);
+      base_element_property : independent_property;
+    DERIVE
+      SELF\activity_property.name : STRING := base_element_property.
+                                       property_type;
+  END_ENTITY; -- applied_independent_activity_property
+
+  ENTITY applied_independent_property
+    SUBTYPE OF (assigned_property);
+      base_independent_property : independent_property;
+    DERIVE
+      SELF\assigned_property.name : STRING := base_independent_property.
+                                       property_type;
+  END_ENTITY; -- applied_independent_property
+
+  ENTITY applied_information_usage_right;
+      item          : SET [1:?] OF information_usage_right_item;
+      right_applied : information_usage_right;
+  END_ENTITY; -- applied_information_usage_right
+
+  ENTITY applied_state_assignment;
+      described_state : state;
+      assigned_to     : state_of_item;
+      role            : state_role;
+  END_ENTITY; -- applied_state_assignment
+
+  ENTITY applied_state_definition_assignment;
+      described_state_definition : state_definition;
+      assigned_to                : state_definition_of_item;
+      role                       : state_definition_role;
+  END_ENTITY; -- applied_state_definition_assignment
+
+  ENTITY approval;
+      status       : approval_status;
+      purpose      : STRING;
+      planned_date : OPTIONAL date_or_date_time_select;
+      actual_date  : OPTIONAL date_or_date_time_select;
+  END_ENTITY; -- approval
+
+  ENTITY approval_assignment;
+      assigned_approval : approval;
+      items             : SET [1:?] OF approval_item;
+      role              : OPTIONAL STRING;
+  END_ENTITY; -- approval_assignment
+
+  ENTITY approval_relationship;
+      relation_type     : STRING;
+      relating_approval : approval;
+      related_approval  : approval;
+      description       : OPTIONAL STRING;
+  END_ENTITY; -- approval_relationship
+
+  ENTITY approval_status;
+      status_name : STRING;
+  END_ENTITY; -- approval_status
+
+  ENTITY approving_person_organization;
+      person_organization : organization_or_person_in_organization_select;
+      approval_date       : OPTIONAL date_or_date_time_select;
+      authorized_approval : approval;
+      role                : OPTIONAL STRING;
+  END_ENTITY; -- approving_person_organization
+
+  ENTITY assembly_component_relationship
+    ABSTRACT SUPERTYPE OF (ONEOF (next_assembly_usage,promissory_usage,
+        component_upper_level_identification))
+    SUBTYPE OF (view_definition_usage);
+      quantity           : OPTIONAL value_with_unit;
+      location_indicator : OPTIONAL STRING;
+    WHERE
+      wr1: ((NOT EXISTS(quantity)) XOR (NOT ('NUMBER' IN TYPEOF(quantity.
+               value_component))) XOR (quantity.value_component > 0));
+  END_ENTITY; -- assembly_component_relationship
+
+  ENTITY assembly_relationship_substitution;
+      name                    : OPTIONAL STRING;
+      description             : OPTIONAL STRING;
+      base_relationship       : assembly_component_relationship;
+      substitute_relationship : assembly_component_relationship;
+    UNIQUE
+      ur1 : base_relationship, substitute_relationship;
+    WHERE
+      wr1: (base_relationship.relating_view :=: substitute_relationship.
+               relating_view);
+      wr2: (base_relationship :<>: substitute_relationship);
+  END_ENTITY; -- assembly_relationship_substitution
+
+  ENTITY assigned_document_property
+    SUBTYPE OF (assigned_property);
+    DERIVE
+      SELF\assigned_property.name : STRING := 'document property';
+    UNIQUE
+      ur1 : described_element;
+    WHERE
+      wr1: (SIZEOF(['AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.DOCUMENT_DEFINITION',
+               'AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.FILE'] * 
+               TYPEOF(SELF\assigned_property.described_element)) = 1);
+  END_ENTITY; -- assigned_document_property
+
+  ENTITY assigned_property;
+      described_element : property_assignment_select;
+      description       : OPTIONAL STRING;
+      id                : OPTIONAL STRING;
+      name              : STRING;
+  END_ENTITY; -- assigned_property
+
+  ENTITY attribute_classification;
+      allowed_value     : class;
+      attribute_name    : STRING;
+      classified_entity : classified_attribute_select;
+  END_ENTITY; -- attribute_classification
+
+  ENTITY attribute_translation_assignment;
+      considered_instances : SET [1:?] OF string_select;
+      considered_attribute : STRING;
+      translation_text     : STRING;
+      translation_language : language;
+    WHERE
+      wr1: (SIZEOF(QUERY ( ci <* considered_instances | (SIZEOF(
+               QUERY ( ata <* USEDIN(ci,'AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.ATTRIBUTE_TRANSLATION_ASSIGNMENT.CONSIDERED_INSTANCES')
+                | ((ata.considered_attribute = considered_attribute) AND (
+               ata.translation_language :=: translation_language)) )) > 1) )) 
+               = 0);
+  END_ENTITY; -- attribute_translation_assignment
+
+  ENTITY axis_placement
+    SUBTYPE OF (detailed_geometric_model_element);
+      origin : cartesian_point;
+      x_axis : direction;
+      y_axis : direction;
+    DERIVE
+      dim : INTEGER := SIZEOF(origin.coordinates);
+    WHERE
+      wr1: (dim > 1);
+      wr2: (dim = SIZEOF(x_axis.coordinates));
+      wr3: (dim = SIZEOF(y_axis.coordinates));
+  END_ENTITY; -- axis_placement
+
+  ENTITY axis_placement_mapping;
+      source : axis_placement;
+      target : axis_placement;
+    WHERE
+      wr1: (source\axis_placement.dim = target\axis_placement.dim);
+  END_ENTITY; -- axis_placement_mapping
+
+  ENTITY axis_placement_transformation_mapping;
+      source : axis_placement;
+      target : cartesian_transformation;
+    WHERE
+      wr1: (source\axis_placement.dim = SIZEOF(target.translation\
+               cartesian_point.coordinates));
+  END_ENTITY; -- axis_placement_transformation_mapping
+
+  ENTITY breakdown
+    SUPERTYPE OF (ONEOF (functional_breakdown,hybrid_breakdown,
+        physical_breakdown,system_breakdown,zone_breakdown))
+    SUBTYPE OF (product);
+  END_ENTITY; -- breakdown
+
+  ENTITY breakdown_context
+    SUPERTYPE OF (ONEOF (functional_breakdown_context,
+        hybrid_breakdown_context,physical_breakdown_context,
+        system_breakdown_context,zone_breakdown_context));
+      id                : STRING;
+      name              : STRING;
+      description       : OPTIONAL STRING;
+      breakdown         : breakdown_version;
+      breakdown_element : breakdown_element_definition;
+  END_ENTITY; -- breakdown_context
+
+  ENTITY breakdown_element
+    SUPERTYPE OF (ONEOF (functional_element,physical_element,
+        system_element,zone_element))
+    SUBTYPE OF (product);
+  END_ENTITY; -- breakdown_element
+
+  ENTITY breakdown_element_definition
+    SUPERTYPE OF (ONEOF (functional_element_definition,
+        physical_element_definition,system_element_definition,
+        zone_element_definition))
+    SUBTYPE OF (product_view_definition);
+      SELF\product_view_definition.defined_version : breakdown_element_version;
+  END_ENTITY; -- breakdown_element_definition
+
+  ENTITY breakdown_element_realization
+    SUBTYPE OF (product_definition_element_relationship);
+  END_ENTITY; -- breakdown_element_realization
+
+  ENTITY breakdown_element_usage
+    ABSTRACT SUPERTYPE OF (ONEOF (functional_element_usage,
+        hybrid_element_usage,physical_element_usage,system_element_usage,
+        zone_element_usage))
+    SUBTYPE OF (view_definition_relationship);
+      name                                            : STRING;
+      SELF\view_definition_relationship.relating_view : breakdown_element_definition;
+      SELF\view_definition_relationship.related_view  : breakdown_element_definition;
+    DERIVE
+      parent_element : breakdown_element_definition := SELF\
+                          view_definition_relationship.relating_view;
+      child_element  : breakdown_element_definition := SELF\
+                          view_definition_relationship.related_view;
+  END_ENTITY; -- breakdown_element_usage
+
+  ENTITY breakdown_element_version
+    SUPERTYPE OF (ONEOF (functional_element_version,
+        physical_element_version,system_element_version,
+        zone_element_version))
+    SUBTYPE OF (product_version);
+      SELF\product_version.of_product : breakdown_element;
+  END_ENTITY; -- breakdown_element_version
+
+  ENTITY breakdown_of;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      breakdown   : breakdown_version;
+      of_view     : product_view_definition;
+  END_ENTITY; -- breakdown_of
+
+  ENTITY breakdown_version
+    SUPERTYPE OF (ONEOF (functional_breakdown_version,
+        hybrid_breakdown_version,physical_breakdown_version,
+        system_breakdown_version,zone_breakdown_version))
+    SUBTYPE OF (product_version);
+      SELF\product_version.of_product : breakdown;
+    INVERSE
+      breakdown_of : SET [1:1] OF breakdown_of FOR breakdown;
+  END_ENTITY; -- breakdown_version
+
+  ENTITY calendar_date;
+      year_component  : year_number;
+      month_component : month_in_year_number;
+      day_component   : day_in_month_number;
+  END_ENTITY; -- calendar_date
+
+  ENTITY cartesian_point
+    SUBTYPE OF (detailed_geometric_model_element);
+      coordinates : LIST [1:3] OF length_measure;
+  END_ENTITY; -- cartesian_point
+
+  ENTITY cartesian_transformation_2d
+    SUBTYPE OF (detailed_geometric_model_element);
+      multiplication_matrix : ARRAY [1:2] OF direction;
+      translation           : cartesian_point;
+    WHERE
+      wr1: (SIZEOF(multiplication_matrix[1]\direction.coordinates) = 2);
+      wr2: (SIZEOF(multiplication_matrix[2]\direction.coordinates) = 2);
+      wr3: (SIZEOF(translation.coordinates) = 2);
+  END_ENTITY; -- cartesian_transformation_2d
+
+  ENTITY cartesian_transformation_3d
+    SUBTYPE OF (detailed_geometric_model_element);
+      multiplication_matrix : ARRAY [1:3] OF direction;
+      translation           : cartesian_point;
+    WHERE
+      wr1: (SIZEOF(multiplication_matrix[1]\direction.coordinates) = 3);
+      wr2: (SIZEOF(multiplication_matrix[2]\direction.coordinates) = 3);
+      wr3: (SIZEOF(multiplication_matrix[3]\direction.coordinates) = 3);
+      wr4: (SIZEOF(translation.coordinates) = 3);
+  END_ENTITY; -- cartesian_transformation_3d
+
+  ENTITY certification;
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- certification
+
+  ENTITY certification_assignment;
+      assigned_certification : certification;
+      role                   : STRING;
+      items                  : SET [1:?] OF certification_item;
+  END_ENTITY; -- certification_assignment
+
+  ENTITY characterizable_object;
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- characterizable_object
+
+  ENTITY class
+    SUPERTYPE OF (ONEOF (class_by_extension,class_by_intension));
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- class
+
+  ENTITY class_by_extension
+    SUBTYPE OF (class);
+  END_ENTITY; -- class_by_extension
+
+  ENTITY class_by_intension
+    SUBTYPE OF (class);
+  END_ENTITY; -- class_by_intension
+
+  ENTITY classification_assignment;
+      assigned_class : class;
+      items          : SET [1:?] OF classification_item;
+      role           : OPTIONAL STRING;
+  END_ENTITY; -- classification_assignment
+
+  ENTITY complement;
+      id          : STRING;
+      name        : STRING;
+      description : STRING;
+      set_1       : class;
+      set_2       : class;
+      universe    : class;
+  END_ENTITY; -- complement
+
+  ENTITY component_upper_level_identification
+    SUBTYPE OF (assembly_component_relationship);
+      upper_assembly_relationship : assembly_component_relationship;
+      sub_assembly_relationship   : next_assembly_usage;
+    UNIQUE
+      ur1 : upper_assembly_relationship, sub_assembly_relationship;
+    WHERE
+      wr1: (SELF :<>: upper_assembly_relationship);
+      wr2: (SELF\view_definition_relationship.relating_view :=: 
+               upper_assembly_relationship\view_definition_relationship.
+               relating_view);
+      wr3: (SELF\view_definition_relationship.related_view :=: 
+               sub_assembly_relationship\view_definition_relationship.
+               related_view);
+      wr4: ((upper_assembly_relationship\view_definition_relationship.
+               related_view :=: sub_assembly_relationship\
+               view_definition_relationship.relating_view) OR (SIZEOF(
+               QUERY ( pdr <* USEDIN(upper_assembly_relationship\
+               view_definition_relationship.related_view,'AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.VIEW_DEFINITION_RELATIONSHIP.RELATED_VIEW')
+                | (pdr.relating_view :=: sub_assembly_relationship\
+               view_definition_relationship.relating_view) )) = 1));
+      wr5: (SIZEOF(['AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.NEXT_ASSEMBLY_USAGE','AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.COMPONENT_UPPER_LEVEL_IDENTIFICATION'] 
+               * TYPEOF(upper_assembly_relationship)) = 1);
+  END_ENTITY; -- component_upper_level_identification
+
+  ENTITY composition_of_state
+    SUBTYPE OF (state_relationship);
+      SELF\state_relationship.relating : SET [1:?] OF state;
+      SELF\state_relationship.related  : SET [1:?] OF state;
+    DERIVE
+      whole : SET [1:?] OF state := SELF\state_relationship.relating;
+      part  : SET [1:?] OF state := SELF\state_relationship.related;
+  END_ENTITY; -- composition_of_state
+
+  ENTITY composition_of_state_definition
+    SUBTYPE OF (state_definition_relationship);
+      SELF\state_definition_relationship.relating : SET [1:?] OF
+                                                        state_definition;
+      SELF\state_definition_relationship.related  : SET [1:?] OF
+                                                        state_definition;
+    DERIVE
+      whole : SET [1:?] OF state_definition := SELF\
+                 state_definition_relationship.relating;
+      part  : SET [1:?] OF state_definition := SELF\
+                 state_definition_relationship.related;
+  END_ENTITY; -- composition_of_state_definition
+
+  ENTITY condition;
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- condition
+
+  ENTITY condition_assignment;
+      assigned_condition : condition;
+      item               : condition_item;
+  END_ENTITY; -- condition_assignment
+
+  ENTITY condition_evaluation;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      result      : LOGICAL;
+      condition   : condition;
+  END_ENTITY; -- condition_evaluation
+
+  ENTITY condition_evaluation_assignment;
+      assigned_condition_evaluation : condition_evaluation;
+      item                          : condition_evaluation_item;
+  END_ENTITY; -- condition_evaluation_assignment
+
+  ENTITY condition_evaluation_parameter;
+      name                 : STRING;
+      description          : OPTIONAL STRING;
+      condition_evaluation : condition_evaluation;
+      evaluation_parameter : condition_evaluation_parameter_item;
+  END_ENTITY; -- condition_evaluation_parameter
+
+  ENTITY condition_parameter;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      condition   : condition;
+      parameter   : condition_parameter_item;
+  END_ENTITY; -- condition_parameter
+
+  ENTITY condition_relationship;
+      name               : STRING;
+      description        : OPTIONAL STRING;
+      relating_condition : condition;
+      related_condition  : condition;
+  END_ENTITY; -- condition_relationship
+
+  ENTITY configuration_watched_item;
+      id           : STRING;
+      name         : STRING;
+      description  : OPTIONAL STRING;
+      item_context : product_concept;
+    INVERSE
+      corresponding_design : SET [0:1] OF item_design_association FOR 
+                                watched_item;
+  END_ENTITY; -- configuration_watched_item
+
+  ENTITY connector_on;
+      connector   : interface_connector_definition;
+      description : OPTIONAL STRING;
+      id          : STRING;
+      item        : connector_on_item;
+      name        : STRING;
+  END_ENTITY; -- connector_on
+
+  ENTITY content_item;
+      item_identifier : STRING;
+      item_type       : STRING;
+      access_comment  : OPTIONAL STRING;
+  END_ENTITY; -- content_item
+
+  ENTITY context_dependent_unit
+    SUBTYPE OF (unit);
+    WHERE
+      wr1: EXISTS(SELF\unit.name);
+  END_ENTITY; -- context_dependent_unit
+
+  ENTITY contextual_item_shape
+    SUBTYPE OF (item_shape);
+      SELF\item_shape.described_element : view_definition_usage;
+    DERIVE
+      shaped_product : product_view_definition := described_element\
+                          view_definition_relationship.related_view;
+  END_ENTITY; -- contextual_item_shape
+
+  ENTITY contextual_shape_representation_inclusion;
+      contextual_shape          : contextual_item_shape;
+      context_representation    : geometric_model;
+      positioned_representation : template_instance;
+  END_ENTITY; -- contextual_shape_representation_inclusion
+
+  ENTITY contract;
+      id      : STRING;
+      purpose : STRING;
+      kind    : STRING;
+  END_ENTITY; -- contract
+
+  ENTITY contract_assignment;
+      assigned_contract : contract;
+      items             : SET [1:?] OF contract_item;
+  END_ENTITY; -- contract_assignment
+
+  ENTITY conversion_based_unit
+    SUBTYPE OF (unit);
+      conversion_factor : value_with_unit;
+    WHERE
+      wr1: EXISTS(SELF\unit.name);
+  END_ENTITY; -- conversion_based_unit
+
+  ENTITY date_or_date_time_assignment;
+      assigned_date : date_or_date_time_select;
+      role          : STRING;
+      items         : SET [1:?] OF date_or_date_time_item;
+  END_ENTITY; -- date_or_date_time_assignment
+
+  ENTITY date_time;
+      date_component : calendar_date;
+      time_component : local_time;
+  END_ENTITY; -- date_time
+
+  ENTITY dated_effectivity
+    SUBTYPE OF (effectivity);
+      start_bound : date_or_event;
+      end_bound   : OPTIONAL date_or_event;
+  END_ENTITY; -- dated_effectivity
+
+  ENTITY defined_state_relationship;
+      name             : STRING;
+      description      : OPTIONAL STRING;
+      definitive_state : state_assertion;
+      defined_state    : state_assessment;
+  END_ENTITY; -- defined_state_relationship
+
+  ENTITY derived_unit
+    SUBTYPE OF (unit);
+      elements : SET [1:?] OF derived_unit_element;
+  END_ENTITY; -- derived_unit
+
+  ENTITY derived_unit_element;
+      base_unit : unit;
+      exponent  : REAL;
+  END_ENTITY; -- derived_unit_element
+
+  ENTITY descriptive_document_property
+    SUBTYPE OF (string_representation_item);
+    INVERSE
+      valued_characteristic : SET [1:1] OF
+                                  document_property_representation FOR 
+                                 items;
+  END_ENTITY; -- descriptive_document_property
+
+  ENTITY detailed_geometric_model_element
+    ABSTRACT SUPERTYPE OF (ONEOF (cartesian_point,direction,axis_placement,
+        cartesian_transformation_2d,cartesian_transformation_3d))
+    SUBTYPE OF (representation_item);
+  END_ENTITY; -- detailed_geometric_model_element
+
+  ENTITY digital_document_definition
+    SUBTYPE OF (document_definition);
+      files : SET OF digital_file;
+  END_ENTITY; -- digital_document_definition
+
+  ENTITY digital_file
+    SUBTYPE OF (file);
+  END_ENTITY; -- digital_file
+
+  ENTITY direction
+    SUBTYPE OF (detailed_geometric_model_element);
+      coordinates : LIST [2:3] OF length_measure;
+  END_ENTITY; -- direction
+
+  ENTITY document
+    SUBTYPE OF (product);
+  END_ENTITY; -- document
+
+  ENTITY document_assignment;
+      assigned_document : assigned_document_select;
+      is_assigned_to    : documented_element_select;
+      role              : STRING;
+  END_ENTITY; -- document_assignment
+
+  ENTITY document_definition
+    ABSTRACT SUPERTYPE OF (ONEOF (digital_document_definition,
+        physical_document_definition));
+      id                          : STRING;
+      description                 : OPTIONAL STRING;
+      associated_document_version : document_version;
+  END_ENTITY; -- document_definition
+
+  ENTITY document_definition_relationship;
+      relation_type                : STRING;
+      description                  : OPTIONAL STRING;
+      relating_document_definition : document_definition;
+      related_document_definition  : document_definition;
+    WHERE
+      wr1: (relating_document_definition :<>: related_document_definition);
+  END_ENTITY; -- document_definition_relationship
+
+  ENTITY document_location_identification
+    SUBTYPE OF (external_source_identification);
+    WHERE
+      wr1: ('AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.DOCUMENT_DEFINITION' 
+               IN TYPEOF(SELF\external_source_identification.item));
+  END_ENTITY; -- document_location_identification
+
+  ENTITY document_property_representation
+    SUBTYPE OF (representation);
+      SELF\representation.items : SET [1:?] OF descriptive_or_numerical;
+    WHERE
+      wr1: (SIZEOF(QUERY ( pr <* USEDIN(SELF,'AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.PROPERTY_REPRESENTATION.REP')
+                | ('AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.ASSIGNED_PROPERTY' 
+               IN TYPEOF(pr.property)) )) > 0);
+      wr2: (SELF\representation.context_of_items.kind = 
+               'document parameters');
+      wr3: valid_document_property_representation(SELF);
+      wr4: (SIZEOF(QUERY ( it1 <* SELF\representation.items | (SIZEOF(
+               QUERY ( it2 <* SELF\representation.items | (it1.name = it2.
+               name) )) > 1) )) = 0);
+  END_ENTITY; -- document_property_representation
+
+  ENTITY document_version
+    SUBTYPE OF (product_version);
+      SELF\product_version.of_product : document;
+  END_ENTITY; -- document_version
+
+  ENTITY duration
+    SUBTYPE OF (value_with_unit);
+    WHERE
+      wr1: (('AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.' + 'TIME_UNIT') 
+               IN TYPEOF(SELF\value_with_unit.unit));
+  END_ENTITY; -- duration
+
+  ENTITY effectivity
+    SUPERTYPE OF (ONEOF (serial_effectivity,dated_effectivity,
+        lot_effectivity,time_interval_effectivity));
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- effectivity
+
+  ENTITY effectivity_assignment;
+      assigned_effectivity : effectivity;
+      role                 : STRING;
+      items                : SET [1:?] OF effectivity_item;
+  END_ENTITY; -- effectivity_assignment
+
+  ENTITY effectivity_relationship;
+      relation_type        : STRING;
+      description          : OPTIONAL STRING;
+      relating_effectivity : effectivity;
+      related_effectivity  : effectivity;
+  END_ENTITY; -- effectivity_relationship
+
+  ENTITY electric_current_unit
+    SUBTYPE OF (unit);
+  END_ENTITY; -- electric_current_unit
+
+  ENTITY envelope;
+      acknowledge : OPTIONAL STRING;
+      id          : STRING;
+      wrapping    : OPTIONAL message;
+  END_ENTITY; -- envelope
+
+  ENTITY envelope_association;
+      related  : envelope;
+      relating : envelope;
+      role     : OPTIONAL STRING;
+  END_ENTITY; -- envelope_association
+
+  ENTITY event;
+      actual_start_date  : date_or_date_time_select;
+      description        : OPTIONAL STRING;
+      id                 : STRING;
+      name               : STRING;
+      planned_start_date : date_or_date_time_select;
+  END_ENTITY; -- event
+
+  ENTITY event_assignment;
+      assigned_event : event;
+      items          : SET [1:?] OF event_item;
+      role           : STRING;
+  END_ENTITY; -- event_assignment
+
+  ENTITY event_relationship;
+      description   : OPTIONAL STRING;
+      event1        : event;
+      event2        : event;
+      relation_type : STRING;
+  END_ENTITY; -- event_relationship
+
+  ENTITY external_class
+    SUBTYPE OF (class);
+      external_source : external_class_library;
+  END_ENTITY; -- external_class
+
+  ENTITY external_class_library;
+      id          : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- external_class_library
+
+  ENTITY external_geometric_model
+    SUBTYPE OF (geometric_model);
+      SELF\representation.items : SET [1:1] OF axis_placement;
+      external_file             : digital_file;
+    WHERE
+      wr1: (SELF\representation.context_of_items.dimension_count = 3);
+      wr2: (SELF\representation.context_of_items.kind = 'external');
+  END_ENTITY; -- external_geometric_model
+
+  ENTITY external_item_identification
+    SUBTYPE OF (external_source_identification);
+      external_id : STRING;
+  END_ENTITY; -- external_item_identification
+
+  ENTITY external_source_identification;
+      source_id   : STRING;
+      source_type : STRING;
+      item        : external_identification_item;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- external_source_identification
+
+  ENTITY file
+    ABSTRACT SUPERTYPE OF (ONEOF (digital_file,hardcopy));
+      id                  : STRING;
+      version             : OPTIONAL STRING;
+      contained_data_type : OPTIONAL STRING;
+  END_ENTITY; -- file
+
+  ENTITY file_location_identification
+    SUBTYPE OF (external_item_identification);
+    WHERE
+      wr1: ('AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.FILE' IN TYPEOF(
+               SELF\external_source_identification.item));
+  END_ENTITY; -- file_location_identification
+
+  ENTITY file_relationship;
+      relation_type          : STRING;
+      description            : OPTIONAL STRING;
+      relating_document_file : file;
+      related_document_file  : file;
+    WHERE
+      wr1: (relating_document_file :<>: related_document_file);
+  END_ENTITY; -- file_relationship
+
+  ENTITY functional_breakdown
+    SUBTYPE OF (breakdown);
+  END_ENTITY; -- functional_breakdown
+
+  ENTITY functional_breakdown_context
+    SUBTYPE OF (breakdown_context);
+      SELF\breakdown_context.breakdown         : functional_breakdown_version;
+      SELF\breakdown_context.breakdown_element : functional_element_definition;
+  END_ENTITY; -- functional_breakdown_context
+
+  ENTITY functional_breakdown_version
+    SUBTYPE OF (breakdown_version);
+      SELF\breakdown_version.of_product : functional_breakdown;
+  END_ENTITY; -- functional_breakdown_version
+
+  ENTITY functional_element
+    SUBTYPE OF (breakdown_element);
+  END_ENTITY; -- functional_element
+
+  ENTITY functional_element_definition
+    SUBTYPE OF (breakdown_element_definition);
+      SELF\breakdown_element_definition.defined_version : functional_element_version;
+  END_ENTITY; -- functional_element_definition
+
+  ENTITY functional_element_usage
+    SUBTYPE OF (breakdown_element_usage);
+      SELF\breakdown_element_usage.related_view  : functional_element_definition;
+      SELF\breakdown_element_usage.relating_view : functional_element_definition;
+  END_ENTITY; -- functional_element_usage
+
+  ENTITY functional_element_version
+    SUBTYPE OF (breakdown_element_version);
+      SELF\breakdown_element_version.of_product : functional_element;
+  END_ENTITY; -- functional_element_version
+
+  ENTITY geometric_coordinate_space
+    SUBTYPE OF (numerical_representation_context);
+      dimension_count : INTEGER;
+    WHERE
+      wr1: (dimension_count > 0);
+  END_ENTITY; -- geometric_coordinate_space
+
+  ENTITY geometric_model
+    SUBTYPE OF (representation);
+      version_id                           : OPTIONAL STRING;
+      model_extent                         : OPTIONAL length_measure;
+      SELF\representation.context_of_items : geometric_coordinate_space;
+      SELF\representation.items            : SET [1:?] OF detailed_geometric_model_element;
+  END_ENTITY; -- geometric_model
+
+  ENTITY hardcopy
+    SUBTYPE OF (file);
+  END_ENTITY; -- hardcopy
+
+  ENTITY hybrid_breakdown
+    SUBTYPE OF (breakdown);
+  END_ENTITY; -- hybrid_breakdown
+
+  ENTITY hybrid_breakdown_context
+    SUBTYPE OF (breakdown_context);
+      SELF\breakdown_context.breakdown         : hybrid_breakdown_version;
+      SELF\breakdown_context.breakdown_element : hybrid_element_definition;
+  END_ENTITY; -- hybrid_breakdown_context
+
+  ENTITY hybrid_breakdown_version
+    SUBTYPE OF (breakdown_version);
+      SELF\breakdown_version.of_product : hybrid_breakdown;
+  END_ENTITY; -- hybrid_breakdown_version
+
+  ENTITY hybrid_element
+    SUBTYPE OF (breakdown_element);
+  END_ENTITY; -- hybrid_element
+
+  ENTITY hybrid_element_definition
+    SUBTYPE OF (breakdown_element_definition);
+      SELF\breakdown_element_definition.defined_version : hybrid_element_version;
+  END_ENTITY; -- hybrid_element_definition
+
+  ENTITY hybrid_element_usage
+    SUBTYPE OF (breakdown_element_usage);
+      SELF\breakdown_element_usage.related_view  : hybrid_element_definition;
+      SELF\breakdown_element_usage.relating_view : hybrid_element_definition;
+  END_ENTITY; -- hybrid_element_usage
+
+  ENTITY hybrid_element_version
+    SUBTYPE OF (breakdown_element_version);
+      SELF\breakdown_element_version.of_product : hybrid_element;
+  END_ENTITY; -- hybrid_element_version
+
+  ENTITY identification_assignment;
+      identifier  : STRING;
+      role        : STRING;
+      description : OPTIONAL STRING;
+      items       : SET [1:?] OF identification_item;
+  END_ENTITY; -- identification_assignment
+
+  ENTITY in_zone;
+      id           : STRING;
+      name         : STRING;
+      description  : OPTIONAL STRING;
+      located_item : in_zone_item;
+      zone         : zone_element_definition;
+  END_ENTITY; -- in_zone
+
+  ENTITY independent_property;
+      id            : STRING;
+      property_type : STRING;
+      description   : OPTIONAL STRING;
+  END_ENTITY; -- independent_property
+
+  ENTITY independent_property_relationship;
+      relation_type : STRING;
+      related       : independent_property;
+      relating      : independent_property;
+      description   : OPTIONAL STRING;
+  END_ENTITY; -- independent_property_relationship
+
+  ENTITY independent_property_representation;
+      property    : independent_property;
+      rep         : representation;
+      role        : OPTIONAL STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- independent_property_representation
+
+  ENTITY information_right;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      restriction : OPTIONAL STRING;
+  END_ENTITY; -- information_right
+
+  ENTITY information_usage_right;
+      id           : STRING;
+      name         : STRING;
+      grants_right : SET [1:?] OF information_right;
+      comment      : OPTIONAL STRING;
+  END_ENTITY; -- information_usage_right
+
+  ENTITY information_usage_right_relationship;
+      related  : information_usage_right;
+      relating : information_usage_right;
+      role     : STRING;
+  END_ENTITY; -- information_usage_right_relationship
+
+  ENTITY interface_connection
+    SUBTYPE OF (view_definition_relationship);
+      SELF\view_definition_relationship.related_view  : interface_connector_definition;
+      SELF\view_definition_relationship.relating_view : interface_connector_definition;
+    DERIVE
+      connected  : interface_connector_definition := SELF\
+                      view_definition_relationship.related_view;
+      connecting : interface_connector_definition := SELF\
+                      view_definition_relationship.relating_view;
+  END_ENTITY; -- interface_connection
+
+  ENTITY interface_connector
+    SUBTYPE OF (product);
+  END_ENTITY; -- interface_connector
+
+  ENTITY interface_connector_as_planned
+    SUBTYPE OF (interface_connector_version);
+  END_ENTITY; -- interface_connector_as_planned
+
+  ENTITY interface_connector_as_realized
+    SUBTYPE OF (interface_connector_version);
+  END_ENTITY; -- interface_connector_as_realized
+
+  ENTITY interface_connector_definition
+    SUBTYPE OF (product_view_definition);
+      SELF\product_view_definition.defined_version : interface_connector_version;
+  END_ENTITY; -- interface_connector_definition
+
+  ENTITY interface_connector_design
+    SUBTYPE OF (interface_connector_version);
+  END_ENTITY; -- interface_connector_design
+
+  ENTITY interface_connector_design_to_planned;
+      description : OPTIONAL STRING;
+      design      : interface_connector_design;
+      id          : STRING;
+      name        : STRING;
+      planned     : interface_connector_as_planned;
+  END_ENTITY; -- interface_connector_design_to_planned
+
+  ENTITY interface_connector_design_to_realized;
+      description : OPTIONAL STRING;
+      design      : interface_connector_design;
+      id          : STRING;
+      name        : STRING;
+      realized    : interface_connector_as_realized;
+  END_ENTITY; -- interface_connector_design_to_realized
+
+  ENTITY interface_connector_planned_to_realized;
+      description : OPTIONAL STRING;
+      id          : STRING;
+      name        : STRING;
+      planned     : interface_connector_as_planned;
+      realized    : interface_connector_as_realized;
+  END_ENTITY; -- interface_connector_planned_to_realized
+
+  ENTITY interface_connector_version
+    SUBTYPE OF (product_version);
+      SELF\product_version.of_product : interface_connector;
+  END_ENTITY; -- interface_connector_version
+
+  ENTITY interface_definition_for;
+      description         : OPTIONAL STRING;
+      id                  : STRING;
+      interface           : interface_specification_definition;
+      interface_component : component_item;
+      name                : STRING;
+  END_ENTITY; -- interface_definition_for
+
+  ENTITY interface_specification
+    SUBTYPE OF (product);
+  END_ENTITY; -- interface_specification
+
+  ENTITY interface_specification_definition
+    SUBTYPE OF (product_view_definition);
+      SELF\product_view_definition.defined_version : interface_specification_version;
+  END_ENTITY; -- interface_specification_definition
+
+  ENTITY interface_specification_version
+    SUBTYPE OF (product_version);
+      SELF\product_version.of_product : interface_specification;
+  END_ENTITY; -- interface_specification_version
+
+  ENTITY intersection;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      operand     : SET [2:?] OF class;
+      resultant   : class;
+  END_ENTITY; -- intersection
+
+  ENTITY item_design_association;
+      watched_item    : configuration_watched_item;
+      proposed_design : version_or_definition;
+    UNIQUE
+      ur1 : watched_item, proposed_design;
+  END_ENTITY; -- item_design_association
+
+  ENTITY item_shape;
+      described_element : shapeable_item;
+      description       : OPTIONAL STRING;
+      id                : OPTIONAL STRING;
+  END_ENTITY; -- item_shape
+
+  ENTITY item_usage_effectivity;
+      effectivity_domain      : effectivity;
+      item_usage_relationship : view_definition_usage;
+      resolved_configuration  : item_design_association;
+  END_ENTITY; -- item_usage_effectivity
+
+  ENTITY language;
+      language_code : STRING;
+      country_code  : OPTIONAL STRING;
+  END_ENTITY; -- language
+
+  ENTITY language_indication;
+      considered_instances : SET [1:?] OF string_select;
+      considered_attribute : STRING;
+      used_language        : language;
+  END_ENTITY; -- language_indication
+
+  ENTITY length_unit
+    SUBTYPE OF (unit);
+  END_ENTITY; -- length_unit
+
+  ENTITY local_time;
+      hour_component   : hour_in_day;
+      minute_component : OPTIONAL minute_in_hour;
+      second_component : OPTIONAL second_in_minute;
+      zone             : time_offset;
+  END_ENTITY; -- local_time
+
+  ENTITY lot_effectivity
+    SUBTYPE OF (effectivity);
+      lot_id   : STRING;
+      lot_size : value_with_unit;
+  END_ENTITY; -- lot_effectivity
+
+  ENTITY luminous_intensity_unit
+    SUBTYPE OF (unit);
+  END_ENTITY; -- luminous_intensity_unit
+
+  ENTITY make_from_relationship
+    SUBTYPE OF (view_definition_usage);
+      SELF\view_definition_relationship.relating_view : part_view_definition;
+      SELF\view_definition_relationship.related_view  : part_view_definition;
+      quantity                                        : OPTIONAL value_with_unit;
+      priority                                        : OPTIONAL INTEGER;
+    WHERE
+      wr1: (SELF\view_definition_relationship.relating_view :<>: SELF\
+               view_definition_relationship.related_view);
+      wr2: ((NOT EXISTS(quantity)) XOR (NOT ('NUMBER' IN TYPEOF(quantity.
+               value_component))) XOR (quantity.value_component > 0));
+  END_ENTITY; -- make_from_relationship
+
+  ENTITY mapping_based_template_instance
+    SUBTYPE OF (detailed_geometric_model_element);
+      replicated_model : shape_model;
+      source           : axis_placement;
+      target           : geometric_mapping_target;
+  END_ENTITY; -- mapping_based_template_instance
+
+  ENTITY market;
+      name                : STRING;
+      market_segment_type : OPTIONAL STRING;
+  END_ENTITY; -- market
+
+  ENTITY mass_unit
+    SUBTYPE OF (unit);
+  END_ENTITY; -- mass_unit
+
+  ENTITY measure_item
+    ABSTRACT SUPERTYPE OF (ONEOF (numerical_item_with_unit,
+        numerical_item_with_global_unit,value_limit,
+        value_limit_with_global_unit,value_list,value_range,
+        value_range_with_global_unit,value_with_tolerances))
+    SUBTYPE OF (representation_item);
+    WHERE
+      wr1: (SIZEOF(USEDIN(SELF,'AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.PROPERTY_VALUE_REPRESENTATION.ITEMS')) 
+               > 0);
+  END_ENTITY; -- measure_item
+
+  ENTITY message;
+      contains     : SET OF content_item;
+      defined_by   : OPTIONAL SET OF message_definer_select;
+      id           : STRING;
+      message_type : STRING;
+      purpose      : OPTIONAL STRING;
+  END_ENTITY; -- message
+
+  ENTITY message_association;
+      related  : message;
+      relating : message;
+      role     : STRING;
+  END_ENTITY; -- message_association
+
+  ENTITY name_assignment;
+      name  : STRING;
+      role  : STRING;
+      items : assigned_name_select;
+  END_ENTITY; -- name_assignment
+
+  ENTITY next_assembly_usage
+    SUBTYPE OF (assembly_component_relationship);
+  END_ENTITY; -- next_assembly_usage
+
+  ENTITY numerical_document_property
+    SUBTYPE OF (numerical_item_with_unit);
+    INVERSE
+      valued_characteristic : SET [1:1] OF
+                                  document_property_representation FOR 
+                                 items;
+  END_ENTITY; -- numerical_document_property
+
+  ENTITY numerical_item_with_global_unit
+    SUBTYPE OF (measure_item);
+      value_component : measure_value;
+    WHERE
+      wr1: (SIZEOF(QUERY ( pvr <* USEDIN(SELF,'AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.PROPERTY_VALUE_REPRESENTATION.ITEMS')
+                | EXISTS(pvr.context_of_items.units) )) > 0);
+  END_ENTITY; -- numerical_item_with_global_unit
+
+  ENTITY numerical_item_with_unit
+    SUBTYPE OF (measure_item, value_with_unit);
+  END_ENTITY; -- numerical_item_with_unit
+
+  ENTITY numerical_representation_context
+    SUBTYPE OF (representation_context);
+      units      : OPTIONAL SET [1:?] OF unit;
+      accuracies : OPTIONAL SET [1:?] OF uncertainty_with_unit;
+  END_ENTITY; -- numerical_representation_context
+
+  ENTITY or_state_cause_effect_definition
+    SUBTYPE OF (state_cause_effect_definition);
+  END_ENTITY; -- or_state_cause_effect_definition
+
+  ENTITY organization;
+      id   : STRING;
+      name : STRING;
+  END_ENTITY; -- organization
+
+  ENTITY organization_or_person_in_organization_assignment;
+      assigned_entity : organization_or_person_in_organization_select;
+      role            : STRING;
+      items           : SET [1:?] OF
+                            organization_or_person_in_organization_item;
+  END_ENTITY; -- organization_or_person_in_organization_assignment
+
+  ENTITY organization_relationship;
+      relation_type         : STRING;
+      description           : OPTIONAL STRING;
+      relating_organization : organization;
+      related_organization  : organization;
+  END_ENTITY; -- organization_relationship
+
+  ENTITY part
+    SUBTYPE OF (product);
+    WHERE
+      wr1: (SIZEOF(['part','raw material'] * types_of_product(SELF)) = 1);
+  END_ENTITY; -- part
+
+  ENTITY part_version
+    SUBTYPE OF (product_version);
+      SELF\product_version.of_product : part;
+  END_ENTITY; -- part_version
+
+  ENTITY part_view_definition
+    SUBTYPE OF (product_view_definition);
+      SELF\product_view_definition.defined_version : part_version;
+  END_ENTITY; -- part_view_definition
+
+  ENTITY partial_document_assignment
+    SUBTYPE OF (document_assignment);
+      document_portion : STRING;
+  END_ENTITY; -- partial_document_assignment
+
+  ENTITY person;
+      last_name     : STRING;
+      first_name    : OPTIONAL STRING;
+      middle_names  : OPTIONAL LIST [1:?] OF STRING;
+      prefix_titles : OPTIONAL LIST [1:?] OF STRING;
+      suffix_titles : OPTIONAL LIST [1:?] OF STRING;
+  END_ENTITY; -- person
+
+  ENTITY person_in_organization;
+      concerned_person        : person;
+      containing_organization : organization;
+      role                    : STRING;
+    UNIQUE
+      person_is_unique_in_organization : concerned_person, 
+                                            containing_organization;
+  END_ENTITY; -- person_in_organization
+
+  ENTITY physical_breakdown
+    SUBTYPE OF (breakdown);
+  END_ENTITY; -- physical_breakdown
+
+  ENTITY physical_breakdown_context
+    SUBTYPE OF (breakdown_context);
+      SELF\breakdown_context.breakdown         : physical_breakdown_version;
+      SELF\breakdown_context.breakdown_element : physical_element_definition;
+  END_ENTITY; -- physical_breakdown_context
+
+  ENTITY physical_breakdown_version
+    SUBTYPE OF (breakdown_version);
+      SELF\breakdown_version.of_product : physical_breakdown;
+  END_ENTITY; -- physical_breakdown_version
+
+  ENTITY physical_document_definition
+    SUBTYPE OF (document_definition);
+      components : SET OF hardcopy;
+  END_ENTITY; -- physical_document_definition
+
+  ENTITY physical_element
+    SUBTYPE OF (breakdown_element);
+  END_ENTITY; -- physical_element
+
+  ENTITY physical_element_definition
+    SUBTYPE OF (breakdown_element_definition);
+      SELF\breakdown_element_definition.defined_version : physical_element_version;
+  END_ENTITY; -- physical_element_definition
+
+  ENTITY physical_element_usage
+    SUBTYPE OF (breakdown_element_usage);
+      SELF\breakdown_element_usage.related_view  : physical_element_definition;
+      SELF\breakdown_element_usage.relating_view : physical_element_definition;
+  END_ENTITY; -- physical_element_usage
+
+  ENTITY physical_element_version
+    SUBTYPE OF (breakdown_element_version);
+      SELF\breakdown_element_version.of_product : physical_element;
+  END_ENTITY; -- physical_element_version
+
+  ENTITY plane_angle_unit
+    SUBTYPE OF (unit);
+  END_ENTITY; -- plane_angle_unit
+
+  ENTITY power_set;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      base        : class;
+      derived     : class;
+  END_ENTITY; -- power_set
+
+  ENTITY product
+    ABSTRACT SUPERTYPE OF (ONEOF (breakdown,breakdown_element,document,
+        interface_connector,interface_specification,part,requirement,slot));
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- product
+
+  ENTITY product_as_individual
+    ABSTRACT SUPERTYPE OF (ONEOF (product_as_planned,product_as_realized))
+    SUBTYPE OF (product_version);
+  END_ENTITY; -- product_as_individual
+
+  ENTITY product_as_planned
+    SUBTYPE OF (product_as_individual);
+  END_ENTITY; -- product_as_planned
+
+  ENTITY product_as_realized
+    SUBTYPE OF (product_as_individual);
+  END_ENTITY; -- product_as_realized
+
+  ENTITY product_category;
+      id          : OPTIONAL STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- product_category
+
+  ENTITY product_category_assignment;
+      category : product_category;
+      products : SET [1:?] OF product;
+  END_ENTITY; -- product_category_assignment
+
+  ENTITY product_category_hierarchy;
+      super_category : product_category;
+      sub_category   : product_category;
+  END_ENTITY; -- product_category_hierarchy
+
+  ENTITY product_concept;
+      id            : STRING;
+      name          : STRING;
+      description   : OPTIONAL STRING;
+      target_market : OPTIONAL market;
+    UNIQUE
+      ur1 : id;
+  END_ENTITY; -- product_concept
+
+  ENTITY product_definition_element_relationship;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      breakdown   : breakdown_item;
+      product     : product_item;
+  END_ENTITY; -- product_definition_element_relationship
+
+  ENTITY product_design_to_individual;
+      individual_product : product_as_individual;
+      product_version    : product_version;
+  END_ENTITY; -- product_design_to_individual
+
+  ENTITY product_in_slot
+    SUBTYPE OF (view_definition_usage);
+      name    : STRING;
+      product : product_view_definition;
+      slot    : slot_definition;
+  END_ENTITY; -- product_in_slot
+
+  ENTITY product_planned_to_realized;
+      planned_product  : product_as_planned;
+      realized_product : product_as_realized;
+  END_ENTITY; -- product_planned_to_realized
+
+  ENTITY product_version
+    ABSTRACT SUPERTYPE OF (ONEOF (breakdown_element_version,
+        breakdown_version,document_version,interface_connector_version,
+        interface_specification_version,part_version,product_as_individual,
+        requirement_version,slot_version));
+      id          : STRING;
+      description : OPTIONAL STRING;
+      of_product  : product;
+    UNIQUE
+      ur1 : id, of_product;
+  END_ENTITY; -- product_version
+
+  ENTITY product_version_relationship;
+      relating_version : product_version;
+      related_version  : product_version;
+      relation_type    : STRING;
+      description      : OPTIONAL STRING;
+    WHERE
+      wr1: (relating_version :<>: related_version);
+  END_ENTITY; -- product_version_relationship
+
+  ENTITY product_view_definition
+    ABSTRACT SUPERTYPE OF (ONEOF (breakdown_element_definition,
+        interface_connector_definition,interface_specification_definition,
+        part_view_definition,requirement_view_definition,slot_definition));
+      id                          : STRING;
+      name                        : OPTIONAL STRING;
+      additional_characterization : OPTIONAL STRING;
+      initial_context             : view_definition_context;
+      additional_contexts         : SET OF view_definition_context;
+      defined_version             : product_version;
+    WHERE
+      wr1: (NOT (initial_context IN additional_contexts));
+  END_ENTITY; -- product_view_definition
+
+  ENTITY project;
+      id                        : STRING;
+      name                      : STRING;
+      description               : OPTIONAL STRING;
+      responsible_organizations : SET OF organization;
+      planned_start_date        : date_or_event;
+      planned_end_date          : date_or_event;
+      actual_start_date         : date_or_date_time_select;
+      actual_end_date           : date_or_date_time_select;
+  END_ENTITY; -- project
+
+  ENTITY project_assignment;
+      assigned_project : project;
+      role             : STRING;
+      items            : SET OF project_item;
+  END_ENTITY; -- project_assignment
+
+  ENTITY project_relationship;
+      relation_type    : STRING;
+      description      : OPTIONAL STRING;
+      relating_project : project;
+      related_project  : project;
+  END_ENTITY; -- project_relationship
+
+  ENTITY promissory_usage
+    SUBTYPE OF (assembly_component_relationship);
+  END_ENTITY; -- promissory_usage
+
+  ENTITY proper_subset;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      subset      : class;
+      superset    : class;
+  END_ENTITY; -- proper_subset
+
+  ENTITY property_representation;
+      description : OPTIONAL STRING;
+      property    : assigned_property;
+      rep         : representation;
+      role        : OPTIONAL STRING;
+  END_ENTITY; -- property_representation
+
+  ENTITY property_value_representation
+    SUBTYPE OF (representation);
+      SELF\representation.context_of_items : numerical_representation_context;
+  END_ENTITY; -- property_value_representation
+
+  ENTITY qualified_property_value_representation
+    SUBTYPE OF (property_value_representation);
+      value_determination : OPTIONAL STRING;
+      qualifier           : OPTIONAL property_value_qualifier;
+  END_ENTITY; -- qualified_property_value_representation
+
+  ENTITY ratio_unit
+    SUBTYPE OF (unit);
+  END_ENTITY; -- ratio_unit
+
+  ENTITY related_condition_parameter;
+      name                          : STRING;
+      description                   : OPTIONAL STRING;
+      conditon_evaluation_parameter : condition_evaluation_parameter;
+      condition_parameter           : condition_parameter;
+  END_ENTITY; -- related_condition_parameter
+
+  ENTITY relative_event
+    SUBTYPE OF (event);
+      base_event : event;
+      offset     : duration;
+  END_ENTITY; -- relative_event
+
+  ENTITY representation;
+      name             : STRING;
+      context_of_items : representation_context;
+      items            : SET [1:?] OF representation_item;
+      description      : OPTIONAL STRING;
+      id               : OPTIONAL STRING;
+  END_ENTITY; -- representation
+
+  ENTITY representation_context;
+      id   : STRING;
+      kind : STRING;
+    INVERSE
+      representations_in_context : SET [1:?] OF representation FOR 
+                                      context_of_items;
+  END_ENTITY; -- representation_context
+
+  ENTITY representation_item
+    ABSTRACT SUPERTYPE;
+      name : STRING;
+  END_ENTITY; -- representation_item
+
+  ENTITY representation_relationship;
+      relation_type : STRING;
+      description   : STRING;
+      rep_1         : representation;
+      rep_2         : representation;
+  END_ENTITY; -- representation_relationship
+
+  ENTITY requirement
+    SUBTYPE OF (product);
+  END_ENTITY; -- requirement
+
+  ENTITY requirement_assignment;
+      assigned_requirement : requirement_view_definition;
+      assigned_to          : requirement_assignment_item;
+      description          : OPTIONAL STRING;
+      id                   : STRING;
+  END_ENTITY; -- requirement_assignment
+
+  ENTITY requirement_collection_relationship
+    SUBTYPE OF (view_definition_relationship);
+      SELF\view_definition_relationship.relating_view : requirement_view_definition;
+      SELF\view_definition_relationship.related_view  : requirement_view_definition;
+    DERIVE
+      collection : requirement_view_definition := SELF\
+                      view_definition_relationship.relating_view;
+      member     : requirement_view_definition := SELF\
+                      view_definition_relationship.related_view;
+  END_ENTITY; -- requirement_collection_relationship
+
+  ENTITY requirement_source;
+      description         : OPTIONAL STRING;
+      id                  : STRING;
+      source              : requirement_source_item;
+      sourced_requirement : requirement_view_definition;
+  END_ENTITY; -- requirement_source
+
+  ENTITY requirement_version
+    SUBTYPE OF (product_version);
+      SELF\product_version.of_product : requirement;
+  END_ENTITY; -- requirement_version
+
+  ENTITY requirement_version_relationship
+    SUBTYPE OF (product_version_relationship);
+      SELF\product_version_relationship.relating_version : requirement_version;
+      SELF\product_version_relationship.related_version  : requirement_version;
+    DERIVE
+      predecessor : requirement_version := SELF\
+                       product_version_relationship.relating_version;
+      successor   : requirement_version := SELF\
+                       product_version_relationship.related_version;
+  END_ENTITY; -- requirement_version_relationship
+
+  ENTITY requirement_view_definition
+    SUBTYPE OF (product_view_definition);
+      SELF\product_view_definition.defined_version : requirement_version;
+      satisfied                                    : OPTIONAL BOOLEAN;
+      tbd                                          : BOOLEAN;
+  END_ENTITY; -- requirement_view_definition
+
+  ENTITY same_membership;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      set_1       : class;
+      set_2       : class;
+  END_ENTITY; -- same_membership
+
+  ENTITY security_classification;
+      classification_level : STRING;
+      description          : OPTIONAL STRING;
+  END_ENTITY; -- security_classification
+
+  ENTITY security_classification_assignment;
+      classification : security_classification;
+      items          : SET [1:?] OF security_classification_item;
+  END_ENTITY; -- security_classification_assignment
+
+  ENTITY selected_item
+    SUBTYPE OF (class);
+  END_ENTITY; -- selected_item
+
+  ENTITY selected_item_assignment
+    SUBTYPE OF (classification_assignment);
+      SELF\classification_assignment.assigned_class : selected_item;
+      item_context                                  : SET [1:?] OF selected_item_context_items;
+      SELF\classification_assignment.items          : SET [1:1] OF selected_item_select;
+  END_ENTITY; -- selected_item_assignment
+
+  ENTITY sequence_of_state
+    SUBTYPE OF (state_relationship);
+      SELF\state_relationship.relating : SET [1:?] OF state;
+      SELF\state_relationship.related  : SET [1:?] OF state;
+    DERIVE
+      successor   : SET [1:?] OF state := SELF\state_relationship.relating;
+      predecessor : SET [1:?] OF state := SELF\state_relationship.related;
+  END_ENTITY; -- sequence_of_state
+
+  ENTITY sequence_of_state_definition
+    SUBTYPE OF (state_definition_relationship);
+      SELF\state_definition_relationship.relating : SET [1:?] OF
+                                                        state_definition;
+      SELF\state_definition_relationship.related  : SET [1:?] OF
+                                                        state_definition;
+    DERIVE
+      successor   : SET [1:?] OF state_definition := SELF\
+                       state_definition_relationship.relating;
+      predecessor : SET [1:?] OF state_definition := SELF\
+                       state_definition_relationship.related;
+  END_ENTITY; -- sequence_of_state_definition
+
+  ENTITY serial_effectivity
+    SUBTYPE OF (effectivity);
+      start_id : STRING;
+      end_id   : OPTIONAL STRING;
+  END_ENTITY; -- serial_effectivity
+
+  ENTITY shape_dependent_property_representation;
+      described_element       : shape_dependent_select;
+      property_representation : representation;
+      characteristic_type     : STRING;
+      description             : OPTIONAL STRING;
+  END_ENTITY; -- shape_dependent_property_representation
+
+  ENTITY shape_description_association;
+      represented_characteristic : shape_select;
+      representation             : shape_model;
+      role                       : OPTIONAL STRING;
+      description                : OPTIONAL STRING;
+  END_ENTITY; -- shape_description_association
+
+  ENTITY shape_element;
+      containing_shape : item_shape;
+      element_name     : STRING;
+      id               : OPTIONAL STRING;
+      description      : OPTIONAL STRING;
+  END_ENTITY; -- shape_element
+
+  ENTITY shape_element_relationship;
+      related       : shape_element;
+      relating      : shape_element;
+      relation_type : STRING;
+      description   : OPTIONAL STRING;
+  END_ENTITY; -- shape_element_relationship
+
+  ENTITY slot
+    SUBTYPE OF (product);
+  END_ENTITY; -- slot
+
+  ENTITY slot_as_planned
+    SUBTYPE OF (slot_version);
+  END_ENTITY; -- slot_as_planned
+
+  ENTITY slot_as_realized
+    SUBTYPE OF (slot_version);
+  END_ENTITY; -- slot_as_realized
+
+  ENTITY slot_definition
+    SUBTYPE OF (product_view_definition);
+      SELF\product_view_definition.defined_version : slot_version;
+  END_ENTITY; -- slot_definition
+
+  ENTITY slot_design
+    SUBTYPE OF (slot_version);
+  END_ENTITY; -- slot_design
+
+  ENTITY slot_design_to_planned;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      design      : slot_design;
+      planned     : slot_as_planned;
+    WHERE
+      wr1: (SELF.design.of_product :=: SELF.planned.of_product);
+  END_ENTITY; -- slot_design_to_planned
+
+  ENTITY slot_design_to_realized;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      design      : slot_design;
+      realized    : slot_as_realized;
+    WHERE
+      wr1: (SELF.design.of_product :=: SELF.realized.of_product);
+  END_ENTITY; -- slot_design_to_realized
+
+  ENTITY slot_on_product;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      product     : product_view_definition;
+      slot        : slot_definition;
+  END_ENTITY; -- slot_on_product
+
+  ENTITY slot_planned_to_realized;
+      description : OPTIONAL STRING;
+      id          : STRING;
+      name        : STRING;
+      planned     : slot_as_planned;
+      realized    : slot_as_realized;
+    WHERE
+      wr1: (SELF.planned.of_product :=: SELF.realized.of_product);
+  END_ENTITY; -- slot_planned_to_realized
+
+  ENTITY slot_version
+    SUPERTYPE OF (ONEOF (slot_as_planned,slot_as_realized,slot_design))
+    SUBTYPE OF (product_version);
+      SELF\product_version.of_product : slot;
+  END_ENTITY; -- slot_version
+
+  ENTITY solid_angle_unit
+    SUBTYPE OF (unit);
+  END_ENTITY; -- solid_angle_unit
+
+  ENTITY state
+    SUPERTYPE OF (ONEOF (state_observed,state_predicted));
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- state
+
+  ENTITY state_assertion;
+      name              : STRING;
+      description       : OPTIONAL STRING;
+      asserted_state    : state;
+      conformance_state : state_definition;
+  END_ENTITY; -- state_assertion
+
+  ENTITY state_assessment;
+      name             : STRING;
+      description      : OPTIONAL STRING;
+      assessed_state   : state;
+      comparable_state : state_definition;
+  END_ENTITY; -- state_assessment
+
+  ENTITY state_cause_effect
+    SUBTYPE OF (state_relationship);
+      SELF\state_relationship.relating : SET [1:?] OF state;
+      SELF\state_relationship.related  : SET [1:?] OF state;
+    DERIVE
+      effect : SET [1:?] OF state := SELF\state_relationship.relating;
+      cause  : SET [1:?] OF state := SELF\state_relationship.related;
+  END_ENTITY; -- state_cause_effect
+
+  ENTITY state_cause_effect_definition
+    SUBTYPE OF (state_definition_relationship);
+      SELF\state_definition_relationship.relating : SET [1:?] OF
+                                                        state_definition;
+      SELF\state_definition_relationship.related  : SET [1:?] OF
+                                                        state_definition;
+    DERIVE
+      effect : SET [1:?] OF state_definition := SELF\
+                  state_definition_relationship.relating;
+      cause  : SET [1:?] OF state_definition := SELF\
+                  state_definition_relationship.related;
+  END_ENTITY; -- state_cause_effect_definition
+
+  ENTITY state_complement_definition
+    SUBTYPE OF (state_definition_relationship);
+      SELF\state_definition_relationship.relating : SET [1:?] OF
+                                                        state_definition;
+      SELF\state_definition_relationship.related  : SET [1:?] OF
+                                                        state_definition;
+      set_2                                       : SET [1:?] OF
+                                                        state_definition;
+    DERIVE
+      universe : SET [1:?] OF state_definition := SELF\
+                    state_definition_relationship.relating;
+      set_1    : SET [1:?] OF state_definition := SELF\
+                    state_definition_relationship.related;
+  END_ENTITY; -- state_complement_definition
+
+  ENTITY state_definition;
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- state_definition
+
+  ENTITY state_definition_relationship;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      relating    : SET [1:?] OF state_definition;
+      related     : SET [1:?] OF state_definition;
+  END_ENTITY; -- state_definition_relationship
+
+  ENTITY state_definition_role;
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- state_definition_role
+
+  ENTITY state_observed
+    SUBTYPE OF (state);
+  END_ENTITY; -- state_observed
+
+  ENTITY state_predicted
+    SUBTYPE OF (state);
+  END_ENTITY; -- state_predicted
+
+  ENTITY state_predicted_to_observed
+    SUBTYPE OF (state_relationship);
+      SELF\state_relationship.relating : SET [1:?] OF state_observed;
+      SELF\state_relationship.related  : SET [1:?] OF state_predicted;
+    DERIVE
+      observed_state  : SET [1:?] OF state_observed := SELF\
+                           state_relationship.relating;
+      predicted_state : SET [1:?] OF state_predicted := SELF\
+                           state_relationship.related;
+  END_ENTITY; -- state_predicted_to_observed
+
+  ENTITY state_proper_subset_definition
+    SUBTYPE OF (state_definition_relationship);
+      SELF\state_definition_relationship.related  : SET [1:?] OF
+                                                        state_definition;
+      SELF\state_definition_relationship.relating : SET [1:?] OF
+                                                        state_definition;
+    DERIVE
+      proper_subset   : SET [1:?] OF state_definition := SELF\
+                           state_definition_relationship.related;
+      proper_superset : SET [1:?] OF state_definition := SELF\
+                           state_definition_relationship.relating;
+  END_ENTITY; -- state_proper_subset_definition
+
+  ENTITY state_relationship;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      relating    : SET [1:?] OF state;
+      related     : SET [1:?] OF state;
+  END_ENTITY; -- state_relationship
+
+  ENTITY state_role;
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- state_role
+
+  ENTITY state_subset_definition
+    SUBTYPE OF (state_definition_relationship);
+      SELF\state_definition_relationship.relating : SET [1:?] OF
+                                                        state_definition;
+      SELF\state_definition_relationship.related  : SET [1:?] OF
+                                                        state_definition;
+    DERIVE
+      superset : SET [1:?] OF state_definition := SELF\
+                    state_definition_relationship.relating;
+      subset   : SET [1:?] OF state_definition := SELF\
+                    state_definition_relationship.related;
+  END_ENTITY; -- state_subset_definition
+
+  ENTITY state_symptom_definition
+    SUBTYPE OF (state_definition_relationship);
+      SELF\state_definition_relationship.relating : SET [1:?] OF
+                                                        state_definition;
+      SELF\state_definition_relationship.related  : SET [1:?] OF
+                                                        state_definition;
+    DERIVE
+      symptom_effect : SET [1:?] OF state_definition := SELF\
+                          state_definition_relationship.relating;
+      symptom_cause  : SET [1:?] OF state_definition := SELF\
+                          state_definition_relationship.related;
+  END_ENTITY; -- state_symptom_definition
+
+  ENTITY state_transition
+    SUBTYPE OF (state_relationship);
+      SELF\state_relationship.relating : SET [1:?] OF state;
+      SELF\state_relationship.related  : SET [1:?] OF state;
+    DERIVE
+      end_state   : SET [1:?] OF state := SELF\state_relationship.relating;
+      start_state : SET [1:?] OF state := SELF\state_relationship.related;
+  END_ENTITY; -- state_transition
+
+  ENTITY state_transition_definition
+    SUBTYPE OF (state_definition_relationship);
+      SELF\state_definition_relationship.relating : SET [1:?] OF
+                                                        state_definition;
+      SELF\state_definition_relationship.related  : SET [1:?] OF
+                                                        state_definition;
+    DERIVE
+      end_state   : SET [1:?] OF state_definition := SELF\
+                       state_definition_relationship.relating;
+      start_state : SET [1:?] OF state_definition := SELF\
+                       state_definition_relationship.related;
+  END_ENTITY; -- state_transition_definition
+
+  ENTITY string_representation_item
+    SUBTYPE OF (representation_item);
+      string_value : STRING;
+  END_ENTITY; -- string_representation_item
+
+  ENTITY subset;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      subset      : class;
+      superset    : class;
+  END_ENTITY; -- subset
+
+  ENTITY supplied_part_relationship
+    SUBTYPE OF (product_version_relationship);
+    WHERE
+      wr1: (SELF\product_version_relationship.relation_type IN [
+               'supplied item','supplied document']);
+  END_ENTITY; -- supplied_part_relationship
+
+  ENTITY system_breakdown
+    SUBTYPE OF (breakdown);
+  END_ENTITY; -- system_breakdown
+
+  ENTITY system_breakdown_context
+    SUBTYPE OF (breakdown_context);
+      SELF\breakdown_context.breakdown         : system_breakdown_version;
+      SELF\breakdown_context.breakdown_element : system_element_definition;
+  END_ENTITY; -- system_breakdown_context
+
+  ENTITY system_breakdown_version
+    SUBTYPE OF (breakdown_version);
+      SELF\breakdown_version.of_product : system_breakdown;
+  END_ENTITY; -- system_breakdown_version
+
+  ENTITY system_element
+    SUBTYPE OF (breakdown_element);
+  END_ENTITY; -- system_element
+
+  ENTITY system_element_definition
+    SUBTYPE OF (breakdown_element_definition);
+      SELF\breakdown_element_definition.defined_version : system_element_version;
+  END_ENTITY; -- system_element_definition
+
+  ENTITY system_element_usage
+    SUBTYPE OF (breakdown_element_usage);
+      SELF\breakdown_element_usage.related_view  : system_element_definition;
+      SELF\breakdown_element_usage.relating_view : system_element_definition;
+  END_ENTITY; -- system_element_usage
+
+  ENTITY system_element_version
+    SUBTYPE OF (breakdown_element_version);
+      SELF\breakdown_element_version.of_product : system_element;
+  END_ENTITY; -- system_element_version
+
+  ENTITY thermodynamic_temperature_unit
+    SUBTYPE OF (unit);
+  END_ENTITY; -- thermodynamic_temperature_unit
+
+  ENTITY time_interval;
+      id          : STRING;
+      name        : STRING;
+      description : STRING;
+  END_ENTITY; -- time_interval
+
+  ENTITY time_interval_effectivity
+    SUBTYPE OF (effectivity);
+      effectivity_period : time_interval;
+  END_ENTITY; -- time_interval_effectivity
+
+  ENTITY time_interval_relationship;
+      relation_type          : STRING;
+      description            : STRING;
+      relating_time_interval : time_interval;
+      related_time_interval  : time_interval;
+  END_ENTITY; -- time_interval_relationship
+
+  ENTITY time_interval_with_bounds
+    SUBTYPE OF (time_interval);
+      primary_bound               : OPTIONAL date_or_event;
+      secondary_bound             : OPTIONAL date_or_event;
+      duration_from_primary_bound : OPTIONAL duration;
+    WHERE
+      wr1: (NOT (EXISTS(secondary_bound) AND EXISTS(
+               duration_from_primary_bound)));
+      wr2: (EXISTS(primary_bound) OR EXISTS(secondary_bound));
+  END_ENTITY; -- time_interval_with_bounds
+
+  ENTITY time_offset;
+      hour_offset   : INTEGER;
+      minute_offset : OPTIONAL INTEGER;
+      sense         : offset_orientation;
+    DERIVE
+      actual_minute_offset : INTEGER := NVL(minute_offset,0);
+    WHERE
+      wr1: ((0 <= hour_offset) AND (hour_offset <= 24));
+      wr2: ((0 <= minute_offset) AND (minute_offset <= 59));
+      wr3: (NOT (((hour_offset <> 0) OR (actual_minute_offset <> 0)) AND (
+               sense = exact)));
+  END_ENTITY; -- time_offset
+
+  ENTITY time_unit
+    SUBTYPE OF (unit);
+  END_ENTITY; -- time_unit
+
+  ENTITY tracing_relationship
+    SUBTYPE OF (view_definition_relationship);
+      SELF\view_definition_relationship.relating_view : requirement_view_definition;
+      SELF\view_definition_relationship.related_view  : requirement_view_definition;
+    DERIVE
+      traces_from : requirement_view_definition := SELF\
+                       view_definition_relationship.relating_view;
+      traces_to   : requirement_view_definition := SELF\
+                       view_definition_relationship.related_view;
+  END_ENTITY; -- tracing_relationship
+
+  ENTITY transformation_based_template_instance
+    SUBTYPE OF (detailed_geometric_model_element);
+      replicated_model           : shape_model;
+      replication_transformation : cartesian_transformation;
+  END_ENTITY; -- transformation_based_template_instance
+
+  ENTITY uncertainty_with_unit
+    SUBTYPE OF (value_with_unit);
+      name        : STRING;
+      description : OPTIONAL STRING;
+  END_ENTITY; -- uncertainty_with_unit
+
+  ENTITY union;
+      id          : STRING;
+      name        : STRING;
+      description : OPTIONAL STRING;
+      operand     : SET [2:?] OF class;
+      resultant   : class;
+  END_ENTITY; -- union
+
+  ENTITY unit
+    SUPERTYPE OF (ONEOF (amount_of_substance_unit,electric_current_unit,
+        length_unit,luminous_intensity_unit,mass_unit,plane_angle_unit,
+        ratio_unit,solid_angle_unit,thermodynamic_temperature_unit,
+        time_unit));
+      name    : OPTIONAL STRING;
+      si_unit : BOOLEAN;
+  END_ENTITY; -- unit
+
+  ENTITY value_limit
+    SUBTYPE OF (measure_item);
+      limit_qualifier : limit_qualifier_list;
+      limit           : value_with_unit;
+  END_ENTITY; -- value_limit
+
+  ENTITY value_limit_with_global_unit
+    SUBTYPE OF (measure_item);
+      limit           : numerical_item_with_global_unit;
+      limit_qualifier : limit_qualifier_list;
+  END_ENTITY; -- value_limit_with_global_unit
+
+  ENTITY value_list
+    SUBTYPE OF (measure_item);
+      values : LIST [1:?] OF measure_item;
+  END_ENTITY; -- value_list
+
+  ENTITY value_range
+    SUBTYPE OF (measure_item);
+      lower_limit : numerical_item_with_unit;
+      upper_limit : numerical_item_with_unit;
+  END_ENTITY; -- value_range
+
+  ENTITY value_range_with_global_unit
+    SUBTYPE OF (measure_item);
+      lower_limit : numerical_item_with_global_unit;
+      upper_limit : numerical_item_with_global_unit;
+  END_ENTITY; -- value_range_with_global_unit
+
+  ENTITY value_with_tolerances
+    SUBTYPE OF (measure_item);
+      item_value : numerical_item_with_unit;
+      tolerances : value_range;
+  END_ENTITY; -- value_with_tolerances
+
+  ENTITY value_with_unit;
+      unit            : unit;
+      value_component : measure_value;
+  END_ENTITY; -- value_with_unit
+
+  ENTITY view_definition_context;
+      application_domain : STRING;
+      life_cycle_stage   : STRING;
+      description        : OPTIONAL STRING;
+  END_ENTITY; -- view_definition_context
+
+  ENTITY view_definition_relationship
+    ABSTRACT SUPERTYPE OF (ONEOF (breakdown_element_usage,
+        interface_connection,requirement_collection_relationship,
+        tracing_relationship,view_definition_usage));
+      id            : STRING;
+      relating_view : product_view_definition;
+      related_view  : product_view_definition;
+      relation_type : OPTIONAL STRING;
+      description   : OPTIONAL STRING;
+  END_ENTITY; -- view_definition_relationship
+
+  ENTITY view_definition_usage
+    SUBTYPE OF (view_definition_relationship);
+  END_ENTITY; -- view_definition_usage
+
+  ENTITY xor_state_cause_effect_definition
+    SUBTYPE OF (state_cause_effect_definition);
+  END_ENTITY; -- xor_state_cause_effect_definition
+
+  ENTITY zone_breakdown
+    SUBTYPE OF (breakdown);
+  END_ENTITY; -- zone_breakdown
+
+  ENTITY zone_breakdown_context
+    SUBTYPE OF (breakdown_context);
+      SELF\breakdown_context.breakdown         : zone_breakdown_version;
+      SELF\breakdown_context.breakdown_element : zone_element_definition;
+  END_ENTITY; -- zone_breakdown_context
+
+  ENTITY zone_breakdown_version
+    SUBTYPE OF (breakdown_version);
+      SELF\breakdown_version.of_product : zone_breakdown;
+  END_ENTITY; -- zone_breakdown_version
+
+  ENTITY zone_element
+    SUBTYPE OF (breakdown_element);
+  END_ENTITY; -- zone_element
+
+  ENTITY zone_element_definition
+    SUBTYPE OF (breakdown_element_definition);
+      SELF\breakdown_element_definition.defined_version : zone_element_version;
+  END_ENTITY; -- zone_element_definition
+
+  ENTITY zone_element_usage
+    SUBTYPE OF (breakdown_element_usage);
+      SELF\breakdown_element_usage.related_view  : zone_element_definition;
+      SELF\breakdown_element_usage.relating_view : zone_element_definition;
+  END_ENTITY; -- zone_element_usage
+
+  ENTITY zone_element_version
+    SUBTYPE OF (breakdown_element_version);
+      SELF\breakdown_element_version.of_product : zone_element;
+  END_ENTITY; -- zone_element_version
+
+  RULE part_requires_id_owner FOR (part);
+
+  WHERE
+    wr1: (SIZEOF(QUERY ( prod <* part | (SIZEOF(QUERY ( apoa <* USEDIN(
+             prod,'AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.ORGANIZATION_OR_PERSON_IN_ORGANIZATION_ASSIGNMENT.ITEMS')
+              | (apoa\organization_or_person_in_organization_assignment.
+             role = 'id owner') )) <> 1) )) = 0);
+
+  END_RULE; -- part_requires_id_owner
+
+  FUNCTION types_of_product(
+               obj: product
+      ): SET OF STRING;
+
+    LOCAL
+      i                    : INTEGER;
+      category_assignments : BAG OF product_category_assignment;
+      categories           : SET OF STRING := [];
+    END_LOCAL;
+    category_assignments := USEDIN(obj,'AP239_PRODUCT_DEFINITION_INFORMATION_ARM_LF.PRODUCT_CATEGORY_ASSIGNMENT.PRODUCTS');
+    REPEAT i := LOINDEX(category_assignments) TO HIINDEX(
+        category_assignments) BY 1;
+      categories := categories + category_assignments[i].category.name;
+    END_REPEAT;
+    RETURN(categories);
+
+  END_FUNCTION; -- types_of_product
+
+  FUNCTION valid_document_property_representation(
+               rep: document_property_representation
+      ): LOGICAL;
+    CASE rep.name OF
+      'document content' :         BEGIN
+          RETURN(SIZEOF(QUERY ( items <* rep\representation.items | (NOT (
+              items.name IN ['detail level','geometry type',
+              'real world scale'])) )) = 0);
+        END;
+      'document creation'  :         BEGIN
+          IF NOT (SIZEOF(QUERY ( items <* rep\representation.items | (NOT 
+              (items.name IN ['creating interface','creating system',
+              'operating system'])) )) = 0) THEN
+            RETURN(FALSE);
+          END_IF;
+          IF NOT (SIZEOF(QUERY ( items <* rep\representation.items | (NOT 
+              (items.name IN ['creating system'])) )) = 1) THEN
+            RETURN(FALSE);
+          ELSE
+            RETURN(TRUE);
+          END_IF;
+        END;
+      'document format'  :         BEGIN
+          RETURN(SIZEOF(QUERY ( items <* rep\representation.items | (NOT (
+              items.name IN ['character code','data format','size format',
+              'size format standard'])) )) = 0);
+        END;
+      'document size'    :         BEGIN
+          RETURN(SIZEOF(QUERY ( items <* rep\representation.items | (NOT (
+              items.name IN ['file size','page count'])) )) = 0);
+        END;
+      OTHERWISE          :         RETURN(UNKNOWN);
+      END_CASE;
+
+  END_FUNCTION; -- valid_document_property_representation
+
+END_SCHEMA; -- ap239_product_definition_information_arm_lf
