@@ -1,0 +1,15 @@
+(*
+ $Id$
+ ISO/TC184/SC4 WG12N1162 - ISO/TS - 10303-1049 Activity method - EXPRESS ARM 
+*)
+
+SCHEMA Activity_method_arm;
+
+ENTITY Activity_method;
+  consequence : OPTIONAL STRING;  
+  description : OPTIONAL STRING;
+  name : STRING;
+  purpose : STRING;
+END_ENTITY;
+
+END_SCHEMA;

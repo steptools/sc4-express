@@ -1,0 +1,34 @@
+(* ISO/TC184/SC4 WG12N1216 - ISO/TS 10303-1118 - Measure representation	Express ARM
+$Id$
+ *)
+
+SCHEMA Measure_representation_arm;
+
+USE FROM Foundation_representation_arm;
+
+USE FROM Value_with_unit_arm;
+
+ENTITY Measure_item ABSTRACT SUPERTYPE
+SUBTYPE OF (Representation_item);
+WHERE
+  WR1: SIZEOF(USEDIN(SELF, 'MEASURE_REPRESENTATION_ARM.PROPERTY_VALUE_REPRESENTATION.ITEMS'))>0;
+END_ENTITY;
+
+ENTITY Numerical_item_with_global_unit
+SUBTYPE OF (Measure_item);
+  value_component : measure_value;
+WHERE
+  WR1: SIZEOF(QUERY( pvr <* USEDIN(SELF, 'MEASURE_REPRESENTATION_ARM.PROPERTY_VALUE_REPRESENTATION.ITEMS') |
+	EXISTS(pvr.units) )) >0;
+END_ENTITY;
+
+ENTITY Numerical_item_with_unit
+SUBTYPE OF (Measure_item, Value_with_unit);
+END_ENTITY;
+
+ENTITY Property_value_representation
+SUBTYPE OF (Representation);
+  SELF\Representation.context_of_items : Numerical_representation_context;
+END_ENTITY;
+
+END_SCHEMA;
