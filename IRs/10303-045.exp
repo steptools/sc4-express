@@ -1,18 +1,27 @@
+(*
 
+The following EXPRESS incorporates ISO 10303-45 
+   Technical Corrigendum 1 into the IS version of the
+   EXPRESS.  This document is ISO TC 184/SC4/WG12 N256
+
+*)
 SCHEMA material_property_definition_schema;
-
 
 REFERENCE FROM product_definition_schema
       (product_definition_relationship);
+
 REFERENCE FROM product_property_definition_schema
       (characterized_definition,
       property_definition);
+
 REFERENCE FROM support_resource_schema
      (label,
       text,
       bag_to_set);
+
 REFERENCE FROM measure_schema
      (measure_with_unit);
+
 REFERENCE FROM material_property_representation_schema
      (material_property_representation);
 
@@ -67,43 +76,45 @@ SUBTYPE OF (product_definition_relationship);
 END_ENTITY;
 
 FUNCTION acyclic_property_definition_relationship
-  (relation         : property_definition_relationship;
-   relatives        : SET OF property_definition;
+  (relation          : property_definition_relationship;
+   relatives         : SET [1:?] OF property_definition;
    specific_relation : STRING) : LOGICAL;
 
-
   LOCAL
-    x              : SET OF property_definition_relationship;
-    i              : INTEGER;
-    local_relatives : SET OF property_definition;
+    x                : SET OF property_definition_relationship;
   END_LOCAL;
 
+  IF relation.relating_property_definition IN 
+            relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_property_definition :=: relatives[i] THEN
+  x := QUERY (pd <* bag_to_set (USEDIN
+       (relation.relating_property_definition,
+        'MATERIAL_PROPERTY_DEFINITION_SCHEMA.' +
+        'PROPERTY_DEFINITION_RELATIONSHIP.' +
+        'RELATED_PROPERTY_DEFINITION')) |
+         specific_relation IN TYPEOF (pd));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_property_definition_relationship
+      (x[i],
+       relatives + relation.relating_property_definition,
+       specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_property_definition, specific_relation));
-      local_relatives := relatives + relation.relating_property_definition;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_property_definition_relationship
-            (x[i], local_relatives, specific_relation) THEN
-       RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION;  -- acyclic_property_definition_relationship
 
 END_SCHEMA;    -- material_property_definition_schema
 
 SCHEMA material_property_representation_schema;
 
-
 REFERENCE FROM product_property_representation_schema
      (property_definition_representation);
+
 REFERENCE FROM support_resource_schema
      (label,
       text);
@@ -130,12 +141,13 @@ END_SCHEMA;    -- material_property_representation_schema
 
 SCHEMA qualified_measure_schema;
 
-
 REFERENCE FROM support_resource_schema
      (label,
       text);
+
 REFERENCE FROM measure_schema
      (measure_with_unit);
+
 REFERENCE FROM representation_schema
      (representation_item);
 
@@ -154,8 +166,6 @@ ENTITY precision_qualifier;
 END_ENTITY;
 
 ENTITY uncertainty_qualifier
-
-
   SUPERTYPE OF (ONEOF (standard_uncertainty,
                      qualitative_uncertainty));
   measure_name : label;
@@ -197,16 +207,12 @@ WHERE
 END_ENTITY;
 
 ENTITY measure_qualification;
-
-
-
   name : label;
   description : text;
   qualified_measure : measure_with_unit;
   qualifiers : SET [1:?] OF value_qualifier;
 WHERE
   WR1: SIZEOF(QUERY(temp <* qualifiers |
-
              'QUALIFIED_MEASURE_SCHEMA.PRECISION_QUALIFIER'
              IN TYPEOF(temp))) < 2;
 END_ENTITY;
