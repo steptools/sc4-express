@@ -1,10 +1,9 @@
- (* First draft of Curve Swept Solid AIC EXPRESS definitions - not yet verified
- by compiler - trimmed_curve and b_splines added May 02,
- document dated 2002-05-27 - minor corrections 2002-05-30 *)
- SCHEMA aic_curve_swept_solid; -- WG12 N1049 As in part document WG12 N1048
+ (* Curve Swept Solid AIC EXPRESS definitions - 
+   document WG12 N1487 dated  2002-10-17 *)
+ SCHEMA aic_curve_swept_solid; -- WG12 N1487 As in part document WG12 N1486
 
   USE FROM geometry_schema  -- ISO 10303-42
-  (axis2_placement_2d,
+                          (axis2_placement_2d,
                            axis2_placement_3d,
                            bezier_curve,
                            bezier_surface,
@@ -93,4 +92,3 @@ ENTITY ruled_surface_swept_area_solid
 END_ENTITY;
 
 END_SCHEMA; -- end AIC_CURVE_SWEPT_SOLID SCHEMA
-
