@@ -1,0 +1,143 @@
+(* THIS IS DOCUMENT ISO TC184/SC4/WG12 N1500 -
+   EXPRESS CODE FOR NWI/CD OF 'PROCEDURAL & HYBRID MODELLING' RESOURCE *)
+
+SCHEMA procedural_model_schema;
+
+REFERENCE FROM support_resource_schema                  -- ISO 10303-41
+  (text);
+
+REFERENCE FROM representation_schema                    -- ISO 10303-43
+  (item_in_context,
+   list_representation_item,
+   representation,
+   representation_item,
+   representation_relationship,
+   set_representation_item,
+   using_representations);
+
+TYPE explicit_submodel_select = SELECT
+  (representation, set_representation_item);
+END_TYPE;
+
+ENTITY explicit_procedural_representation_relationship
+  SUBTYPE OF (representation_relationship);
+  SELF\representation_relationship.rep_1 : procedural_representation;
+WHERE
+  WR1 : NOT ('PROCEDURAL_MODEL_SCHEMA.PROCEDURAL_REPRESENTATION' IN
+    TYPEOF(SELF\representation_relationship.rep_2));
+END_ENTITY; 
+
+ENTITY procedural_representation
+  SUBTYPE OF (representation);
+  SELF\representation.items : 
+    SET[1:?] OF procedural_representation_sequence;
+END_ENTITY; 
+
+ENTITY procedural_representation_sequence
+  SUBTYPE OF (representation_item);
+  elements  : list_representation_item;
+  rationale : text;
+WHERE
+  WR1 : SIZEOF(QUERY(q <* elements | SIZEOF(QUERY(r <* 
+    using_representations(SELF) | 
+    NOT item_in_context(q,r.context_of_items))) = 0)) = 0;
+END_ENTITY;
+
+ENTITY explicit_submodel_in_procedural_representation
+  SUBTYPE OF (representation_item);
+  submodel : explicit_submodel_select;
+END_ENTITY; 
+
+ENTITY selected_items_in_procedural_rep
+  SUBTYPE OF (representation_item);
+  picked_items : set_representation_item;
+END_ENTITY; 
+
+ENTITY indirectly_selected_items_in_procedural_rep
+  SUBTYPE OF (selected_items_in_procedural_rep);
+  indirectly_picked_items : set_representation_item;
+END_ENTITY; 
+
+END_SCHEMA; -- procedural_model_schema
+
+SCHEMA procedural_shape_model_schema;
+
+REFERENCE FROM procedural_model_schema;                 -- ISO 10303-?? 
+
+REFERENCE FROM product_property_representation_schema   -- ISO 10303-41
+  (shape_representation);
+
+REFERENCE FROM geometry_schema                          -- ISO 10303-42
+  (geometric_representation_item);
+
+REFERENCE FROM geometric_model_schema                   -- ISO 10303-42
+  (solid_model,
+   surface_model,
+   wireframe_model);
+
+REFERENCE FROM topology_schema                          -- ISO 10303-42
+  (topological_representation_item);
+
+TYPE shape_representation_item = SELECT
+  (geometric_representation_item,
+   topological_representation_item,
+   solid_model,
+   surface_model,
+   wireframe_model);
+END_TYPE;
+
+ENTITY explicit_procedural_shape_representation_relationship
+  SUBTYPE OF (explicit_procedural_representation_relationship);
+  SELF\representation_relationship.rep_1 : procedural_shape_representation; 
+  SELF\representation_relationship.rep_2 : shape_representation;
+END_ENTITY; 
+
+ENTITY procedural_shape_representation
+  SUBTYPE OF (procedural_representation, shape_representation);
+  SELF\representation.items : 
+    SET[1:?] OF procedural_shape_representation_sequence;
+END_ENTITY; 
+
+ENTITY procedural_shape_representation_sequence
+  SUBTYPE OF (geometric_representation_item, 
+              procedural_representation_sequence);
+WHERE
+  WR1 : SIZEOF(QUERY(q <* SELF\procedural_representation_sequence.elements
+    | NOT ('PROCEDURAL_SHAPE_MODEL_SCHEMA.SHAPE_REPRESENTATION_ITEM'
+    IN TYPEOF(q)))) = 0;
+END_ENTITY; 
+
+ENTITY explicit_submodel_in_procedural_shape_representation
+  SUBTYPE OF (explicit_submodel_in_procedural_representation);
+WHERE
+  WR1 : (SIZEOF(['REPRESENTATION_SCHEMA.REPRESENTATION',
+    'PRODUCT_PROPERTY_REPRESENTATION_SCHEMA.SHAPE_REPRESENTATION']*TYPEOF(
+    SELF\explicit_submodel_in_procedural_representation.submodel)) = 2) 
+    XOR (('REPRESENTATION_SCHEMA.SET_REPRESENTATION_ITEM' IN
+    TYPEOF(SELF\explicit_submodel_in_procedural_representation.submodel))
+    AND (SIZEOF(QUERY(
+    q <* SELF\explicit_submodel_in_procedural_representation.submodel |
+    NOT ('PROCEDURAL_SHAPE_MODEL_SCHEMA.SHAPE_REPRESENTATION_ITEM'
+    IN TYPEOF(q)))) = 0));
+END_ENTITY; 
+
+ENTITY selected_items_in_procedural_shape_rep
+  SUBTYPE OF (selected_items_in_procedural_rep);
+WHERE
+  WR1 : SIZEOF(QUERY(q <* 
+    SELF\selected_items_in_procedural_rep.picked_items | NOT
+    ('PROCEDURAL_SHAPE_MODEL_SCHEMA.SHAPE_REPRESENTATION_ITEM'
+    IN TYPEOF(q)))) = 0;
+END_ENTITY; 
+
+ENTITY indirectly_selected_items_in_procedural_shape_rep
+  SUBTYPE OF (indirectly_selected_items_in_procedural_rep,
+              selected_items_in_procedural_shape_rep);
+WHERE
+  WR1 : SIZEOF(QUERY(q <* 
+    SELF\indirectly_selected_items_in_procedural_rep.indirectly_picked_items
+    | NOT ('PROCEDURAL_SHAPE_MODEL_SCHEMA.SHAPE_REPRESENTATION_ITEM'
+    IN TYPEOF(q)))) = 0;
+END_ENTITY; 
+
+END_SCHEMA; -- procedural_shape_model_schema
