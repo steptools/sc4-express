@@ -1,3 +1,8 @@
+(*
+This is document WG12 N304.  
+This schema incorporates WG12 N303 (Technical Corrigendum 1) in
+the EXPRESS from the NIST EXPRESS Server)
+*)
 
 SCHEMA application_context_schema; 
    
@@ -163,61 +168,68 @@ END_ENTITY;
 
 FUNCTION acyclic_product_definition_formation_relationship
   (relation          : product_definition_formation_relationship;
-   relatives         : SET OF product_definition_formation;
+   relatives         : SET [1:?] OF product_definition_formation;
    specific_relation : STRING) : LOGICAL;
 
   LOCAL
-    x               : SET OF product_definition_formation_relationship;
-    i               : INTEGER;
-    local_relatives : SET OF product_definition_formation;
+    x                : SET OF product_definition_formation_relationship;
   END_LOCAL;
 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_product_definition_formation :=: relatives[i] THEN
+  IF relation.relating_product_definition_formation IN 
+            relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
+
+  x := QUERY (pdf <* bag_to_set (USEDIN
+       (relation.relating_product_definition_formation,
+        'PRODUCT_DEFINITION_SCHEMA.' +
+        'PRODUCT_DEFINITION_FORMATION_RELATIONSHIP.' +
+        'RELATED_PRODUCT_DEFINITION_FORMATION')) |
+         specific_relation IN TYPEOF (pdf));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_product_definition_formation_relationship
+      (x[i],
+       relatives + relation.relating_product_definition_formation,
+       specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_product_definition_formation, specific_relation));
-       local_relatives := relatives + relation.relating_product_definition_formation;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_product_definition_formation_relationship
-             (x[i], local_relatives, specific_relation) THEN
-        RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION;  -- acyclic_product_definition_formation_relationship
 
 FUNCTION acyclic_product_definition_relationship
   (relation          : product_definition_relationship;
-   relatives         : SET OF product_definition;
+   relatives         : SET [1:?] OF product_definition;
    specific_relation : STRING) : LOGICAL;
 
   LOCAL
-    x               : SET OF product_definition_relationship;
-    i               : INTEGER;
-    local_relatives : SET OF product_definition;
+    x                : SET OF product_definition_relationship;
   END_LOCAL;
 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_product_definition :=: relatives[i] THEN
+  IF relation.relating_product_definition IN relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
+
+  x := QUERY (pd <* bag_to_set (USEDIN
+       (relation.relating_product_definition,
+        'PRODUCT_DEFINITION_SCHEMA.' +
+        'PRODUCT_DEFINITION_RELATIONSHIP.' +
+        'RELATED_PRODUCT_DEFINITION')) |
+         specific_relation IN TYPEOF (pd));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_product_definition_relationship
+           (x[i],
+            relatives + relation.relating_product_definition,
+            specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_product_definition, specific_relation));
-       local_relatives := relatives + relation.relating_product_definition;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_product_definition_relationship
-             (x[i], local_relatives, specific_relation) THEN
-        RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION;  -- acyclic_product_definition_relationship
 
 FUNCTION acyclic_product_category_relationship
   (relation : product_category_relationship;
@@ -290,13 +302,13 @@ ENTITY property_definition;
 END_ENTITY;
 
 ENTITY product_definition_shape
-  SUBTYPE OF (property_definition);
+ SUBTYPE OF (property_definition);
 UNIQUE
-  UR1: SELF\property_definition.definition;
+ UR1:  SELF\property_definition.definition;
 WHERE
-  WR1: 'PRODUCT_PROPERTY_DEFINITION_SCHEMA.CHARACTERIZED_PRODUCT_DEFINITION' 
-       IN TYPEOF (SELF\property_definition.definition);
-END_ENTITY; 
+ WR1:  NOT ('PRODUCT_PROPERTY_DEFINITION_SCHEMA.SHAPE_DEFINITION'
+       IN TYPEOF (SELF\property_definition.definition));
+END_ENTITY;
 
 ENTITY shape_aspect; 
   name                 : label;
@@ -314,32 +326,35 @@ END_ENTITY;
 
 FUNCTION acyclic_shape_aspect_relationship
   (relation          : shape_aspect_relationship;
-   relatives         : SET OF shape_aspect;
+   relatives         : SET [1:?] OF shape_aspect;
    specific_relation : STRING) : LOGICAL;
 
   LOCAL
-    x               : SET OF shape_aspect_relationship;
-    i               : INTEGER;
-    local_relatives : SET OF shape_definition;
+    x                : SET OF shape_aspect_relationship;
   END_LOCAL;
 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_shape_aspect :=: relatives[i] THEN
+  IF relation.relating_shape_aspect IN relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
+
+  x := QUERY (sa <* bag_to_set (USEDIN
+       (relation.relating_shape_aspect,
+        'PRODUCT_PROPERTY_DEFINITION_SCHEMA.' +
+        'SHAPE_ASPECT_RELATIONSHIP.' +
+        'RELATED_SHAPE_ASPECT')) |
+         specific_relation IN TYPEOF (sa));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_shape_aspect_relationship
+           (x[i],
+            relatives + relation.relating_shape_aspect,
+            specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_shape_aspect, specific_relation));
-       local_relatives := relatives + relation.relating_shape_aspect;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_shape_aspect_relationship
-             (x[i], local_relatives, specific_relation) THEN
-        RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION; -- acyclic_shape_aspect_relationship
 
 END_SCHEMA; -- product_property_definition_schema
 
@@ -440,41 +455,48 @@ FUNCTION relatives_of_product_definitions
 END_FUNCTION;
 
 FUNCTION relatives_of_shape_representations
-   (shape_representation_set : SET OF shape_representation) : 
+   (shape_representation_set : SET OF shape_representation) :
     SET OF shape_representation;
 
-  FUNCTION local_relatives_of_shape_representations
-     (shape_representation_set : SET OF shape_representation;
-      total_reps    : SET OF shape_representation) : SET OF shape_representation;
+   FUNCTION local_relatives_of_shape_representations
+      (shape_representation_set : SET OF shape_representation;
+       total_reps : SET OF shape_representation) : SET OF
+       shape_representation;
 
-    LOCAL
-      i               : INTEGER;
-      local_shape_rep : SET OF shape_representation := [];
-      local_srr       : SET OF shape_representation_relationship := [];
-      local_total     : SET OF shape_representation := [];
-    END_LOCAL;
- 
-    REPEAT i := 1 TO HIINDEX(shape_representation_set);
-      local_srr := local_srr + bag_to_set(USEDIN(shape_representation_set[i],
-                   'PRODUCT_PROPERTY_REPRESENTATION_SCHEMA.'+
-                   'SHAPE_REPRESENTATION_RELATIONSHIP.REP_1'));
-    END_REPEAT;
-    REPEAT i := 1 TO HIINDEX(local_srr);
-      local_shape_rep := local_shape_rep + local_srr[i].rep_2;
-    END_REPEAT;
-    IF SIZEOF (local_shape_rep - total_reps) = 0 THEN
-      RETURN (shape_representation_set);
-    ELSE
-      local_total := total_reps + local_shape_rep;
-      RETURN(local_shape_rep + (local_relatives_of_shape_representations
-                                (local_shape_rep - total_reps, local_total)));
-    END_IF;
-  END_FUNCTION;
- 
-  RETURN (local_relatives_of_shape_representations 
-          (shape_representation_set, shape_representation_set));
+       LOCAL
+         i               : INTEGER;
+         local_shape_rep : SET OF shape_representation := [];
+         local_srr       : SET OF shape_representation_relationship := [];
+         local_total     : SET OF shape_representation := [];
+       END_LOCAL;
 
-  END_FUNCTION;
+       REPEAT i := 1 TO HIINDEX(shape_representation_set);
+         local_srr := local_srr + QUERY (rr <* bag_to_set
+           (USEDIN(shape_representation_set[i],
+            'REPRESENTATION_SCHEMA.REPRESENTATION_RELATIONSHIP.REP_1'))|
+    'PRODUCT_PROPERTY_REPRESENTATION_SCHEMA.SHAPE_REPRESENTATION_RELATIONSHIP'
+         IN TYPEOF (rr));
+       END_REPEAT;
+
+       REPEAT i := 1 TO HIINDEX(local_srr);
+         IF 'PRODUCT_PROPERTY_REPRESENTATION_SCHEMA.'+
+            'SHAPE_REPRESENTATION_RELATIONSHIP' IN TYPEOF(local_srr[i])
+         THEN
+           local_shape_rep := local_shape_rep + local_srr[i].rep_2;
+         END_IF;
+       END_REPEAT;
+       IF SIZEOF (local_shape_rep - total_reps) = 0 THEN
+          RETURN (shape_representation_set);
+       ELSE
+          local_total := total_reps + local_shape_rep;
+       RETURN(local_shape_rep + (local_relatives_of_shape_representations
+              (local_shape_rep - total_reps,
+               local_total)));
+       END_IF;
+   END_FUNCTION;
+   RETURN (local_relatives_of_shape_representations
+   (shape_representation_set, shape_representation_set));
+END_FUNCTION; -- relatives_of_shape_representations
 
 END_SCHEMA; -- product_property_representation_schema
 
@@ -650,33 +672,36 @@ ENTITY document_relationship;
 END_ENTITY; 
 
 FUNCTION acyclic_document_relationship
-   (relation          : document_relationship;
-    relatives         : SET OF document;
-    specific_relation : STRING) : LOGICAL;
+  (relation          : document_relationship;
+   relatives         : SET [1:?] OF document;
+   specific_relation : STRING) : LOGICAL;
 
   LOCAL
-    x               : SET OF document_relationship;
-    i               : INTEGER;
-    local_relatives : SET OF document;
+    x                : SET OF document_relationship;
   END_LOCAL;
 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_document :=: relatives[i] THEN
+  IF relation.relating_document IN relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
+
+  x := QUERY (doc <* bag_to_set (USEDIN
+       (relation.relating_document,
+        'DOCUMENT_SCHEMA.' +
+        'DOCUMENT_RELATIONSHIP.' +
+        'RELATED_DOCUMENT'))  |
+         specific_relation IN TYPEOF (doc));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_document_relationship
+           (x[i],
+            relatives + relation.relating_document,
+            specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_document, specific_relation));
-  local_relatives := relatives + relation.relating_document;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_document_relationship
-             (x[i], local_relatives, specific_relation) THEN
-        RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION;  -- acyclic_document_relationship
 
 END_SCHEMA; -- document_schema
 
@@ -779,88 +804,100 @@ ENTITY action_resource_type;
 END_ENTITY;
 
 FUNCTION acyclic_action_relationship
-         (relation          : action_relationship;
-          relatives         : SET [1:?] OF action;
-          specific_relation : STRING) : LOGICAL;
+  (relation          : action_relationship;
+   relatives         : SET [1:?] OF action;
+   specific_relation : STRING) : LOGICAL;
+
   LOCAL
-    x               : SET [1:?] OF action_relationship;
-    i               : INTEGER;
-    local_relatives : SET [1:?] OF action;
+    x                : SET OF action_relationship;
   END_LOCAL;
- 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_action :=: relatives[i] THEN
+
+  IF relation.relating_action IN relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
+
+  x := QUERY (actn <* bag_to_set (USEDIN
+       (relation.relating_action,
+        'ACTION_SCHEMA.' +
+        'ACTION_RELATIONSHIP.' +
+        'RELATED_ACTION')) |
+         specific_relation IN TYPEOF (actn));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_action_relationship
+           (x[i],
+            relatives + relation.relating_action,
+            specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_action, specific_relation));
-  local_relatives := relatives + relation.relating_action;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_action_relationship
-             (x[i], local_relatives, specific_relation) THEN
-        RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION; -- acyclic_action_relationship
 
 FUNCTION acyclic_action_resource_relationship
-         (relation          : action_resource_relationship;
-          relatives         : SET [1:?] OF action_resource;
-          specific_relation : STRING) : LOGICAL;
+  (relation          : action_resource_relationship;
+   relatives         : SET [1:?] OF action_resource;
+   specific_relation : STRING) : LOGICAL;
+
   LOCAL
-    x               : SET [1:?] OF action_resource_relationship;
-    i               : INTEGER;
-    local_relatives : SET [1:?] OF action_resource;
+    x                : SET OF action_resource_relationship;
   END_LOCAL;
- 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_resource :=: relatives[i] THEN
+
+  IF relation.relating_resource IN relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
+
+  x := QUERY (ar <* bag_to_set (USEDIN
+       (relation.relating_resource,
+        'ACTION_SCHEMA.' +
+        'ACTION_RESOURCE_RELATIONSHIP.' +
+        'RELATED_RESOURCE')) |
+         specific_relation IN TYPEOF (ar));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_action_resource_relationship
+           (x[i],
+            relatives + relation.relating_resource,
+            specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_resource, specific_relation));
-  local_relatives := relatives + relation.relating_resource;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_action_resource_relationship
-             (x[i], local_relatives, specific_relation) THEN
-        RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION; -- acyclic_action_resource_relationship
 
 FUNCTION acyclic_action_method_relationship
-         (relation          : action_method_relationship;
-          relatives         : SET [1:?] OF action_method;
-          specific_relation : STRING) : LOGICAL;
+  (relation          : action_method_relationship;
+   relatives         : SET [1:?] OF action_method;
+   specific_relation : STRING) : LOGICAL;
+
   LOCAL
-    x               : SET [1:?] OF action_method_relationship;
-    i               : INTEGER;
-    local_relatives : SET [1:?] OF action_method;
+    x                : SET OF action_method_relationship;
   END_LOCAL;
- 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_method :=: relatives[i] THEN
+
+  IF relation.relating_method IN relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
+
+  x := QUERY (am <* bag_to_set (USEDIN
+       (relation.relating_method,
+        'ACTION_SCHEMA.' +
+        'ACTION_METHOD_RELATIONSHIP.' +
+        'RELATED_METHOD')) |
+         specific_relation IN TYPEOF (am));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_action_method_relationship
+           (x[i],
+            relatives + relation.relating_method,
+            specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_method, specific_relation));
-  local_relatives := relatives + relation.relating_method;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_action_method_relationship
-             (x[i], local_relatives, specific_relation) THEN
-        RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION; -- acyclic_action_method_relationship
 
 END_SCHEMA; -- action_schema
 
@@ -927,33 +964,36 @@ ENTITY approval_relationship;
 END_ENTITY;
 
 FUNCTION acyclic_approval_relationship
-   (relation          : approval_relationship;
-    relatives         : SET OF approval;
-    specific_relation : STRING) : LOGICAL;
+  (relation          : approval_relationship;
+   relatives         : SET [1:?] OF approval;
+   specific_relation : STRING) : LOGICAL;
 
   LOCAL
-    x               : SET OF approval_relationship;
-    i               : INTEGER;
-    local_relatives : SET OF approval;
+    x                : SET OF approval_relationship;
   END_LOCAL;
 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_approval :=: relatives[i] THEN
+  IF relation.relating_approval IN relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
+
+  x := QUERY (app <* bag_to_set (USEDIN
+       (relation.relating_approval,
+        'APPROVAL_SCHEMA.' +
+        'APPROVAL_RELATIONSHIP.' +
+        'RELATED_APPROVAL'))  |
+         specific_relation IN TYPEOF (app));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_approval_relationship
+           (x[i],
+            relatives + relation.relating_approval,
+            specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_approval, specific_relation));
-  local_relatives := relatives + relation.relating_approval;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_approval_relationship
-             (x[i], local_relatives, specific_relation) THEN
-        RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION;  -- acyclic_approval_relationship
 
 END_SCHEMA; -- approval_schema
 
@@ -1097,32 +1137,36 @@ ENTITY organization_role;
 END_ENTITY;
 
 FUNCTION acyclic_organization_relationship
-         (relation          : organization_relationship;
-          relatives         : SET OF organization;
-          specific_relation : STRING) : LOGICAL;
+  (relation          : organization_relationship;
+   relatives         : SET [1:?] OF organization;
+   specific_relation : STRING) : LOGICAL;
+
   LOCAL
-    x               : SET OF organization_relationship;
-    i               : INTEGER;
-    local_relatives : SET OF organization;
+    x                : SET OF organization_relationship;
   END_LOCAL;
- 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_organization :=: relatives[i] THEN
+
+  IF relation.relating_organization IN relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
+
+  x := QUERY (org <* bag_to_set (USEDIN
+       (relation.relating_organization,
+        'PERSON_ORGANIZATION_SCHEMA.' +
+        'ORGANIZATION_RELATIONSHIP.' +
+        'RELATED_ORGANIZATION')) |
+         specific_relation IN TYPEOF (org));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_organization_relationship
+           (x[i],
+            relatives + relation.relating_organization,
+            specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_organization, specific_relation));
-  local_relatives := relatives + relation.relating_organization;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_organization_relationship
-             (x[i], local_relatives, specific_relation) THEN
-        RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION; -- acyclic_organization_relationship
 
 END_SCHEMA; -- person_organization_schema
 
@@ -1305,32 +1349,35 @@ END_ENTITY;
 
 FUNCTION acyclic_group_relationship
   (relation          : group_relationship;
-   relatives         : SET OF group;
+   relatives         : SET [1:?] OF group;
    specific_relation : STRING) : LOGICAL;
 
   LOCAL
-    x               : SET OF group_relationship;
-    i               : INTEGER;
-    local_relatives : SET OF group;
+    x                : SET OF group_relationship;
   END_LOCAL;
 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_group :=: relatives[i] THEN
+  IF relation.relating_group IN relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
+
+  x := QUERY (grp <* bag_to_set (USEDIN
+       (relation.relating_group,
+        'GROUP_SCHEMA.' +
+        'GROUP_RELATIONSHIP.' +
+        'RELATED_GROUP')) |
+         specific_relation IN TYPEOF (grp));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_group_relationship
+           (x[i],
+            relatives + relation.relating_group,
+            specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_group, specific_relation));
-  local_relatives := relatives + relation.relating_group;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_group_relationship
-             (x[i], local_relatives, specific_relation) THEN
-        RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION; -- acyclic_group_relationship
 
 END_SCHEMA; -- group_schema 
 
@@ -1409,32 +1456,35 @@ END_ENTITY;
 
 FUNCTION acyclic_external_source_relationship
   (relation          : external_source_relationship;
-   relatives          : SET OF external_source;
+   relatives         : SET [1:?] OF external_source;
    specific_relation : STRING) : LOGICAL;
 
   LOCAL
-    x              : SET OF external_source_relationship;
-    i              : INTEGER;
-    local_relatives : SET OF external_source;
+    x                : SET OF external_source_relationship;
   END_LOCAL;
 
-  REPEAT i := 1 TO HIINDEX(relatives);
-    IF relation.relating_source :=: relatives[i] THEN
+  IF relation.relating_source IN relatives THEN
+    RETURN (FALSE);
+  END_IF;             -- IN is based in instance equality
+
+  x := QUERY (es <* bag_to_set (USEDIN
+       (relation.relating_source,
+        'EXTERNAL_REFERENCE_SCHEMA.' +
+        'EXTERNAL_SOURCE_RELATIONSHIP.' +
+        'RELATED_SOURCE')) |
+         specific_relation IN TYPEOF (es));
+
+  REPEAT I := 1 TO HIINDEX(x);             -- pre-checked loop
+    IF NOT acyclic_external_source_relationship
+           (x[i],
+            relatives + relation.relating_source,
+            specific_relation) THEN
       RETURN(FALSE);
     END_IF;
   END_REPEAT;
-  x := bag_to_set(USEDIN (relation.relating_source, specific_relation));
-  local_relatives := relatives + relation.relating_source;
-  IF SIZEOF(x) > 0 THEN
-    REPEAT i := 1 TO HIINDEX(x);
-      IF NOT acyclic_external_source_relationship
-             (x[i], local_relatives, specific_relation) THEN
-        RETURN(FALSE);
-      END_IF;
-    END_REPEAT;
-  END_IF;
+
   RETURN(TRUE);
-END_FUNCTION;
+END_FUNCTION; -- acyclic_external_source_relationship
 
 END_SCHEMA; -- external_reference_schema 
 
@@ -1923,7 +1973,6 @@ ENTITY ratio_measure_with_unit
 WHERE
   WR1: 'MEASURE_SCHEMA.RATIO_UNIT' IN TYPEOF (SELF\measure_with_unit.unit_component);
 END_ENTITY;
-
 FUNCTION dimensions_for_si_unit (n : si_unit_name) : dimensional_exponents; 
 
   CASE n  OF
