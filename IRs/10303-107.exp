@@ -1,29 +1,64 @@
+SCHEMA action_and_model_relationships_schema;
 
-(*
-
-  ISO/CD 10303-107, FEA definition relationships, 2001-04-18
-
-  WG12 N900
-
-   This file contains the following schema:
-      fea_definition_relationships_schema.
-*)
-
-SCHEMA fea_definition_relationships_schema;
-  REFERENCE FROM support_resource_schema -- ISO 10303-41
+  REFERENCE FROM support_resource_schema
     (identifier,
     label,
     text);
-  REFERENCE FROM action_schema -- ISO 10303-41
+  REFERENCE FROM action_schema
     (action);
-  REFERENCE FROM product_definition_schema -- ISO 10303-41
-    (product_definition);
-  REFERENCE FROM product_property_definition_schema -- ISO 10303-41
+  REFERENCE FROM finite_element_analysis_control_and_result_schema
+    (analysis_step);
+  REFERENCE FROM product_analysis_schema.htm#product_analysis_schema
+    (physical_action_domain);
+  REFERENCE FROM analysis_schema
+    (model_action_domain);
+
+TYPE idealised_action_select = EXTENSIBLE SELECT (
+  action,
+  physical_action_domain);
+END_TYPE;
+
+TYPE discretised_action_model_select = EXTENSIBLE SELECT (
+  analysis_step,
+  model_action_domain);
+END_TYPE;
+
+ENTITY action_view_relationship;
+  id                 :  identifier;
+  name               :  label;
+  description        :  OPTIONAL text; 
+  idealised_action   :  idealised_action_select;
+  discretised_model  :  discretised_action_model_select;
+END_ENTITY;
+
+ENTITY same_discretised_action_model;
+  id                  :  identifier;
+  name                :  label;
+  description         :  OPTIONAL text;
+  equivalent_records  :  SET [2:?] OF discretised_action_model_select;
+END_ENTITY;
+
+ENTITY same_idealised_action;
+  id                  :  identifier;
+  name                :  label;
+  description         :  OPTIONAL text; 
+  equivalent_records  :  SET [2:?] OF idealised_action_select;
+END_ENTITY;
+
+END_SCHEMA;
+
+SCHEMA fea_definition_relationships_schema;
+
+  REFERENCE FROM support_resource_schema
+    (identifier,
+    label,
+    text);
+  REFERENCE FROM product_property_definition_schem
     (property_definition,
     general_property);
-  REFERENCE FROM topology_schema -- ISO 10303-42
+  REFERENCE FROM topology_schema
     (topological_representation_item);
-  REFERENCE FROM structural_response_representation_schema -- ISO 10303-104
+  REFERENCE FROM structural_response_representation_schema
     (analysis_item_within_representation,
     consistent_element_reference,
     curve_element_section_definition,
@@ -33,10 +68,6 @@ SCHEMA fea_definition_relationships_schema;
     node_representation,
     surface_section,
     surface_section_field);
-  REFERENCE FROM finite_element_analysis_control_and_result_schema -- ISO 10303-104
-    (analysis_step,
-    state,
-    state_definition);
 
 ENTITY element_topological_relationship;
   element_ref  :  element_representation;
@@ -49,14 +80,6 @@ WHERE
     consistent_topological_reference (aspect, item.item);
   valid_aspect         :  
     consistent_element_reference (aspect, element_ref);
-END_ENTITY;
-
-ENTITY fea_action_idealisation_relationship;
-  id           :  identifier;
-  name         :  label;
-  description  :  OPTIONAL text; 
-  idealising   :  analysis_step;
-  idealised    :  action;
 END_ENTITY;
 
 ENTITY fea_beam_section_idealisation_relationship;
@@ -75,14 +98,6 @@ WHERE
     'TOPOLOGICAL_DEFINITION_AND_MESH_SCHEMA.MESH' IN TYPEOF (item.item);
 END_ENTITY;
 
-ENTITY fea_property_distribution_idealisation_relationship;
-  id           :  identifier;
-  name         :  label;
-  description  :  OPTIONAL text; 
-  idealising   :  SET [1:?] OF state_definition;
-  idealised    :  property_definition;
-END_ENTITY;
-
 ENTITY fea_shell_section_distribution_idealisation_relationship;
   id           :  identifier;
   name         :  label;
@@ -97,14 +112,6 @@ ENTITY fea_shell_section_idealisation_relationship;
   description  :  OPTIONAL text; 
   idealising   :  surface_section;
   idealised    :  general_property;
-END_ENTITY;
-
-ENTITY fea_state_idealisation_relationship;
-  id           :  identifier;
-  name         :  label;
-  description  :  OPTIONAL text; 
-  idealising   :  state;
-  idealised    :  product_definition;
 END_ENTITY;
 
 ENTITY node_topological_relationship;
@@ -173,7 +180,7 @@ FUNCTION consistent_topological_reference (
         status := TRUE;
       END_IF;
     END_IF;
-    
+
     IF (srrs + 'SURFACE_2D_EDGE') IN TYPEOF(aspect) THEN
       IF 'TOPOLOGY_SCHEMA.VERTEX' IN TYPEOF(item) THEN
         status := TRUE;
@@ -183,15 +190,115 @@ FUNCTION consistent_topological_reference (
     IF (srrs + 'CURVE_EDGE') IN TYPEOF(aspect) THEN
       IF 'TOPOLOGY_SCHEMA.EDGE' IN TYPEOF(item) THEN
         status := TRUE;
+
       END_IF;
     END_IF;
-    
+
     IF 'TOPOLOGICAL_DEFINITION_AND_MESH_SCHEMA.TOPOLOGICAL_REGION' IN TYPEOF(item) THEN
       status := TRUE;
     END_IF;
   
   RETURN(status);
 
-END_FUNCTION;
+  END_FUNCTION;
+
+END_SCHEMA;
+
+SCHEMA product_and_model_relationships_schema;
+
+  REFERENCE FROM support_resource_schema
+    (identifier,
+    label,
+    text);
+  REFERENCE FROM product_definition_schema
+    (product_definition);
+  REFERENCE FROM structural_response_representation_schema
+    (fea_model);
+  REFERENCE FROM product_analysis_schema.htm#product_analysis_schema
+    (physical_product_domain);
+  REFERENCE FROM analysis_schema
+    (model_product_domain);
+
+TYPE idealised_product_select = EXTENSIBLE SELECT (
+  product_definition,
+  physical_product_domain);
+END_TYPE;
+
+TYPE discretised_product_model_select = EXTENSIBLE SELECT (
+  fea_model,
+  model_product_domain);
+END_TYPE;
+
+ENTITY product_view_relationship;
+  id                 :  identifier;
+  name               :  label;
+  description        :  OPTIONAL text; 
+  idealised_product  :  idealised_product_select;
+  discretised_model  :  discretised_product_model_select;
+END_ENTITY;
+
+ENTITY same_discretised_product_model;
+  id                  :  identifier;
+
+  name                :  label;
+  description         :  OPTIONAL text; 
+  equivalent_records  :  SET [2:?] OF discretised_product_model_select;
+END_ENTITY;
+
+ENTITY same_idealised_product;
+  id                  :  identifier;
+  name                :  label;
+  description         :  OPTIONAL text; 
+  equivalent_records  :  SET [2:?] OF idealised_product_select;
+END_ENTITY;
+
+END_SCHEMA;
+
+SCHEMA state_and_model_relationships_schema;
+
+  REFERENCE FROM support_resource_schema
+    (identifier,
+    label,
+    text);
+  REFERENCE FROM state_type_schema
+    (state_type);
+  REFERENCE FROM finite_element_analysis_control_and_result_schema
+    (state);
+  REFERENCE FROM product_analysis_schema.htm#product_analysis_schema
+    (physical_state_domain);
+  REFERENCE FROM analysis_schema
+    (model_state_domain);
+
+TYPE idealised_state_select = EXTENSIBLE SELECT (
+  state_type,
+  physical_state_domain);
+END_TYPE;
+
+TYPE discretised_state_model_select = EXTENSIBLE SELECT (
+  state,
+  model_state_domain);
+END_TYPE;
+
+ENTITY state_view_relationship;
+  id                 :  identifier;
+  name               :  label;
+  description        :  OPTIONAL text; 
+  idealised_state    :  idealised_state_select;
+  discretised_model  :  discretised_state_model_select;
+END_ENTITY;
+
+ENTITY same_discretised_state_model;
+  id                  :  identifier;
+  name                :  label;
+  description         :  OPTIONAL text; 
+  equivalent_records  :  SET [2:?] OF discretised_state_model_select;
+END_ENTITY;
+
+ENTITY same_idealised_state;
+  id                  :  identifier;
+  name                :  label;
+  description         :  OPTIONAL text; 
+  equivalent_records  :  SET [2:?] OF idealised_state_select;
+END_ENTITY;
 
 END_SCHEMA;
