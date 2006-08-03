@@ -1,6 +1,7 @@
 (*
    $Id$
-   ISO/TC184/SC4 WG12N1784 - ISO/CD-TS 10303-1145 Building_structure - EXPRESS ARM
+   ISO/TC184/SC4 WG12N2575 - ISO/TS 10303-1145 Building_structure - EXPRESS ARM
+   Supersedes ISO TC184/SC4/WG12N1784
 *)
 
 SCHEMA Building_structure_arm;
@@ -39,8 +40,8 @@ END_ENTITY;
 
 ENTITY Building_level_assignment
 SUBTYPE OF (View_definition_relationship);
-	SELF\relating_view RENAMED assigned_level : Building_level;
-	SELF\related_view RENAMED assigned_item : Building_item;
+	SELF\View_definition_relationship.relating_view RENAMED assigned_level : Building_level;
+	SELF\View_definition_relationship.related_view RENAMED assigned_item : Building_item;
 END_ENTITY;
 
 ENTITY Building_section
@@ -60,8 +61,8 @@ END_ENTITY;
 
 ENTITY Item_proximity_relationship
 SUBTYPE OF (View_definition_relationship);
-	SELF\relating_view RENAMED item_in_proximity : Building_item;
-	SELF\related_view RENAMED item : Building_item;
+	SELF\View_definition_relationship.relating_view RENAMED item_in_proximity : Building_item;
+	SELF\View_definition_relationship.related_view RENAMED item : Building_item;
 END_ENTITY;
 
 ENTITY Sublevel

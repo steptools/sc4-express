@@ -1,6 +1,8 @@
 (*
    $Id$
-   ISO/TC184/SC4 WG12N1787 - ISO/CD-TS - 10303-1146 location_in_building - EXPRESS ARM*)
+   ISO/TC184/SC4 WG12N2578 - ISO/TS - 10303-1146 location_in_building - EXPRESS ARM
+   Supersedes ISO TC184/SC4/WG12N1787
+*)
 
 SCHEMA Location_in_building_arm;
 

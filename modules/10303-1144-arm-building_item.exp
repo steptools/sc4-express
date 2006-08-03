@@ -1,7 +1,9 @@
 (*
    $Id$
-   ISO/TC184/SC4 WG12N1781 - ISO/CD-TS - 10303-1144 Building_item - EXPRESS ARM*)
-(* Mature *)
+   ISO/TC184/SC4 WG12N2572 - ISO/TS - 10303-1144 Building_item - EXPRESS ARM
+   Supersedes ISO TC184/SC4/WG12N1781
+*)
+
 SCHEMA Building_item_arm;
 
 USE FROM Product_view_definition_arm;
