@@ -1,6 +1,8 @@
 (*
    $Id$
-   ISO/TC184/SC4 WG12N1779 - ISO/CD-TS - 10303-1143 Building_component - EXPRESS MIM*)
+   ISO/TC184/SC4 WG12N2570 - ISO/TS - 10303-1143 Building_component - EXPRESS MIM
+   Supersedes ISO TC184/SC4/WG12N1779
+*)
 
 SCHEMA Building_component_mim;
 
@@ -35,7 +37,7 @@ WHERE
 WR1: SIZEOF (QUERY (aca <* USEDIN (SELF, 'BUILDING_COMPONENT_MIM.'+
     'APPLIED_CLASSIFICATION_ASSIGNMENT.ITEMS') |
     'BUILDING_COMPONENT_MIM.ELEMENT_COMPONENT_CLASSIFICATION_GROUP' IN 
-    TYPEOF(aca\classfication_assignment.assigned_class)
+    TYPEOF(aca\classification_assignment.assigned_class)
     )) = 1;
 END_ENTITY;
 

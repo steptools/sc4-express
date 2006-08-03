@@ -1,6 +1,8 @@
 (*
    $Id$
-   ISO/TC184/SC4 WG12N1788 - ISO/CD-TS 10303-1146 location_in_building - EXPRESS MIM*)
+   ISO/TC184/SC4 WG12N2579 - ISO/TS 10303-1146 location_in_building - EXPRESS MIM
+   Supersedes ISO TC184/SC4/WG12N1788
+*)
 
 SCHEMA Location_in_building_mim;
 
@@ -32,7 +34,8 @@ WR1: SIZEOF (QUERY (mi <* mapped_item |
 	  SIZEOF (TYPEOF (pdr.definition.definition) *
         ['LOCATION_IN_BUILDING_MIM.BUILDING_SECTION',
 	    'LOCATION_IN_BUILDING_MIM.SPACE_ELEMENT'] ) >= 1 ))
-	  )) = 0)
+	=1 )) 
+	= 0)
         )) = 0;
 WR2: SIZEOF (QUERY (rrwt <*
        representation_relationship_with_transformation |
@@ -136,10 +139,11 @@ WR1: SIZEOF (QUERY (mi <* mapped_item |
         'PROPERTY_DEFINITION_REPRESENTATION.USED_REPRESENTATION') | 
 	  SIZEOF (TYPEOF (pdr.definition.definition) *
          ['LOCATION_IN_BUILDING_MIM.BUILDING_ELEMENT',
-	    'LOCATION_IN_BUILDING_MIM.FIXTURE_EQUIPMENT_ELEMENT',
+	  'LOCATION_IN_BUILDING_MIM.FIXTURE_EQUIPMENT_ELEMENT',
           'LOCATION_IN_BUILDING_MIM.SERVICE_ELEMENT',
-          'LOCATION_IN_BUILDING_MIM.STRUCTURE_ENCLOSURE_ELEMENT'] ) >= 1 ))
-	  )) = 0)
+          'LOCATION_IN_BUILDING_MIM.STRUCTURE_ENCLOSURE_ELEMENT'] ) >= 1)) 
+	 =1 ))
+	 = 0)
         )) = 0;
 WR2: SIZEOF (QUERY (rrwt <* representation_relationship_with_transformation |
        (SIZEOF (QUERY (pdr <* USEDIN(rrwt\representation_relationship.rep_2,
@@ -216,8 +220,7 @@ WR3: SIZEOF (QUERY (rrwt_1 <*
        representation_relationship_with_transformation |
        (SIZEOF (QUERY (pdr <* USEDIN(rrwt_1\representation_relationship.rep_2,
        'LOCATION_IN_BUILDING_MIM.PROPERTY_DEFINITION_REPRESENTATION.USED_REPRESENTATION') |
-       SIZEOF (TYPEOF (pdr.definition.definition) *
-       'LOCATION_IN_BUILDING_MIM.BUILDING_SECTION') = 1
+       SIZEOF (TYPEOF ('LOCATION_IN_BUILDING_MIM.BUILDING_SECTION') * pdr.definition.definition) = 1
        )) >= 1)
        AND
        (rrwt_1\representation_relationship.rep_2 :=: rrwt_2\representation_relationship.rep_2)

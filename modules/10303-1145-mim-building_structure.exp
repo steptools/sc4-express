@@ -1,6 +1,8 @@
 (*
    $Id$
-   ISO/TC184/SC4 WG12N1785 - ISO/CD-TS 10303-1145 Building_structure - EXPRESS MIM*)
+   ISO/TC184/SC4 WG12N2576 - ISO/TS 10303-1145 Building_structure - EXPRESS MIM
+   Supersedes ISO TC184/SC4/WG12N1785
+*)
 
 SCHEMA Building_structure_mim;
 
