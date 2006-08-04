@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1968 - ISO/CD-TS - 10303-1160 class_of_containment_of_product - EXPRESS ARM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2735 - ISO/TS 10303-1160 Class of containment of product - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1968
+*)
 
 SCHEMA Class_of_containment_of_product_arm;
 

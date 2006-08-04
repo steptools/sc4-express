@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1846 - ISO/CD-TS - 10303-1172 class_of_connection_of_activity - EXPRESS ARM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2729 - ISO/TS 10303-1172 Class of connection of activity - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1846
+*)
 
 SCHEMA Class_of_connection_of_activity_arm;
 

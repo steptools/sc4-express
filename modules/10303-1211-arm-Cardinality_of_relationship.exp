@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1873 - ISO/CD-TS - 10303-1211 cardinality_of_relationship - EXPRESS ARM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2711 - ISO/TS 10303-1211 Cardinality of relationship - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1873
+*)
 
 SCHEMA Cardinality_of_relationship_arm;
 
@@ -9,12 +13,12 @@ END_TYPE;
 
 
 ENTITY Cardinality_of_related_class;
-  cardinality : Maths_Space;
+  cardinality : Maths_space;
   relationship : relationship_select;
 END_ENTITY;
 
 ENTITY Cardinality_of_relating_class;
-  cardinality : Maths_Space;
+  cardinality : Maths_space;
   relationship : relationship_select;
 END_ENTITY;
 

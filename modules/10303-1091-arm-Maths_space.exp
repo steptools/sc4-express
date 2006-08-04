@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1879 - ISO/CD-TS - 10303-1091 maths_space - EXPRESS ARM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2798 - ISO/TS 10303-1091 Maths space - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1879
+*)
 
 SCHEMA Maths_space_arm;
 

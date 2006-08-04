@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1971 - ISO/CD-TS - 10303-1161 class_of_involvement_of_product_in_connection - EXPRESS ARM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2741 - ISO/TS 10303-1161 Class of involvement of product in connection - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1971
+*)
 
 SCHEMA Class_of_involvement_of_product_in_connection_arm;
 

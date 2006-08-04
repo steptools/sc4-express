@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1977 - ISO/CD-TS - 10303-1163 individual_product_structure - EXPRESS ARM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2792 - ISO/TS 10303-1163 Individual product structure - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1977
+*)
 
 SCHEMA Individual_product_structure_arm;
 

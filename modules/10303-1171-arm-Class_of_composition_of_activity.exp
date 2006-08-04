@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1843 - ISO/CD-TS - 10303-1171 class_of_composition_of_activity - EXPRESS ARM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2723 - ISO/TS 10303-1171 Class of composition of activity - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1843
+*)
 
 SCHEMA Class_of_composition_of_activity_arm;
 

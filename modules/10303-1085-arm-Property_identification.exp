@@ -1,20 +1,24 @@
-(*  ISO/TC184/SC4 WG12N2054 - ISO/CD-TS - 10303-1085 property_identification - EXPRESS ARM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2816 - ISO/TS 10303-1085 Property identification - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2054
+*)
 
 SCHEMA Property_identification_arm;
 
-USE FROM Independent_property_definition_arm;    --  ISO/CD-TS 10303-1099
-USE FROM Maths_space_arm;    --  ISO/CD-TS 10303-1091
-USE FROM Maths_value_arm;    --  ISO/CD-TS 10303-1092
-USE FROM Property_space_arm;    --  ISO/CD-TS 10303-1080
+USE FROM Independent_property_definition_arm;    --  ISO/TS 10303-1099
+USE FROM Maths_space_arm;    --  ISO/TS 10303-1091
+USE FROM Maths_value_arm;    --  ISO/TS 10303-1092
+USE FROM Property_space_arm;    --  ISO/TS 10303-1080
 
 ENTITY Identification_of_property;
   identifier : maths_value;
-  property : Independent_property_definition;
+  property : Physical_quantity_instance;
 END_ENTITY;
 
 ENTITY Scale;
   identifier : Maths_space;
-  property : Property_space;
+  property : Physical_quantity_space;
 END_ENTITY;
 
 ENTITY Scale_for_identification_of_property;

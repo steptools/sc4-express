@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1837 - ISO/CD-TS - 10303-1170 class_of_activity_structure - EXPRESS ARM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2720 - ISO/TS 10303-1170 Class of activity structure - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1837
+*)
 
 SCHEMA Class_of_activity_structure_arm;
 

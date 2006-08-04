@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1962 - ISO/CD-TS - 10303-1158 class_of_composition_of_product - EXPRESS ARM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2726 - ISO/TS 10303-1158 Class of composition of product - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1962
+*)
 
 SCHEMA Class_of_composition_of_product_arm;
 

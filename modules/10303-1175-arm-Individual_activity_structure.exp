@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1855 - ISO/CD-TS - 10303-1175 individual_activity_structure - EXPRESS ARM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2786 - ISO/TS 10303-1175 Individual activity structure - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1855
+*)
 
 SCHEMA Individual_activity_structure_arm;
 

@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1953 - ISO/CD-TS - 10303-1156 product_structure_and_classification - EXPRESS ARM  *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2807 - ISO/TS 10303-1156 Product structure and classification - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1953
+*)
 
 SCHEMA Product_structure_and_classification_arm;
 
@@ -8,7 +12,7 @@ USE FROM External_item_identification_assignment_arm;    --  ISO/TS 10303-1128
 USE FROM Individual_product_structure_arm;    --  ISO/TS 10303-1163
 
 TYPE individual_product_or_product_relationship = SELECT BASED_ON classification_select WITH 
-  (Product_as_individual,
+  (Product_as_individual_version,
   Composition_of_individual_product,
   Connection_of_individual_product,
   Containment_of_individual_product,
@@ -16,7 +20,7 @@ TYPE individual_product_or_product_relationship = SELECT BASED_ON classification
 END_TYPE;
 
 TYPE complete_membership_individual_product_or_product_relationship = SELECT BASED_ON complete_membership_select WITH 
-  (Product_as_individual,
+  (Product_as_individual_version,
   Composition_of_individual_product,
   Connection_of_individual_product,
   Containment_of_individual_product,

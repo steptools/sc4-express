@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1870 - ISO/CD-TS - 10303-1212 classification - EXPRESS ARM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2756 - ISO/TS 10303-1212 Classification - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1870
+*)
 
 SCHEMA Classification_arm; 
 

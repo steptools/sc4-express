@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1834 - ISO/CD-TS - 10303-1169 activity_structure_and_classification - EXPRESS ARM  *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2708 - ISO/TS 10303-1169 Activity structure and classification - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1834
+*)
 
 SCHEMA Activity_structure_and_classification_arm;
 
