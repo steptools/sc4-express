@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1874 - ISO/CD-TS - 10303-1211 cardinality_of_relationship - EXPRESS MIM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2712 - ISO/TS 10303-1211 Cardinality of relationship - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N1874
+*)
 
 SCHEMA Cardinality_of_relationship_mim;
 

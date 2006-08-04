@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1877 - ISO/CD-TS - 10303-1092 maths_value - EXPRESS MIM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2802 - ISO/TS 10303-1092 Maths value - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N1877
+*)
 
 SCHEMA Maths_value_mim;
 

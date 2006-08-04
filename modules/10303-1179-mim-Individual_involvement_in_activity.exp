@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1868 - ISO/CD-TS - 10303-1179 individual_involvement_in_activity - EXPRESS MIM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2790 - ISO/TS 10303-1179 Individual involvement in activity - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N1868
+*)
 
 SCHEMA Individual_involvement_in_activity_mim;
 

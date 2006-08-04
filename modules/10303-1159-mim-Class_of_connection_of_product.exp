@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1966 - ISO/CD-TS - 10303-1159 class_of_connection_of_product - EXPRESS MIM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2733 - ISO/TS 10303-1159 Class of connection of product - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N1966
+*)
 
 SCHEMA Class_of_connection_of_product_mim;
 

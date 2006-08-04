@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1954 - ISO/CD-TS - 10303-1156 product_structure_and_classification - EXPRESS MIM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2808 - ISO/TS 10303-1156 Product structure and classification - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N1954
+*)
 
 SCHEMA Product_structure_and_classification_mim;
 
@@ -8,7 +12,7 @@ USE FROM External_item_identification_assignment_mim;    --  ISO/TS 10303-1128
 USE FROM Individual_product_structure_mim;    --  ISO/TS 10303-1163
 
 TYPE individual_product_or_product_relationship = SELECT BASED_ON classification_select WITH 
-  (product_as_individual,
+  (product_as_individual_version,
   composition_of_individual_product,
   connection_of_individual_product,
   containment_of_individual_product,
@@ -16,7 +20,7 @@ TYPE individual_product_or_product_relationship = SELECT BASED_ON classification
 END_TYPE;
 
 TYPE complete_membership_individual_product_or_product_relationship = SELECT BASED_ON complete_membership_select WITH 
-  (product_as_individual,
+  (product_as_individual_version,
   composition_of_individual_product,
   connection_of_individual_product,
   containment_of_individual_product,

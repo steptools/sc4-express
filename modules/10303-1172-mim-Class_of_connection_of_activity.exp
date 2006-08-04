@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1847 - ISO/CD-TS - 10303-1172 class_of_connection_of_activity - EXPRESS MIM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2730 - ISO/TS 10303-1172 Class of connection of activity - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N1847
+*)
 
 SCHEMA Class_of_connection_of_activity_mim;
 

@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1969 - ISO/CD-TS - 10303-1160 class_of_containment_of_product - EXPRESS MIM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2736 - ISO/TS 10303-1160 Class of containment of product - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N1969
+*)
 
 SCHEMA Class_of_containment_of_product_mim;
 

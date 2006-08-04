@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1865 - ISO/CD-TS - 10303-1178 connection_of_individual_activity - EXPRESS MIM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2766 - ISO/TS 10303-1178 Connection of individual activity - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N1865
+*)
 
 SCHEMA Connection_of_individual_activity_mim;
 

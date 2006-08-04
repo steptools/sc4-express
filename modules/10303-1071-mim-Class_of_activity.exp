@@ -1,4 +1,8 @@
-(*  ISO/TC184/SC4 WG12N1841 - ISO/CD-TS - 10303-1071 class_of_activity - EXPRESS MIM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2715 - ISO/TS 10303-1071 Class of activity - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N1841
+*)
 
 SCHEMA Class_of_activity_mim;
 

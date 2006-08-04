@@ -1,11 +1,15 @@
-(*  ISO/TC184/SC4 WG12N2055 - ISO/CD-TS - 10303-1085 property_identification - EXPRESS MIM*)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2817 - ISO/TS 10303-1085 Property identification - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N2055
+*)
 
 SCHEMA Property_identification_mim;
 
-USE FROM Independent_property_definition_mim;    --  ISO/CD-TS 10303-1099
-USE FROM Maths_space_mim;    --  ISO/CD-TS 10303-1091
-USE FROM Maths_value_mim;    --  ISO/CD-TS 10303-1092
-USE FROM Property_space_mim;    --  ISO/CD-TS 10303-1080
+USE FROM Independent_property_definition_mim;    --  ISO/TS 10303-1099
+USE FROM Maths_space_mim;    --  ISO/TS 10303-1091
+USE FROM Maths_value_mim;    --  ISO/TS 10303-1092
+USE FROM Property_space_mim;    --  ISO/TS 10303-1080
 USE FROM mathematical_context_schema    --  ISO 10303-51
   (compound_maths_space_context,
    defined_maths_space_context,
