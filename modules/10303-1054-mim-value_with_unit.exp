@@ -1,5 +1,7 @@
-(* $Id$ *)
-(* ISO/TC184/SC4 WG12N1302 - ISO/TS 10303-1054  Value with unit - EXPRESS MIM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1302 - ISO/TS 10303-1054 Value with unit - EXPRESS MIM
+*)
 
 SCHEMA Value_with_unit_mim;
 

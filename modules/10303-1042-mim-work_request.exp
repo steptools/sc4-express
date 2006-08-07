@@ -1,6 +1,6 @@
 (*
-  $Id$
-  ISO/TC184/SC4 WG12N1151 - ISO/TS - 10303-1042 Work request - EXPRESS MIM 
+ $Id$
+ ISO TC184/SC4/WG12 N1151 - ISO/TS 10303-1042 Work request - EXPRESS MIM
 *)
 
 SCHEMA Work_request_mim;

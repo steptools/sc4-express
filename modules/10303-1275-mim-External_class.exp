@@ -1,21 +1,26 @@
 (*
-  $Id$
-  ISO/TC184/SC4 WG12N1352 - ISO/CD-TS - 10303-1275 External class - EXPRESS MIM
-*)
+ $Id$
+ ISO TC184/SC4/WG12 N3050 - ISO/TS 10303-1275 External class - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N2265
+*) 
 
-SCHEMA External_class_mim; 
 
-USE FROM Class_mim;    -- ISO/CD-TS 10303-1070
+SCHEMA External_class_mim;
 
-USE FROM classification_schema   -- ISO/CD 10303-54
+USE FROM basic_attribute_schema   -- ISO 10303-41
+  (description_attribute,
+   description_attribute_select); 
+
+USE FROM Class_mim;    -- ISO/TS 10303-1070
+
+USE FROM classification_schema   -- ISO 10303-54
   (class); 
 
 USE FROM external_reference_schema   -- ISO 10303-41
   (external_source,
-   externally_defined_item,
-   pre_defined_item); 
+   externally_defined_item); 
 
-USE FROM Name_assignment_mim;    -- ISO/CD-TS 10303-1340
+USE FROM Name_assignment_mim;    -- ISO/TS 10303-1340
 
 
 TYPE external_class_name_item = SELECT BASED_ON name_item WITH 
@@ -31,4 +36,5 @@ ENTITY externally_defined_class
 END_ENTITY;
 
 END_SCHEMA;  -- External_class_mim
+
 

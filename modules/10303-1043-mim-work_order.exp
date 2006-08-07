@@ -1,6 +1,6 @@
 (*
  $Id$
- ISO/TC184/SC4 WG12N1154 - ISO/TS - 10303-1043 Work order - EXPRESS MIM 
+ ISO TC184/SC4/WG12 N1154 - ISO/TS 10303-1043 Work order - EXPRESS MIM
 *)
 
 SCHEMA Work_order_mim; 

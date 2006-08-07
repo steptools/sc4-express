@@ -1,7 +1,7 @@
 (*
-ISO TC184/SC4/WG12 N2126 - ISO/TS 10303-1040 Process property assignment - EXPRESS MIM
-*) 
-
+ $Id$
+ ISO TC184/SC4/WG12 N2126 - ISO/TS 10303-1040 Process property assignment - EXPRESS MIM
+*)
 
 SCHEMA Process_property_assignment_mim; 
 

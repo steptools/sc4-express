@@ -1,7 +1,8 @@
 (*
-  $Id$
-  ISO/TC184/SC4 WG12N1202 - ISO/TS - 10303-1126 Document properties - EXPRESS MIM 
+ $Id$
+ ISO TC184/SC4/WG12 N1202 - ISO/TS 10303-1126 Document properties - EXPRESS MIM
 *)
+
 
 
 SCHEMA Document_properties_mim;

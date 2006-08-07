@@ -1,5 +1,6 @@
 (*
-ISO TC184/SC4/WG12 N2121 - ISO/CD-TS 10303-1365 Time interval assignment - EXPRESS MIM
+ $Id$
+ ISO TC184/SC4/WG12 N2121 - ISO/TS 10303-1365 Time interval assignment - EXPRESS MIM
 *) 
 
 
@@ -23,3 +24,4 @@ ENTITY applied_time_interval_assignment
 END_ENTITY;
 
 END_SCHEMA;  -- Time_interval_assignment_mim
+

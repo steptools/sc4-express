@@ -1,12 +1,15 @@
 (*
-  $Id$
-  ISO/TC184/SC4 WG12N1343 - ISO/CD-TS - 10303-1246 Attribute classification - EXPRESS MIM
-*)
+ $Id$
+ ISO TC184/SC4/WG12 N3020 - ISO/TS 10303-1246 Attribute classification - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N2256
+*) 
 
 
-SCHEMA Attribute_classification_mim; 
+SCHEMA Attribute_classification_mim;
 
-USE FROM classification_schema   -- ISO/CD 10303-54
+USE FROM Class_mim;    -- ISO/TS 10303-1070
+
+USE FROM classification_schema   -- ISO 10303-54
   (class); 
 
 USE FROM management_resources_schema   -- ISO 10303-41
@@ -23,3 +26,4 @@ ENTITY applied_attribute_classification_assignment
 END_ENTITY;
 
 END_SCHEMA;  -- Attribute_classification_mim
+

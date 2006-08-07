@@ -1,6 +1,8 @@
 (*
-ISO TC184/SC4/WG12 N2117 - ISO/TS 10303-1364 Event assignment - EXPRESS MIM
-*) 
+ $Id$
+ ISO TC184/SC4/WG12 N2117 - ISO/TS 10303-1364 Event assignment - EXPRESS MIM
+*)
+
 
 
 SCHEMA Event_assignment_mim; 

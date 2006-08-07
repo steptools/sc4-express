@@ -1,7 +1,8 @@
-(* 
+(*
  $Id$
- ISO/TC184/SC4 WG12N1208 - ISO/TS - 10303-1128 External item identification assignment - EXPRESS MIM 
+ ISO TC184/SC4/WG12 N1208 - ISO/TS 10303-1128 External item identification assignment - EXPRESS MIM
 *)
+
 
 SCHEMA External_item_identification_assignment_mim;
 

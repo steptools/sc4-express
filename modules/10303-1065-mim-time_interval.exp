@@ -1,6 +1,7 @@
 (*
-ISO TC184/SC4/WG12 N2119 - ISO/TS 10303-1065 Time interval - EXPRESS MIM
-*) 
+ $Id$
+ ISO TC184/SC4/WG12 N2119 - ISO/TS 10303-1065 Time interval - EXPRESS MIM
+*)
 
 SCHEMA Time_interval_mim; 
 

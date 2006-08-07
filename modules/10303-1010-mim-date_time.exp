@@ -1,5 +1,7 @@
-(* ISO/TC184/SC4 WG12N1082 - ISO/TS - 10303-1010 Date time - EXPRESS MIM *)
-        
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1082 - ISO/TS 10303-1010 Date time - EXPRESS MIM
+*)       
 SCHEMA Date_time_mim;
 USE FROM date_time_schema -- ISO 10303-41
   (calendar_date,

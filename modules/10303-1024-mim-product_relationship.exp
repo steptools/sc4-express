@@ -1,5 +1,8 @@
-(* ISO/TC184/SC4 WG12N1133 - ISO/CD TS 10303-1024 Product relationship - EXPRESS MIM *) 
-   
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1133 - ISO/TS 10303-1024 Product relationship - EXPRESS MIM
+*)
+  
 SCHEMA Product_relationship_mim;
 USE FROM Product_identification_mim; -- ISO 10303-1017
 USE FROM product_definition_schema -- ISO 10303-41

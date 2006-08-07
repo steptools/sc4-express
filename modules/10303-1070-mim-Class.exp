@@ -1,11 +1,13 @@
 (*
  $Id$
- ISO/TC184/SC4 WG12N1346 - ISO/CD-TS - 10303-1070 Class - EXPRESS MIM 
-*)
+ ISO TC184/SC4/WG12 N3023 - ISO/TS 10303-1070 Class - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N2259
+*) 
 
-SCHEMA Class_mim; 
 
-USE FROM classification_schema   -- ISO/CD 10303-54
+SCHEMA Class_mim;
+
+USE FROM classification_schema   -- ISO 10303-54
   (class,
    class_by_extension,
    class_by_intension); 

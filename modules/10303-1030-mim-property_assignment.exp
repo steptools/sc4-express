@@ -1,18 +1,25 @@
-(* $Id$ 
-ISO/TC184/SC4 WG12N2129 - ISO/TS 10303-1030 Property assigment - EXPRESS MIM
-*)
+(*
+ $Id$
+ISO TC184/SC4/WG12 N2129 - ISO/TS 10303-1030 Property assignment - EXPRESS MIM
+*) 
+
 
 SCHEMA Property_assignment_mim;
 
-USE FROM Foundation_representation_mim;
+USE FROM basic_attribute_schema   -- ISO 10303-41
+  (id_attribute,
+   id_attribute_select); 
 
-USE FROM Independent_property_mim;
+USE FROM Foundation_representation_mim;    -- ISO/TS 10303-1006
 
-USE FROM product_property_definition_schema
-(general_property_association,
- property_definition);
+USE FROM Independent_property_mim;    -- ISO/TS 10303-1036
 
-USE FROM product_property_representation_schema
-(property_definition_representation);
+USE FROM product_property_definition_schema   -- ISO 10303-41
+  (general_property_association,
+   property_definition); 
 
-END_SCHEMA;
+USE FROM product_property_representation_schema   -- ISO 10303-41
+  (property_definition_representation); 
+
+
+END_SCHEMA;  -- Property_assignment_mim

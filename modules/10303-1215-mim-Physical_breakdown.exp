@@ -1,12 +1,13 @@
 (*
-   $Id$
-   ISO TC184/SC4/WG12 N1653 - ISO/CD-TS 10303-1215 Physical breakdown - EXPRESS MIM
+ $Id$
+ ISO TC184/SC4/WG12 N3095 - ISO/TS 10303-1215 Physical breakdown - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N2286
 *) 
 
 
-SCHEMA Physical_breakdown_mim; 
+SCHEMA Physical_breakdown_mim;
 
-USE FROM Product_breakdown_mim;    -- ISO/CD-TS 10303-1248
+USE FROM Product_breakdown_mim;    -- ISO/TS 10303-1248
 
 
 ENTITY physical_breakdown_context
@@ -18,3 +19,4 @@ ENTITY physical_element_usage
 END_ENTITY;
 
 END_SCHEMA;  -- Physical_breakdown_mim
+

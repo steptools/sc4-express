@@ -1,5 +1,7 @@
-(* ISO/TC184/SC4 WG12N1238 - ISO/TS - 10303-1036  Independent Property - EXPRESS MIM *)
-
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1238 - ISO/TS 10303-1036 Independent property - EXPRESS MIM
+*)
 SCHEMA Independent_property_mim;
 
 USE FROM product_property_definition_schema

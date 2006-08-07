@@ -1,11 +1,15 @@
 (*
-  $Id$
-  ISO/TC184/SC4 WG12N1358 - ISO/CD-TS - 10303-1210 Set theory - EXPRESS MIM
-*)
+ $Id$
+ ISO TC184/SC4/WG12 N3167 - ISO/TS 10303-1210 Set theory - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N2298
+*) 
 
-SCHEMA Set_theory_mim; 
 
-USE FROM set_theory_schema   -- ISO/CD 10303-54
+SCHEMA Set_theory_mim;
+
+USE FROM Class_mim;    -- ISO/TS 10303-1070
+
+USE FROM set_theory_schema   -- ISO 10303-54
   (complement,
    intersection,
    power_set,
@@ -16,3 +20,4 @@ USE FROM set_theory_schema   -- ISO/CD 10303-54
 
 
 END_SCHEMA;  -- Set_theory_mim
+

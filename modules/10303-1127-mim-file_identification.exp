@@ -1,6 +1,6 @@
-(* 
+(*
  $Id$
- ISO/TC184/SC4 WG12N1205 - ISO/TS - 10303-1127 File identification - EXPRESS MIM 
+ ISO TC184/SC4/WG12 N1205 - ISO/TS 10303-1127 File identification - EXPRESS MIM
 *)
 
 SCHEMA File_identification_mim;

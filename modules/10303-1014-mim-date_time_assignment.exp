@@ -1,6 +1,7 @@
-(* $ Id : mim.exp $
-ISO/TC184/SC4 WG12N1094 - ISO/TS - 10303-1014 Date time assignment - EXPRESS MIM *)
-     
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1094 - ISO/TS 10303-1014 Date time assignment - EXPRESS MIM
+*)     
 SCHEMA Date_time_assignment_mim;
 
 USE FROM Date_time_mim; 	-- 10303-1010

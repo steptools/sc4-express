@@ -1,56 +1,16 @@
-(* ISO/TC184/SC4 WG12N1121 - ISO/TS - 10303-1025 Alias identification - EXPRESS MIM *)
-     
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2907 - ISO/TS 10303-1025 Alias identification - EXPRESS MIM
+*)
+ 
+
+
 SCHEMA Alias_identification_mim;
-  
-USE FROM Identification_assignment_mim; 	-- ISO 10303-1021
 
-TYPE aliasable_item = EXTENSIBLE SELECT ;
-END_TYPE;
-
-RULE aliases_are_valid FOR (applied_identification_assignment);
-WHERE
-WR1: SIZEOF(QUERY(aia <* applied_identification_assignment | 
-		NOT alias_assignment_is_valid(aia)))=0;
-END_RULE;
-
-FUNCTION alias_assignment_is_valid (aia: applied_identification_assignment): BOOLEAN;
-LOCAL
-  item: identification_item;
-  role: identification_role;
-END_LOCAL;
-
-role:= aia.role;
-IF role.name='alias' THEN
-  REPEAT i:=LOINDEX(aia.items) TO HIINDEX(aia.items);
-    item:= aia.items[i];
-
-    IF (SIZEOF(['ALIAS_IDENTIFICATION_MIM.' + 'ALIASABLE_ITEM']*TYPEOF(item))=0) THEN
--- item invalid if item does not belong to aliasable types
-	RETURN(FALSE);
-    END_IF;
-  END_REPEAT;
-  RETURN(TRUE);
-
-ELSE		-- case where aia does not convey an alias
-  RETURN(TRUE);
-END_IF;
-END_FUNCTION;
-
-END_SCHEMA;
+USE FROM Identification_assignment_mim;    -- ISO/TS 10303-1021
 
 
+TYPE aliasable_item = EXTENSIBLE SELECT;
+END_TYPE; 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+END_SCHEMA;  -- Alias_identification_mim

@@ -1,9 +1,13 @@
 (*
-   $Id$
-   ISO TC184/SC4/WG12 N1626 - ISO/CD-TS 10303-1288 Management resource information - EXPRESS MIM
+ $Id$
+ ISO TC184/SC4/WG12 N3080 - ISO/TS 10303-1288 Management resource information - EXPRESS MIM
+ Supersedes ISO TC184/SC4/WG12 N2280
 *) 
 
-SCHEMA Management_resource_information_mim; 
+
+SCHEMA Management_resource_information_mim;
+
+USE FROM Alias_identification_mim;    -- ISO/TS 10303-1025
 
 USE FROM Approval_mim;    -- ISO/TS 10303-1012
 
@@ -15,7 +19,8 @@ USE FROM approval_schema   -- ISO 10303-41
 USE FROM Certification_mim;    -- ISO/TS 10303-1044
 
 USE FROM certification_schema   -- ISO 10303-41
-  (certification); 
+  (certification,
+   certification_type); 
 
 USE FROM Contract_mim;    -- ISO/TS 10303-1062
 
@@ -34,7 +39,7 @@ USE FROM management_resources_schema   -- ISO 10303-41
   (identification_role,
    organizational_project_role); 
 
-USE FROM Multi_linguism_mim;    -- ISO/CD-TS 10303-1105
+USE FROM Multi_linguism_mim;    -- ISO/TS 10303-1105
 
 USE FROM Person_organization_assignment_mim;    -- ISO/TS 10303-1013
 
@@ -56,13 +61,21 @@ USE FROM security_classification_schema   -- ISO 10303-41
    security_classification_level); 
 
 
-TYPE mri_approval_item = EXTENSIBLE SELECT BASED_ON approval_item WITH 
+TYPE mri_aliasable_item = EXTENSIBLE SELECT BASED_ON aliasable_item WITH 
+   (approval_status, 
+    contract, 
+    organization, 
+    security_classification_level);
+END_TYPE; 
+
+TYPE mri_approval_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON approval_item WITH 
    (certification, 
     contract);
 END_TYPE; 
 
 TYPE mri_attribute_language_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON attribute_language_item WITH 
-   (approval, 
+   (applied_organizational_project_assignment, 
+    approval, 
     approval_relationship, 
     approval_status, 
     certification, 
@@ -97,13 +110,15 @@ TYPE mri_date_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON date_item WITH
 END_TYPE; 
 
 TYPE mri_identification_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON identification_item WITH 
-   (contract, 
+   (approval_status, 
+    contract, 
     organization, 
     security_classification_level);
 END_TYPE; 
 
 TYPE mri_multi_language_attribute_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON multi_language_attribute_item WITH 
-   (approval, 
+   (applied_organizational_project_assignment, 
+    approval, 
     approval_relationship, 
     approval_status, 
     certification, 
@@ -132,6 +147,7 @@ TYPE mri_person_and_organization_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_O
 END_TYPE; 
 
 END_SCHEMA;  -- Management_resource_information_mim
+
 
 
 
