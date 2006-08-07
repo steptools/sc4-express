@@ -1,4 +1,7 @@
-(*  ISO/TC184/SC4 WG12N1228 - ISO/TS 10303-1031 External model EXPRESS ARM  *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1228 - ISO/TS 10303-1033 External model - EXPRESS ARM
+*)
 
 SCHEMA External_model_arm;
 

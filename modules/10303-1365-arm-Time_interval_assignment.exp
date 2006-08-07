@@ -1,5 +1,6 @@
 (*
-ISO TC184/SC4/WG12 N2120 - ISO/CD-TS 10303-1365 Time interval assignment - EXPRESS ARM
+ $Id$ 
+ ISO TC184/SC4/WG12 N2120 - ISO/TS 10303-1365 Time interval assignment - EXPRESS ARM
 *) 
 
 
@@ -23,3 +24,4 @@ ENTITY Time_interval_role;
 END_ENTITY;
 
 END_SCHEMA;  -- Time_interval_assignment_arm
+

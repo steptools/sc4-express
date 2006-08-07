@@ -1,6 +1,8 @@
 (*
-ISO TC184/SC4/WG12 N1150 - ISO/TS 10303-1042 Work request - EXPRESS ARM
-*) 
+ $Id$
+ ISO TC184/SC4/WG12 N2947 - ISO/TS 10303-1042 Work request - EXPRESS ARM
+*)
+
 
 
 SCHEMA Work_request_arm; 

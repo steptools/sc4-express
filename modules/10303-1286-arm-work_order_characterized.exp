@@ -1,13 +1,17 @@
 (*
-ISO TC184/SC4/WG12 N1619 - ISO/CD-TS 10303-1286 Work order characterized - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3187 - ISO/TS 10303-1286 Work order characterized - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2453
 *) 
 
 
-SCHEMA Work_order_characterized_arm; 
+SCHEMA Work_order_characterized_arm;
 
-USE FROM Ap239_management_resource_information_arm;    -- ISO/CD-TS 10303-1289
+USE FROM Ap239_management_resource_information_arm;    -- ISO/TS 10303-1289
 
-USE FROM Management_resource_information_arm;    -- ISO/CD-TS 10303-1288
+USE FROM Document_assignment_arm;    -- ISO/TS 10303-1122
+
+USE FROM Management_resource_information_arm;    -- ISO/TS 10303-1288
 
 USE FROM Work_order_arm;    -- ISO/TS 10303-1043
 
@@ -18,6 +22,10 @@ TYPE wordchar_ap239_mri_classification_item = EXTENSIBLE GENERIC_ENTITY SELECT B
 END_TYPE; 
 
 TYPE wordchar_ap239_mri_classified_attribute_select = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON ap239_mri_classified_attribute_select WITH 
+   (Work_order);
+END_TYPE; 
+
+TYPE wordchar_documented_element_select = SELECT BASED_ON documented_element_select WITH 
    (Work_order);
 END_TYPE; 
 
@@ -46,3 +54,4 @@ TYPE wordchar_mri_string_select = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON mri_
 END_TYPE; 
 
 END_SCHEMA;  -- Work_order_characterized_arm
+

@@ -1,4 +1,7 @@
-(* ISO/TC184/SC4 WG12N1177 - ISO/TS - 10303-1060 Product concept identification - EXPRESS ARM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1177 - ISO/TS 10303-1060 Product concept identification - EXPRESS ARM
+*)
    
 SCHEMA Product_concept_identification_arm;
    

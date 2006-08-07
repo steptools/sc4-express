@@ -1,13 +1,15 @@
 (*
-  $Id$
-  ISO/TC184/SC4 WG12N1351 - ISO/CD-TS - 10303-1275 External class - EXPRESS ARM
-*)
+ $Id$
+ ISO TC184/SC4/WG12 N3049 - ISO/TS 10303-1275 External class - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2264
+*) 
 
-SCHEMA External_class_arm; 
 
-USE FROM Class_arm;    -- ISO/CD-TS 10303-1070
+SCHEMA External_class_arm;
 
-USE FROM Name_assignment_arm;    -- ISO/CD-TS 10303-1340
+USE FROM Class_arm;    -- ISO/TS 10303-1070
+
+USE FROM Name_assignment_arm;    -- ISO/TS 10303-1340
 
 
 TYPE external_class_assigned_name_select = SELECT BASED_ON assigned_name_select WITH 
@@ -25,3 +27,5 @@ ENTITY External_class_library;
 END_ENTITY;
 
 END_SCHEMA;  -- External_class_arm
+
+

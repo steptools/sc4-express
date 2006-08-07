@@ -1,18 +1,19 @@
 (*
-$Id$
-ISO TC184/SC4/WG12 N1580 - ISO/CD-TS 10303-1258 Observation - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3088 - ISO/TS 10303-1258 Observation - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2396
 *) 
 
 
-SCHEMA Observation_arm; 
+SCHEMA Observation_arm;
 
-USE FROM Activity_as_realized_arm;    -- ISO/CD-TS 10303-1259
+USE FROM Activity_as_realized_arm;    -- ISO/TS 10303-1259
 
-USE FROM Classification_assignment_arm;    -- ISO/CD-TS 10303-1114
+USE FROM Classification_assignment_arm;    -- ISO/TS 10303-1114
 
-USE FROM Management_resource_information_arm;    -- ISO/CD-TS 10303-1288
+USE FROM Management_resource_information_arm;    -- ISO/TS 10303-1288
 
-USE FROM Product_as_individual_arm;    -- ISO/CD-TS 10303-1164
+USE FROM Product_as_individual_arm;    -- ISO/TS 10303-1164
 
 USE FROM Work_request_arm;    -- ISO/TS 10303-1042
 
@@ -67,9 +68,10 @@ ENTITY Observation_item;
 END_ENTITY;
 
 ENTITY Observation_relationship;
-  related : Observation;
   relating : Observation;
+  related : Observation;
   role : STRING;
 END_ENTITY;
 
 END_SCHEMA;  -- Observation_arm
+

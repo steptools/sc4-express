@@ -1,6 +1,7 @@
 (*
-ISO TC184/SC4/WG12 N1162 - ISO/TS 10303-1049 Activity method - EXPRESS ARM
-*) 
+ $Id$
+ ISO TC184/SC4/WG12 N2943 - ISO/TS 10303-1049 Activity method - EXPRESS ARM
+*)
 
 
 SCHEMA Activity_method_arm; 

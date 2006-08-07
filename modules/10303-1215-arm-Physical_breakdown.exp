@@ -1,12 +1,13 @@
 (*
-   $Id$
-   ISO TC184/SC4/WG12 N1652 - ISO/CD-TS 10303-1215 Physical breakdown - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3094 - ISO/TS 10303-1215 Physical breakdown - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2285
 *) 
 
 
-SCHEMA Physical_breakdown_arm; 
+SCHEMA Physical_breakdown_arm;
 
-USE FROM Product_breakdown_arm;    -- ISO/CD-TS 10303-1248
+USE FROM Product_breakdown_arm;    -- ISO/TS 10303-1248
 
 
 ENTITY Physical_breakdown
@@ -35,8 +36,8 @@ END_ENTITY;
 
 ENTITY Physical_element_usage
   SUBTYPE OF (Breakdown_element_usage);
-  SELF\Breakdown_element_usage.child_element : Physical_element_definition;
   SELF\Breakdown_element_usage.parent_element : Physical_element_definition;
+  SELF\Breakdown_element_usage.child_element : Physical_element_definition;
 END_ENTITY;
 
 ENTITY Physical_element_version
@@ -45,3 +46,4 @@ ENTITY Physical_element_version
 END_ENTITY;
 
 END_SCHEMA;  -- Physical_breakdown_arm
+

@@ -1,6 +1,7 @@
-(* 
-  $Id$
-ISO/TC184/SC4 WG12N1532 - ISO/TS 10303-1019 Product view definition - EXPRESS ARM *)
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1532 - ISO/TS 10303-1019 Product view definition - EXPRESS ARM
+*)
    
 SCHEMA Product_view_definition_arm;
 

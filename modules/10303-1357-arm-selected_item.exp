@@ -1,11 +1,13 @@
 (*
  $Id$
- ISO TC184/SC4/WG12 N2084 - ISO/CD-TS 10303-1357 Selected item - EXPRESS ARM
+ ISO TC184/SC4/WG12 N3163 - ISO/TS 10303-1357 Selected item - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2444
 *) 
 
-SCHEMA Selected_item_arm; 
 
-USE FROM Class_arm;    -- ISO/CD-TS 10303-1070
+SCHEMA Selected_item_arm;
+
+USE FROM Class_arm;    -- ISO/TS 10303-1070
 
 
 TYPE selected_item_context_items = EXTENSIBLE GENERIC_ENTITY SELECT;
@@ -25,4 +27,3 @@ ENTITY Selected_item_assignment;
 END_ENTITY;
 
 END_SCHEMA;  -- Selected_item_arm
-

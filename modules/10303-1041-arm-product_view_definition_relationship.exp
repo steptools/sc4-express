@@ -1,15 +1,16 @@
 (*
-ISO TC184/SC4/WG12 N1141 - ISO/TS 10303-1041 Product view definition relationship - EXPRESS ARM
-*) 
+ $Id$
+ ISO TC184/SC4/WG12 N2939 - ISO/TS 10303-1041 Product view definition relationship - EXPRESS ARM
+*)
 
 
-SCHEMA Product_view_definition_relationship_arm; 
+SCHEMA Product_view_definition_relationship_arm;
 
 USE FROM Product_view_definition_arm;    -- ISO/TS 10303-1019
 
 
 ENTITY View_definition_relationship;
-  id : STRING;
+  id : OPTIONAL STRING;
   relation_type : OPTIONAL STRING;
   description : OPTIONAL STRING;
   relating_view : Product_view_definition;
@@ -21,4 +22,3 @@ ENTITY View_definition_usage
 END_ENTITY;
 
 END_SCHEMA;  -- Product_view_definition_relationship_arm
-

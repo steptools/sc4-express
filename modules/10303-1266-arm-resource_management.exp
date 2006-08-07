@@ -1,33 +1,41 @@
 (*
-  $Id$
-  ISO/TC184/SC4 WG12N1463 - ISO/TS - 10303-1266 Resource management - EXPRESS ARM 
-*)
+ $Id$
+ ISO TC184/SC4/WG12 N3151 - ISO/TS 10303-1266 Resource management - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2432
+*) 
+
 
 SCHEMA Resource_management_arm;
 
-USE FROM Classification_assignment_arm;
+USE FROM Classification_assignment_arm;    -- ISO/TS 10303-1114
 
-USE FROM Required_resource_arm;
+USE FROM Location_assignment_arm;    -- ISO/TS 10303-1277
 
-USE FROM Resource_item_arm;
+USE FROM Required_resource_arm;    -- ISO/TS 10303-1267
 
-USE FROM Value_with_unit_arm;
+USE FROM Resource_item_arm;    -- ISO/TS 10303-1268
 
-TYPE resource_management_classification_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON classification_item WITH
-  (Managed_resource,
-   Managed_resource_relationship,
-   Resource_event,
-   Resource_event_relationship,
-   Resource_location,
-   Resource_location_relationship);
-END_TYPE;
+USE FROM Value_with_unit_arm;    -- ISO/TS 10303-1054
+
+
+TYPE managed_resource_location_assignment_select = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON location_assignment_select WITH 
+   (Managed_resource);
+END_TYPE; 
+
+TYPE resource_management_classification_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON classification_item WITH 
+   (Managed_resource, 
+    Managed_resource_relationship, 
+    Resource_event, 
+    Resource_event_correspondence_relationship, 
+    Resource_event_relationship);
+END_TYPE; 
 
 ENTITY Decreasing_resource_event
-SUBTYPE OF (Resource_event);
+  SUBTYPE OF (Resource_event);
 END_ENTITY;
 
 ENTITY Increasing_resource_event
-SUBTYPE OF (Resource_event);
+  SUBTYPE OF (Resource_event);
 END_ENTITY;
 
 ENTITY Managed_resource;
@@ -35,7 +43,6 @@ ENTITY Managed_resource;
   description : OPTIONAL STRING;
   quantity : OPTIONAL Value_with_unit;
   item : Resource_item;
-  location : OPTIONAL Resource_location;
 END_ENTITY;
 
 ENTITY Managed_resource_relationship;
@@ -45,7 +52,8 @@ ENTITY Managed_resource_relationship;
   related : Managed_resource;
 END_ENTITY;
 
-ENTITY Resource_event ABSTRACT SUPERTYPE;
+ENTITY Resource_event
+  ABSTRACT SUPERTYPE ;
   name : STRING;
   description : OPTIONAL STRING;
   quantity : OPTIONAL Value_with_unit;
@@ -66,16 +74,4 @@ ENTITY Resource_event_relationship;
   related : Resource_event;
 END_ENTITY;
 
-ENTITY Resource_location;
-  name : STRING;
-  description : OPTIONAL STRING;
-END_ENTITY;
-
-ENTITY Resource_location_relationship;
-  name : STRING;
-  description : OPTIONAL STRING;
-  relating : Resource_location;
-  related : Resource_location;
-END_ENTITY;
-
-END_SCHEMA;
+END_SCHEMA;  -- Resource_management_arm

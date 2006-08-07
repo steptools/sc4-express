@@ -1,9 +1,11 @@
 (*
-ISO TC184/SC4/WG12 N1170 - ISO/CD-TS 10303-1134 Product structure - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N2546 - ISO/TS 10303-1134 Product structure - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1670
 *) 
 
 
-SCHEMA Product_structure_arm; 
+SCHEMA Product_structure_arm;
 
 USE FROM Assembly_structure_arm;    -- ISO/TS 10303-1026
 
@@ -21,7 +23,7 @@ USE FROM Product_view_definition_relationship_arm;    -- ISO/TS 10303-1041
 
 USE FROM Property_assignment_arm;    -- ISO/TS 10303-1030
 
-USE FROM Single_part_representation_arm;    -- ISO/CD-TS 10303-1133
+USE FROM Single_part_representation_arm;    -- ISO/TS 10303-1133
 
 
 TYPE ps_product_property_assignment = SELECT BASED_ON property_assignment_select WITH 
@@ -35,3 +37,4 @@ ENTITY Alternate_part_relationship
 END_ENTITY;
 
 END_SCHEMA;  -- Product_structure_arm
+

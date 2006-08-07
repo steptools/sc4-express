@@ -1,11 +1,13 @@
 (*
-  $Id$
-  ISO/TC184/SC4 WG12N1357 - ISO/CD-TS - 10303-1210 Set theory - EXPRESS ARM
-*)
+ $Id$
+ ISO TC184/SC4/WG12 N3166 - ISO/TS 10303-1210 Set theory - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2297
+*) 
 
-SCHEMA Set_theory_arm; 
 
-USE FROM Class_arm;    -- ISO/CD-TS 10303-1070
+SCHEMA Set_theory_arm;
+
+USE FROM Class_arm;    -- ISO/TS 10303-1070
 
 
 ENTITY Complement;
@@ -66,3 +68,4 @@ ENTITY Union;
 END_ENTITY;
 
 END_SCHEMA;  -- Set_theory_arm
+

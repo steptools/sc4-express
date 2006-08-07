@@ -1,13 +1,15 @@
 (*
-   $Id$
-ISO TC184/SC4/WG12 N1448 - ISO/CD-TS 10303-1261 Activity method implementation - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3004 - ISO/TS 10303-1261 Activity method implementation - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2378
 *) 
 
-SCHEMA Activity_method_implementation_arm; 
+
+SCHEMA Activity_method_implementation_arm;
 
 USE FROM Activity_method_arm;    -- ISO/TS 10303-1049
 
-USE FROM Classification_assignment_arm;    -- ISO/CD-TS 10303-1114
+USE FROM Classification_assignment_arm;    -- ISO/TS 10303-1114
 
 
 TYPE activity_method_implementation_classified_item = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON classification_item WITH 

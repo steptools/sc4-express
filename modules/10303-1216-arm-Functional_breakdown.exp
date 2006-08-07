@@ -1,12 +1,13 @@
 (*
-   $Id$
-   ISO TC184/SC4/WG12 N1655 - ISO/CD-TS 10303-1216 Functional breakdown - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3052 - ISO/TS 10303-1216 Functional breakdown - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2267
 *) 
 
 
-SCHEMA Functional_breakdown_arm; 
+SCHEMA Functional_breakdown_arm;
 
-USE FROM Product_breakdown_arm;    -- ISO/CD-TS 10303-1248
+USE FROM Product_breakdown_arm;    -- ISO/TS 10303-1248
 
 
 ENTITY Functional_breakdown
@@ -35,8 +36,8 @@ END_ENTITY;
 
 ENTITY Functional_element_usage
   SUBTYPE OF (Breakdown_element_usage);
-  SELF\Breakdown_element_usage.child_element : Functional_element_definition;
   SELF\Breakdown_element_usage.parent_element : Functional_element_definition;
+  SELF\Breakdown_element_usage.child_element : Functional_element_definition;
 END_ENTITY;
 
 ENTITY Functional_element_version
@@ -45,3 +46,4 @@ ENTITY Functional_element_version
 END_ENTITY;
 
 END_SCHEMA;  -- Functional_breakdown_arm
+

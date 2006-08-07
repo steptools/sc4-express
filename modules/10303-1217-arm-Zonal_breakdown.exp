@@ -1,12 +1,13 @@
 (*
-   $Id$
-   ISO TC184/SC4/WG12 N1658 - ISO/CD-TS 10303-1217 Zonal breakdown - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3199 - ISO/TS 10303-1217 Zonal breakdown - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2303
 *) 
 
 
-SCHEMA Zonal_breakdown_arm; 
+SCHEMA Zonal_breakdown_arm;
 
-USE FROM Product_breakdown_arm;    -- ISO/CD-TS 10303-1248
+USE FROM Product_breakdown_arm;    -- ISO/TS 10303-1248
 
 USE FROM Product_view_definition_arm;    -- ISO/TS 10303-1019
 
@@ -49,8 +50,8 @@ END_ENTITY;
 
 ENTITY Zone_element_usage
   SUBTYPE OF (Breakdown_element_usage);
-  SELF\Breakdown_element_usage.child_element : Zone_element_definition;
   SELF\Breakdown_element_usage.parent_element : Zone_element_definition;
+  SELF\Breakdown_element_usage.child_element : Zone_element_definition;
 END_ENTITY;
 
 ENTITY Zone_element_version
@@ -59,3 +60,4 @@ ENTITY Zone_element_version
 END_ENTITY;
 
 END_SCHEMA;  -- Zonal_breakdown_arm
+

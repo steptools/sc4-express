@@ -1,6 +1,7 @@
 (*
-ISO TC184/SC4/WG12 N2118 - ISO/TS 10303-1065 Time interval - EXPRESS ARM
-*) 
+ $Id$
+ ISO TC184/SC4/WG12 N2955 - ISO/TS 10303-1065 Time interval - EXPRESS ARM
+*)
 
 
 SCHEMA Time_interval_arm; 

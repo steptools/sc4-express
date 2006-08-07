@@ -1,20 +1,29 @@
 (*
-ISO TC184/SC4/WG12 N1415 - ISO/CD-TS 10303-1242 Position in organization - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3097 - ISO/TS 10303-1242 Position in organization - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2402
 *) 
 
 
-SCHEMA Position_in_organization_arm; 
+SCHEMA Position_in_organization_arm;
 
-USE FROM Classification_assignment_arm;    -- ISO/CD-TS 10303-1114
+USE FROM Classification_assignment_arm;    -- ISO/TS 10303-1114
 
 USE FROM Person_organization_arm;    -- ISO/TS 10303-1011
 
 USE FROM Project_arm;    -- ISO/TS 10303-1061
 
+USE FROM Type_of_person_arm;    -- ISO/TS 10303-1245
 
-TYPE classified_select_for_relationship = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON classification_item WITH 
+
+TYPE classified_select_for_position = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON classification_item WITH 
    (Person_or_organization_or_person_in_organization_in_position_relationship, 
-    Position_relationship);
+    Position, 
+    Position_group, 
+    Position_group_relationship, 
+    Position_position_type_assignment, 
+    Position_relationship, 
+    Position_type);
 END_TYPE; 
 
 TYPE position_context_item = EXTENSIBLE GENERIC_ENTITY SELECT
@@ -39,23 +48,23 @@ TYPE position_type_item = EXTENSIBLE GENERIC_ENTITY SELECT;
 END_TYPE; 
 
 ENTITY Person_or_organization_or_person_in_organization_in_position;
-  description : STRING;
   name : STRING;
+  description : STRING;
   person_or_organization : position_person_or_organization_or_person_in_organization_select;
   position : Position;
 END_ENTITY;
 
 ENTITY Person_or_organization_or_person_in_organization_in_position_relationship;
-  description : OPTIONAL STRING;
   name : STRING;
-  related : Person_or_organization_or_person_in_organization_in_position;
+  description : OPTIONAL STRING;
   relating : Person_or_organization_or_person_in_organization_in_position;
+  related : Person_or_organization_or_person_in_organization_in_position;
 END_ENTITY;
 
 ENTITY Position;
-  address : OPTIONAL Address;
-  description : OPTIONAL STRING;
   name : STRING;
+  description : OPTIONAL STRING;
+  address : OPTIONAL Address;
   position_context : position_context_item;
 END_ENTITY;
 
@@ -66,8 +75,8 @@ ENTITY Position_assignment;
 END_ENTITY;
 
 ENTITY Position_group;
-  description : OPTIONAL STRING;
   name : STRING;
+  description : OPTIONAL STRING;
 END_ENTITY;
 
 ENTITY Position_group_assignment;
@@ -82,8 +91,8 @@ ENTITY Position_group_relationship;
 END_ENTITY;
 
 ENTITY Position_group_role;
-  description : OPTIONAL STRING;
   name : STRING;
+  description : OPTIONAL STRING;
 END_ENTITY;
 
 ENTITY Position_position_type_assignment;
@@ -92,20 +101,21 @@ ENTITY Position_position_type_assignment;
 END_ENTITY;
 
 ENTITY Position_relationship;
-  description : OPTIONAL STRING;
   name : STRING;
-  related_position : Position;
+  description : OPTIONAL STRING;
   relating_position : Position;
+  related_position : Position;
 END_ENTITY;
 
 ENTITY Position_role;
-  description : OPTIONAL STRING;
   name : STRING;
+  description : OPTIONAL STRING;
 END_ENTITY;
 
 ENTITY Position_type;
-  description : OPTIONAL STRING;
   name : STRING;
+  description : OPTIONAL STRING;
+  defined_by : Type_of_person;
 END_ENTITY;
 
 ENTITY Position_type_assignment;
@@ -115,10 +125,9 @@ ENTITY Position_type_assignment;
 END_ENTITY;
 
 ENTITY Position_type_role;
-  description : OPTIONAL STRING;
   name : STRING;
+  description : OPTIONAL STRING;
 END_ENTITY;
 
 END_SCHEMA;  -- Position_in_organization_arm
-
 

@@ -1,17 +1,20 @@
-(* ISO/TC184/SC4 WG12N1105 ISO/TS - 10303-1018 Product version - EXPRESS ARM *)
-   
-SCHEMA Product_version_arm;
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2527 - ISO/TS 10303-1018 Product version - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N1105
+*) 
 
-   
-USE FROM Product_identification_arm; -- ISO/TS 10303-1017
-   
+
+SCHEMA Product_version_arm; 
+
+USE FROM Product_identification_arm;    -- ISO/TS 10303-1017
+
+
 ENTITY Product_version;
-  id                : STRING;
-  description       : OPTIONAL STRING;
-  of_product        : Product;
-UNIQUE
-  UR1: id, of_product;
+  id : STRING;
+  description : OPTIONAL STRING;
+  of_product : Product;
 END_ENTITY;
 
-   
-END_SCHEMA;
+END_SCHEMA;  -- Product_version_arm
+

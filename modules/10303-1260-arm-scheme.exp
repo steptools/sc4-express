@@ -1,13 +1,15 @@
 (*
-   $Id$
-ISO TC184/SC4/WG12 N1445 - ISO/CD-TS 10303-1260 Scheme - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3160 - ISO/TS 10303-1260 Scheme - EXPRESS ARM
+Supersedes ISO TC184/SC4/WG12 N2441
 *) 
 
-SCHEMA Scheme_arm; 
+
+SCHEMA Scheme_arm;
 
 USE FROM Activity_method_arm;    -- ISO/TS 10303-1049
 
-USE FROM Activity_method_assignment_arm;    -- ISO/CD-TS 10303-1249
+USE FROM Activity_method_assignment_arm;    -- ISO/TS 10303-1249
 
 USE FROM Date_time_assignment_arm;    -- ISO/TS 10303-1014
 
@@ -31,13 +33,16 @@ END_TYPE;
 TYPE scheme_subject_select = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON activity_method_item;
 END_TYPE; 
 
+TYPE scheme_version_select = EXTENSIBLE GENERIC_ENTITY SELECT BASED_ON activity_method_item;
+END_TYPE; 
+
 ENTITY Scheme
   SUBTYPE OF (Activity_method);
 END_ENTITY;
 
 ENTITY Scheme_entry
   SUBTYPE OF (Activity_method);
-  scheme : Scheme;
+  scheme : Scheme_version;
 END_ENTITY;
 
 ENTITY Scheme_entry_assignment
@@ -64,6 +69,23 @@ ENTITY Scheme_subject_assignment
   SELF\Applied_activity_method_assignment.items : SET[1:?] OF scheme_subject_select;
 END_ENTITY;
 
+ENTITY Scheme_version
+  SUBTYPE OF (Activity_method);
+  of_scheme : Scheme;
+END_ENTITY;
+
+ENTITY Scheme_version_assignment
+  SUBTYPE OF (Applied_activity_method_assignment);
+  SELF\Applied_activity_method_assignment.assigned_activity_method RENAMED assigned_scheme_version : Scheme_version;
+  SELF\Applied_activity_method_assignment.items : SET[1:?] OF scheme_version_select;
+END_ENTITY;
+
+ENTITY Scheme_version_relationship
+  SUBTYPE OF (Activity_method_relationship);
+  SELF\Activity_method_relationship.relating_method RENAMED relating_scheme_version : Scheme_version;
+  SELF\Activity_method_relationship.related_method RENAMED related_scheme_version : Scheme_version;
+END_ENTITY;
+
 ENTITY Sequencing_relationship
   SUBTYPE OF (Scheme_entry_relationship);
   sequencing_type : STRING;
@@ -71,4 +93,5 @@ ENTITY Sequencing_relationship
 END_ENTITY;
 
 END_SCHEMA;  -- Scheme_arm
+
 

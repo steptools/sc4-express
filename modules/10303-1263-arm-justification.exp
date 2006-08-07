@@ -1,10 +1,11 @@
 (*
  $Id$
- ISO TC184/SC4/WG12 N1454 - ISO/CD-TS 10303-1263 Justification - EXPRESS ARM 
+ ISO TC184/SC4/WG12 N3067 - ISO/TS 10303-1263 Justification - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2384
 *) 
 
 
-SCHEMA Justification_arm; 
+SCHEMA Justification_arm;
 
 
 TYPE justification_item = EXTENSIBLE GENERIC_ENTITY SELECT;
@@ -42,3 +43,4 @@ ENTITY Justification_support_assignment;
 END_ENTITY;
 
 END_SCHEMA;  -- Justification_arm
+

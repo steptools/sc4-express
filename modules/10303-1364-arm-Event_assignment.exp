@@ -1,6 +1,6 @@
 (*
  $Id$
- ISO TC184/SC4/WG12 N2116 - ISO/CD-TS 10303-xxxx Event assignment - EXPRESS ARM
+ ISO TC184/SC4/WG12 N2116 - ISO/TS 10303-1364 Event assignment - EXPRESS ARM
 *) 
 
 
@@ -19,3 +19,4 @@ ENTITY Event_assignment;
 END_ENTITY;
 
 END_SCHEMA;  -- Event_assignment_arm
+

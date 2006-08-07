@@ -1,5 +1,8 @@
-(* ISO/TC184/SC4 WG12N1144 - ISO/TS - 10303-1046 Product replacement - EXPRESS ARM *)
-   
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1144 - ISO/TS 10303-1046 Product replacement - EXPRESS ARM
+*)
+  
 SCHEMA Product_replacement_arm;
 
 USE FROM Assembly_structure_arm; -- ISO/TS 10303-1026

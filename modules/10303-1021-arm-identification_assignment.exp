@@ -1,5 +1,8 @@
-(* ISO/TC184/SC4 WG12N1109 - ISO/TS - 10303-1021 Identification assignment - EXPRESS ARM *)
-   
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1111 - ISO/TS 10303-1021 Identification assignment - EXPRESS ARM
+*)
+  
 SCHEMA Identification_assignment_arm;
 
    

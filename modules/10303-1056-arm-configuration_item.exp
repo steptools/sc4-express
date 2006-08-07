@@ -1,30 +1,39 @@
-(* ISO/TC184/SC4 WG12N1165 - ISO/TS - 10303-1056 Configuration item  - EXPRESS ARM *)
-   
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N2532 - ISO/TS 10303-1056 Configuration item - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2482
+*) 
+
+
 SCHEMA Configuration_item_arm;
 
-   
-USE FROM Product_version_arm; -- ISO/TS 10303-1018
-USE FROM Product_view_definition_arm; -- ISO/TS 10303-1019
-USE FROM Product_concept_identification_arm; -- ISO/TS 10303-1060
+USE FROM Product_concept_identification_arm;    -- ISO/TS 10303-1060
 
-TYPE version_or_definition = SELECT (Product_version, Product_view_definition);
-END_TYPE;
+USE FROM Product_version_arm;    -- ISO/TS 10303-1018
 
-ENTITY Configuration_watched_item;
-  id                        : STRING;
-  name                      : STRING;
-  description               : OPTIONAL STRING;
-  item_context              : Product_concept;
-INVERSE
-  corresponding_design      : SET [0:1] OF Item_design_association FOR watched_item;
-END_ENTITY;
+USE FROM Product_view_definition_arm;    -- ISO/TS 10303-1019
+
+
+TYPE version_or_definition = SELECT
+   (Product_version, 
+    Product_view_definition);
+END_TYPE; 
 
 ENTITY Item_design_association;
-  watched_item: Configuration_watched_item;
-  proposed_design: version_or_definition;
+  configuration : Product_configuration;
+  design : version_or_definition;
 UNIQUE
-  UR1: watched_item, proposed_design;
+  UR1: configuration, design;
 END_ENTITY;
 
-END_SCHEMA;
+ENTITY Product_configuration;
+  id : STRING;
+  name : STRING;
+  description : OPTIONAL STRING;
+  item_context : Product_concept;
+INVERSE
+  corresponding_design : SET[0:1] OF Item_design_association FOR configuration;
+END_ENTITY;
+
+END_SCHEMA;  -- Configuration_item_arm
 

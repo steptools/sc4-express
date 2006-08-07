@@ -1,10 +1,11 @@
 (*
-   $Id$
-ISO TC184/SC4/WG12 N1577 - ISO/CD-TS 10303-1252 Probability - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3100 - ISO/TS 10303-1252 Probability - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2405
 *) 
 
 
-SCHEMA Probability_arm; 
+SCHEMA Probability_arm;
 
 USE FROM Foundation_representation_arm;    -- ISO/TS 10303-1006
 
@@ -18,7 +19,7 @@ END_ENTITY;
 
 ENTITY Probability_by_name
   SUBTYPE OF (Probability);
-  has_value : Probability_named_value;
+  SELF\Representation.items RENAMED has_value : SET[1:1] OF Probability_named_value;
 END_ENTITY;
 
 ENTITY Probability_derivation_parameter
@@ -28,7 +29,7 @@ END_ENTITY;
 ENTITY Probability_derived
   SUBTYPE OF (Probability_numeric);
   derives_from : Probability_generator;
-  has_parameter : LIST[0:?] OF Probability_derivation_parameter;
+  has_parameter : LIST[1:?] OF Probability_derivation_parameter;
 END_ENTITY;
 
 ENTITY Probability_generator
@@ -42,7 +43,7 @@ END_ENTITY;
 
 ENTITY Probability_numeric
   SUBTYPE OF (Probability);
-  has_value : Probability_numeric_value;
+  SELF\Representation.items RENAMED has_value : SET[1:1] OF Probability_numeric_value;
 END_ENTITY;
 
 ENTITY Probability_numeric_value
@@ -50,4 +51,3 @@ ENTITY Probability_numeric_value
 END_ENTITY;
 
 END_SCHEMA;  -- Probability_arm
-

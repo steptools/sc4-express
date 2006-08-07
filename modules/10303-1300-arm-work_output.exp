@@ -1,14 +1,15 @@
-
 (*
-ISO TC184/SC4/WG12 N1917 - ISO/CD-TS 10303-1300 Work output - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3190 - ISO/TS 10303-1300 Work output - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2456
 *) 
 
 
-SCHEMA Work_output_arm; 
+SCHEMA Work_output_arm;
 
-USE FROM Activity_method_assignment_arm;    -- ISO/CD-TS 10303-1249
+USE FROM Activity_method_assignment_arm;    -- ISO/TS 10303-1249
 
-USE FROM Classification_assignment_arm;    -- ISO/CD-TS 10303-1114
+USE FROM Classification_assignment_arm;    -- ISO/TS 10303-1114
 
 USE FROM Value_with_unit_arm;    -- ISO/TS 10303-1054
 

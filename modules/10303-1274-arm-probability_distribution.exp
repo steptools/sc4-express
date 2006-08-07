@@ -1,16 +1,17 @@
 (*
-   $Id$
-ISO TC184/SC4/WG12 N1583 - ISO/CD-TS 10303-1274 Probability distribution - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3103 - ISO/TS 10303-1274 Probability distribution - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2408
 *) 
 
 
-SCHEMA Probability_distribution_arm; 
+SCHEMA Probability_distribution_arm;
 
-USE FROM Classification_assignment_arm;    -- ISO/CD-TS 10303-1114
+USE FROM Classification_assignment_arm;    -- ISO/TS 10303-1114
 
 USE FROM Measure_representation_arm;    -- ISO/TS 10303-1118
 
-USE FROM Probability_arm;    -- ISO/CD-TS 10303-1252
+USE FROM Probability_arm;    -- ISO/TS 10303-1252
 
 
 TYPE probability_distribution_classification = SELECT BASED_ON classification_item WITH 
@@ -60,3 +61,4 @@ ENTITY Value_function;
 END_ENTITY;
 
 END_SCHEMA;  -- Probability_distribution_arm
+

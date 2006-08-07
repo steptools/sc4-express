@@ -1,9 +1,10 @@
 (*
-ISO TC184/SC4/WG12 N1301 - ISO/TS 10303-1054 Value with unit - EXPRESS ARM
+ $Id$
+ISO TC184/SC4/WG12 N2976 - ISO/TS 10303-1054 Value with unit - EXPRESS ARM
 *) 
 
 
-SCHEMA Value_with_unit_arm; 
+SCHEMA Value_with_unit_arm;
 
 
 TYPE any_number_value = NUMBER;
@@ -12,13 +13,17 @@ END_TYPE;
 TYPE any_string_value = STRING;
 END_TYPE; 
 
-TYPE length_measure = NUMBER;
+TYPE length_measure = REAL;
 END_TYPE; 
 
 TYPE measure_value = EXTENSIBLE SELECT
    (any_number_value, 
     any_string_value, 
-    length_measure);
+    length_measure, 
+    plane_angle_measure);
+END_TYPE; 
+
+TYPE plane_angle_measure = REAL;
 END_TYPE; 
 
 ENTITY Amount_of_substance_unit
@@ -107,7 +112,7 @@ ENTITY Unit
                        Solid_angle_unit,
                        Thermodynamic_temperature_unit,
                        Time_unit));
-  name : OPTIONAL STRING;
+  name : STRING;
   si_unit : BOOLEAN;
 END_ENTITY;
 

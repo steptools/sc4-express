@@ -1,9 +1,11 @@
 (*
-ISO TC184/SC4/WG12 N1409 - ISO/CD-TS 10303-1240 Organization type - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3091 - ISO/TS 10303-1240 Organization type - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2399
 *) 
 
 
-SCHEMA Organization_type_arm; 
+SCHEMA Organization_type_arm;
 
 USE FROM Person_organization_arm;    -- ISO/TS 10303-1011
 
@@ -14,9 +16,8 @@ ENTITY Organization_organization_type_relationship;
 END_ENTITY;
 
 ENTITY Organization_type;
-  description : OPTIONAL STRING;
   name : STRING;
+  description : OPTIONAL STRING;
 END_ENTITY;
 
 END_SCHEMA;  -- Organization_type_arm
-

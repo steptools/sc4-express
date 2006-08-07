@@ -1,5 +1,8 @@
-(* ISO/TC184/SC4 WG12N1090 - ISO/TS - 10303-1013 Person organization assignment - EXPRESS ARM *)
-   
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1090 - ISO/TS 10303-1013 Person organization assignment - EXPRESS ARM
+*)
+  
 SCHEMA Person_organization_assignment_arm;
 
 USE FROM Person_organization_arm; -- Person organization

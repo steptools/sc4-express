@@ -1,5 +1,7 @@
-(* ISO/TC184/SC4 WG12N1126 - ISO/TS - 10303-1062 Contract - EXPRESS ARM *)
-   
+(*
+ $Id$
+ ISO TC184/SC4/WG12 N1126 - ISO/TS 10303-1062 Contract - EXPRESS ARM
+*)   
 SCHEMA Contract_arm;
 
    

@@ -1,12 +1,13 @@
 (*
-   $Id$
-   ISO TC184/SC4/WG12 N1649 - ISO/CD-TS 10303-1214 System breakdown - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3178 - ISO/TS 10303-1214 System breakdown - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2300
 *) 
 
 
-SCHEMA System_breakdown_arm; 
+SCHEMA System_breakdown_arm;
 
-USE FROM Product_breakdown_arm;    -- ISO/CD-TS 10303-1248
+USE FROM Product_breakdown_arm;    -- ISO/TS 10303-1248
 
 
 ENTITY System_breakdown
@@ -35,8 +36,8 @@ END_ENTITY;
 
 ENTITY System_element_usage
   SUBTYPE OF (Breakdown_element_usage);
-  SELF\Breakdown_element_usage.child_element : System_element_definition;
   SELF\Breakdown_element_usage.parent_element : System_element_definition;
+  SELF\Breakdown_element_usage.child_element : System_element_definition;
 END_ENTITY;
 
 ENTITY System_element_version
@@ -45,3 +46,4 @@ ENTITY System_element_version
 END_ENTITY;
 
 END_SCHEMA;  -- System_breakdown_arm
+

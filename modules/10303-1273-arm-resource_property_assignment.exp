@@ -1,9 +1,11 @@
 (*
-ISO TC184/SC4/WG12 N - ISO/CD-TS 10303-xxxx Resource property assignment - EXPRESS ARM
+ $Id$
+ ISO TC184/SC4/WG12 N3157 - ISO/TS 10303-1273 Resource property assignment - EXPRESS ARM
+ Supersedes ISO TC184/SC4/WG12 N2438
 *) 
 
 
-SCHEMA Resource_property_assignment_arm; 
+SCHEMA Resource_property_assignment_arm;
 
 USE FROM Foundation_representation_arm;    -- ISO/TS 10303-1006
 
@@ -21,9 +23,9 @@ DERIVE
 END_ENTITY;
 
 ENTITY Resource_property;
-  described_element : characterized_resource_select;
-  description : STRING;
   name : STRING;
+  description : STRING;
+  described_element : characterized_resource_select;
 END_ENTITY;
 
 ENTITY Resource_property_representation;

@@ -1,6 +1,8 @@
 (*
-ISO TC184/SC4/WG12 N2106 - ISO/TS 10303-1012 Approval - EXPRESS ARM
-*) 
+ $Id$
+ ISO TC184/SC4/WG12 N2909 - ISO/TS 10303-1012 Approval - EXPRESS ARM
+*)
+
 
 
 SCHEMA Approval_arm; 
