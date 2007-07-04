@@ -1,4 +1,4 @@
-(* ISO/DIS 10303-45 Ed2 N4857 *) 
+(* ISO/DIS 10303-45 Ed2  N4857 *) 
 
  SCHEMA material_property_definition_schema;
 
@@ -144,8 +144,7 @@ REFERENCE FROM support_resource_schema
       bag_to_set);
 REFERENCE FROM measure_schema
      (measure_with_unit,
-      unit,
-      valid_units);
+      unit);
 REFERENCE FROM mathematical_functions_schema
      (maths_value);
 REFERENCE FROM representation_schema
@@ -227,8 +226,6 @@ END_ENTITY;
 ENTITY maths_value_with_unit;
   value_component : maths_value;
   unit_component : unit;
-WHERE
-  WR1: valid_units(SELF);
 END_ENTITY;
 
 ENTITY maths_value_representation_item
