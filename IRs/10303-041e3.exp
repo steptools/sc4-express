@@ -1,6 +1,10 @@
 (*
-2004-01-12
-ISO TC184/SC4/WG12 N2887 - ISO/IS 10303-41 Fundamentals of product description and support - EXPRESS
+2008-02-07
+ISO TC184/SC4/WG12 N4883 - ISO/IS 10303-41 Fundamentals of product description and support - EXPRESS
+*)
+(*
+Supersedes ISO TC184/SC4/WG12 N2887 - ISO/IS 10303-41 Fundamentals of product description and support - EXPRESS
+changes to date_time schema and to measure_schema as per TC1 - WG12 N4834.
 *)
 
 SCHEMA application_context_schema;
@@ -1660,196 +1664,225 @@ SCHEMA person_organization_schema;
 
 END_SCHEMA;
 SCHEMA date_time_schema;
-  REFERENCE FROM basic_attribute_schema (description_attribute, get_description_value);
-  REFERENCE FROM measure_schema (time_measure_with_unit);
-  REFERENCE FROM support_resource_schema (bag_to_set, identifier, label, text);
-  TYPE ahead_or_behind = ENUMERATION OF (ahead, exact, behind);
-  END_TYPE;
 
-  TYPE date_time_or_event_occurrence = SELECT (date_time_select, event_occurrence);
-  END_TYPE;
+REFERENCE FROM basic_attribute_schema   -- ISO 10303-41
+  (description_attribute,
+   get_description_value); 
 
-  TYPE date_time_select = SELECT (date, local_time, date_and_time);
-  END_TYPE;
+REFERENCE FROM measure_schema   -- ISO 10303-41
+  (time_measure_with_unit); 
 
-  TYPE day_in_month_number = INTEGER;
-    WHERE
-      WR1: {1 <= SELF <= 31};
-  END_TYPE;
+REFERENCE FROM support_resource_schema   -- ISO 10303-41
+  (bag_to_set,
+   identifier,
+   label,
+   text); 
 
-  TYPE day_in_week_number = INTEGER;
-    WHERE
-      WR1: {1 <= SELF <= 7};
-  END_TYPE;
 
-  TYPE day_in_year_number = INTEGER;
-    WHERE
-      WR1: {1 <= SELF <= 366};
-  END_TYPE;
+TYPE ahead_or_behind = ENUMERATION OF 
+   (ahead,
+    exact,
+    behind);
+END_TYPE; 
 
-  TYPE hour_in_day = INTEGER;
-    WHERE
-      WR1: {0 <= SELF < 24};
-  END_TYPE;
+TYPE date_time_or_event_occurrence = SELECT
+   (date_time_select, 
+    event_occurrence);
+END_TYPE; 
 
-  TYPE minute_in_hour = INTEGER;
-    WHERE
-      WR1: {0 <= SELF <= 59};
-  END_TYPE;
+TYPE date_time_select = SELECT
+   (date, 
+    date_and_time, 
+    local_time);
+END_TYPE; 
 
-  TYPE month_in_year_number = INTEGER;
-    WHERE
-      WR1: {1 <= SELF <= 12};
-  END_TYPE;
+TYPE day_in_month_number = INTEGER;
+WHERE
+  WR1: {1 <= SELF <= 31};
+END_TYPE; 
 
-  TYPE second_in_minute = REAL;
-    WHERE
-      WR1: {0 <= SELF <= 60.000000};
-  END_TYPE;
+TYPE day_in_week_number = INTEGER;
+WHERE
+  WR1: { 1 <= SELF <= 7 };
+END_TYPE; 
 
-  TYPE week_in_year_number = INTEGER;
-    WHERE
-      WR1: {1 <= SELF <= 53};
-  END_TYPE;
+TYPE day_in_year_number = INTEGER;
+WHERE
+  WR1: {1 <= SELF <= 366};
+END_TYPE; 
 
-  TYPE year_number = INTEGER;
-  END_TYPE;
+TYPE hour_in_day = INTEGER;
+WHERE
+  WR1: { 0 <= SELF < 24 };
+END_TYPE; 
 
-  ENTITY calendar_date
-    SUBTYPE OF (date);
-    day_component : day_in_month_number;
-    month_component : month_in_year_number;
-  WHERE
-    WR1: valid_calendar_date(SELF);
-  END_ENTITY;
+TYPE minute_in_hour = INTEGER;
+WHERE
+  WR1: { 0 <= SELF <= 59 };
+END_TYPE; 
 
-  ENTITY coordinated_universal_time_offset;
-    hour_offset : INTEGER;
-    minute_offset : OPTIONAL INTEGER;
-    sense : ahead_or_behind;
-  DERIVE
-    actual_minute_offset : INTEGER := NVL(minute_offset, 0);
-  WHERE
-    WR1: {0 <= hour_offset < 24};
-    WR2: {0 <= actual_minute_offset <= 59};
-    WR3: NOT (((hour_offset <> 0) OR (actual_minute_offset <> 0)) AND (sense = exact));
-  END_ENTITY;
+TYPE month_in_year_number = INTEGER;
+WHERE
+  WR1: { 1 <= SELF <= 12 };
+END_TYPE; 
 
-  ENTITY date
-    SUPERTYPE OF (ONEOF(calendar_date, ordinal_date, week_of_year_and_day_date));
-    year_component : year_number;
-  END_ENTITY;
+TYPE second_in_minute = REAL;
+WHERE
+  WR1: { 0 <= SELF <= 60.0 };
+END_TYPE; 
 
-  ENTITY date_and_time;
-    date_component : date;
-    time_component : local_time;
-  END_ENTITY;
+TYPE week_in_year_number = INTEGER;
+WHERE
+  WR1: { 1 <= SELF <= 53 };
+END_TYPE; 
 
-  ENTITY date_role;
-    name : label;
-  DERIVE
-    description : text := get_description_value(SELF);
-  WHERE
-    WR1: SIZEOF(USEDIN(SELF, 'BASIC_ATTRIBUTE_SCHEMA.' + 'DESCRIPTION_ATTRIBUTE.DESCRIBED_ITEM')) <= 1;
-  END_ENTITY;
+TYPE year_number = INTEGER;
+END_TYPE; 
 
-  ENTITY date_time_role;
-    name : label;
-  DERIVE
-    description : text := get_description_value(SELF);
-  WHERE
-    WR1: SIZEOF(USEDIN(SELF, 'BASIC_ATTRIBUTE_SCHEMA.' + 'DESCRIPTION_ATTRIBUTE.DESCRIBED_ITEM')) <= 1;
-  END_ENTITY;
+ENTITY calendar_date
+  SUBTYPE OF (date);
+  day_component : day_in_month_number;
+  month_component : month_in_year_number;
+WHERE
+  WR1: valid_calendar_date (SELF);
+END_ENTITY;
 
-  ENTITY event_occurrence;
-    id : identifier;
-    name : label;
-    description : OPTIONAL text;
-  END_ENTITY;
+ENTITY coordinated_universal_time_offset;
+  hour_offset : INTEGER;
+  minute_offset : OPTIONAL INTEGER;
+  sense : ahead_or_behind;
+DERIVE
+  actual_minute_offset : INTEGER := NVL(minute_offset,0);
+WHERE
+  WR1: { 0 <= hour_offset < 24 };
+  WR2: { 0 <= actual_minute_offset <= 59 };
+  WR3: NOT (((hour_offset <> 0) OR (actual_minute_offset <>0)) AND (sense = exact));
+END_ENTITY;
 
-  ENTITY event_occurrence_context_role;
-    name : label;
-    description : OPTIONAL text;
-  END_ENTITY;
+ENTITY date
+  SUPERTYPE OF (ONEOF (calendar_date,
+                       ordinal_date,
+                       week_of_year_and_day_date,
+                       year_month));
+  year_component : year_number;
+END_ENTITY;
 
-  ENTITY event_occurrence_relationship;
-    name : label;
-    description : OPTIONAL text;
-    relating_event : event_occurrence;
-    related_event : event_occurrence;
-  END_ENTITY;
+ENTITY date_and_time;
+  date_component : date;
+  time_component : local_time;
+END_ENTITY;
 
-  ENTITY event_occurrence_role;
-    name : label;
-    description : OPTIONAL text;
-  END_ENTITY;
+ENTITY date_role;
+  name : label;
+DERIVE
+  description : text := get_description_value (SELF);
+WHERE
+  WR1: SIZEOF (USEDIN (SELF, 'BASIC_ATTRIBUTE_SCHEMA.' + 'DESCRIPTION_ATTRIBUTE.DESCRIBED_ITEM')) <= 1;
+END_ENTITY;
 
-  ENTITY local_time;
-    hour_component : hour_in_day;
-    minute_component : OPTIONAL minute_in_hour;
-    second_component : OPTIONAL second_in_minute;
-    zone : coordinated_universal_time_offset;
-  WHERE
-    WR1: valid_time(SELF);
-  END_ENTITY;
+ENTITY date_time_role;
+  name : label;
+DERIVE
+  description : text := get_description_value (SELF);
+WHERE
+  WR1: SIZEOF (USEDIN (SELF, 'BASIC_ATTRIBUTE_SCHEMA.' + 'DESCRIPTION_ATTRIBUTE.DESCRIBED_ITEM')) <= 1;
+END_ENTITY;
 
-  ENTITY ordinal_date
-    SUBTYPE OF (date);
-    day_component : day_in_year_number;
-  WHERE
-    WR1: (NOT leap_year(SELF.year_component) AND {1 <= day_component <= 365}) OR (leap_year(SELF.year_component) AND {1 <= day_component <= 366});
-  END_ENTITY;
+ENTITY event_occurrence;
+  id : identifier;
+  name : label;
+  description : OPTIONAL text;
+END_ENTITY;
 
-  ENTITY relative_event_occurrence
-    SUBTYPE OF (event_occurrence);
-    base_event : event_occurrence;
-    offset : time_measure_with_unit;
-  END_ENTITY;
+ENTITY event_occurrence_context_role;
+  name : label;
+  description : OPTIONAL text;
+END_ENTITY;
 
-  ENTITY time_interval;
-    id : identifier;
-    name : label;
-    description : OPTIONAL text;
-  END_ENTITY;
+ENTITY event_occurrence_relationship;
+  name : label;
+  description : OPTIONAL text;
+  relating_event : event_occurrence;
+  related_event : event_occurrence;
+END_ENTITY;
 
-  ENTITY time_interval_relationship;
-    name : label;
-    description : OPTIONAL text;
-    relating_time_interval : time_interval;
-    related_time_interval : time_interval;
-  END_ENTITY;
+ENTITY event_occurrence_role;
+  name : label;
+  description : OPTIONAL text;
+END_ENTITY;
 
-  ENTITY time_interval_role;
-    name : label;
-    description : OPTIONAL text;
-  END_ENTITY;
+ENTITY local_time;
+  hour_component : hour_in_day;
+  minute_component : OPTIONAL minute_in_hour;
+  second_component : OPTIONAL second_in_minute;
+  zone : coordinated_universal_time_offset;
+WHERE
+  WR1: valid_time (SELF);
+END_ENTITY;
 
-  ENTITY time_interval_with_bounds
-    SUBTYPE OF (time_interval);
-    primary_bound : OPTIONAL date_time_or_event_occurrence;
-    secondary_bound : OPTIONAL date_time_or_event_occurrence;
-    duration : OPTIONAL time_measure_with_unit;
-  WHERE
-    WR1: NOT (EXISTS(secondary_bound) AND EXISTS(duration));
-    WR2: EXISTS(primary_bound) OR EXISTS(secondary_bound);
-  END_ENTITY;
+ENTITY ordinal_date
+  SUBTYPE OF (date);
+  day_component : day_in_year_number;
+WHERE
+  WR1: (NOT leap_year(SELF.year_component) AND { 1 <= day_component <= 365 }) OR (leap_year(SELF.year_component) AND { 1 <= day_component <= 366 });
+END_ENTITY;
 
-  ENTITY time_role;
-    name : label;
-  DERIVE
-    description : text := get_description_value(SELF);
-  WHERE
-    WR1: SIZEOF(USEDIN(SELF, 'BASIC_ATTRIBUTE_SCHEMA.' + 'DESCRIPTION_ATTRIBUTE.DESCRIBED_ITEM')) <= 1;
-  END_ENTITY;
+ENTITY relative_event_occurrence
+  SUBTYPE OF (event_occurrence);
+  base_event : event_occurrence;
+  offset : time_measure_with_unit;
+END_ENTITY;
 
-  ENTITY week_of_year_and_day_date
-    SUBTYPE OF (date);
-    week_component : week_in_year_number;
-    day_component : OPTIONAL day_in_week_number;
-  END_ENTITY;
+ENTITY time_interval;
+  id : identifier;
+  name : label;
+  description : OPTIONAL text;
+END_ENTITY;
 
-  FUNCTION acyclic_event_occurrence_relationship (relation : event_occurrence_relationship; relatives : SET [1:?] OF event_occurrence; specific_relation : STRING):BOOLEAN;
-    LOCAL
+ENTITY time_interval_relationship;
+  name : label;
+  description : OPTIONAL text;
+  relating_time_interval : time_interval;
+  related_time_interval : time_interval;
+END_ENTITY;
+
+ENTITY time_interval_role;
+  name : label;
+  description : OPTIONAL text;
+END_ENTITY;
+
+ENTITY time_interval_with_bounds
+  SUBTYPE OF (time_interval);
+  primary_bound : OPTIONAL date_time_or_event_occurrence;
+  secondary_bound : OPTIONAL date_time_or_event_occurrence;
+  duration : OPTIONAL time_measure_with_unit;
+WHERE
+  WR1: NOT (EXISTS(secondary_bound) AND EXISTS(duration));
+  WR2: EXISTS(primary_bound) OR EXISTS(secondary_bound);
+END_ENTITY;
+
+ENTITY time_role;
+  name : label;
+DERIVE
+  description : text := get_description_value (SELF);
+WHERE
+  WR1: SIZEOF (USEDIN (SELF, 'BASIC_ATTRIBUTE_SCHEMA.' + 'DESCRIPTION_ATTRIBUTE.DESCRIBED_ITEM')) <= 1;
+END_ENTITY;
+
+ENTITY week_of_year_and_day_date
+  SUBTYPE OF (date);
+  week_component : week_in_year_number;
+  day_component : OPTIONAL day_in_week_number;
+END_ENTITY;
+
+ENTITY year_month 
+  SUBTYPE OF (date);
+  month_component : month_in_year_number;
+END_ENTITY;
+
+FUNCTION acyclic_event_occurrence_relationship
+ (relation : event_occurrence_relationship; relatives : SET[1:?] OF event_occurrence; specific_relation : STRING) : BOOLEAN; 
+ LOCAL
       x : SET OF event_occurrence_relationship;
     END_LOCAL;
 
@@ -1863,10 +1896,11 @@ SCHEMA date_time_schema;
       END_IF;
     END_REPEAT;
     RETURN (TRUE);
-  END_FUNCTION;
+END_FUNCTION; 
 
-  FUNCTION acyclic_time_interval_relationship (relation : time_interval_relationship; relatives : SET [1:?] OF time_interval; specific_relation : STRING):BOOLEAN;
-    LOCAL
+FUNCTION acyclic_time_interval_relationship
+ (relation : time_interval_relationship; relatives : SET[1:?] OF time_interval; specific_relation : STRING) : BOOLEAN; 
+  LOCAL
       x : SET OF time_interval_relationship;
     END_LOCAL;
 
@@ -1880,59 +1914,50 @@ SCHEMA date_time_schema;
       END_IF;
     END_REPEAT;
     RETURN (TRUE);
-  END_FUNCTION;
+END_FUNCTION; 
 
-  FUNCTION leap_year (year : year_number):BOOLEAN;
-    IF ((((year MOD 4) = 0) AND ((year MOD 100) <> 0)) OR ((year MOD 400) = 0)) THEN
-      RETURN (TRUE);
-    ELSE
-      RETURN (FALSE);
-    END_IF;
-  END_FUNCTION;
-
-  FUNCTION valid_calendar_date (date : calendar_date):LOGICAL;
-    CASE date.month_component OF 
-      1:
-        RETURN ({1 <= date.day_component <= 31});
-      2:
-        BEGIN
-          IF (leap_year(date.year_component)) THEN
-            RETURN ({1 <= date.day_component <= 29});
-          ELSE
-            RETURN ({1 <= date.day_component <= 28});
-          END_IF;
-        END;
-      3:
-        RETURN ({1 <= date.day_component <= 31});
-      4:
-        RETURN ({1 <= date.day_component <= 30});
-      5:
-        RETURN ({1 <= date.day_component <= 31});
-      6:
-        RETURN ({1 <= date.day_component <= 30});
-      7:
-        RETURN ({1 <= date.day_component <= 31});
-      8:
-        RETURN ({1 <= date.day_component <= 31});
-      9:
-        RETURN ({1 <= date.day_component <= 30});
-      10:
-        RETURN ({1 <= date.day_component <= 31});
-      11:
-        RETURN ({1 <= date.day_component <= 30});
-      12:
-        RETURN ({1 <= date.day_component <= 31});
-    END_CASE;
+FUNCTION leap_year
+ (year : year_number) : BOOLEAN; 
+  IF ((((year MOD 4) = 0) AND ((year MOD 100) <> 0)) OR ((year MOD 400) = 0)) THEN
+    RETURN (TRUE);
+  ELSE
     RETURN (FALSE);
-  END_FUNCTION;
+  END_IF;
+END_FUNCTION; 
 
-  FUNCTION valid_time (time : local_time):BOOLEAN;
-    IF EXISTS(time.second_component) THEN
-      RETURN (EXISTS(time.minute_component));
-    ELSE
-      RETURN (TRUE);
-    END_IF;
-  END_FUNCTION;
+FUNCTION valid_calendar_date
+ (date : calendar_date) : LOGICAL; 
+  CASE date.month_component OF
+    1  : RETURN({ 1 <= date.day_component <= 31 });
+    2  : BEGIN
+           IF (leap_year(date.year_component)) THEN
+             RETURN({ 1 <= date.day_component <= 29 });
+           ELSE
+             RETURN({ 1 <= date.day_component <= 28 });
+           END_IF;
+         END;
+    3  : RETURN({ 1 <= date.day_component <= 31 });
+    4  : RETURN({ 1 <= date.day_component <= 30 });
+    5  : RETURN({ 1 <= date.day_component <= 31 });
+    6  : RETURN({ 1 <= date.day_component <= 30 });
+    7  : RETURN({ 1 <= date.day_component <= 31 });
+    8  : RETURN({ 1 <= date.day_component <= 31 });
+    9  : RETURN({ 1 <= date.day_component <= 30 });
+    10 : RETURN({ 1 <= date.day_component <= 31 });
+    11 : RETURN({ 1 <= date.day_component <= 30 });
+    12 : RETURN({ 1 <= date.day_component <= 31 });
+  END_CASE;
+  RETURN (FALSE);
+END_FUNCTION; 
+
+FUNCTION valid_time
+ (time : local_time) : BOOLEAN; 
+  IF EXISTS(time.second_component) THEN
+    RETURN (EXISTS(time.minute_component));
+  ELSE
+    RETURN (TRUE);
+  END_IF;
+END_FUNCTION; 
 
 END_SCHEMA;
 SCHEMA group_schema;
@@ -2152,11 +2177,29 @@ SCHEMA support_resource_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA measure_schema;
-  REFERENCE FROM basic_attribute_schema (name_attribute, get_name_value);
-  REFERENCE FROM representation_schema (representation_context);
-  REFERENCE FROM support_resource_schema;
-  TYPE amount_of_substance_measure = REAL;
+
+REFERENCE FROM basic_attribute_schema   -- ISO 10303-41
+  (get_name_value,
+   name_attribute); 
+
+REFERENCE FROM representation_schema   -- ISO 10303-43
+  (representation_context); 
+
+REFERENCE FROM support_resource_schema;    -- ISO 10303-41
+
+
+  TYPE absorbed_dose_measure = REAL;
+  END_TYPE;
+
+TYPE acceleration_measure = REAL;
+  END_TYPE;
+
+  TYPE radioactivity_measure = REAL;
+  END_TYPE;
+
+TYPE amount_of_substance_measure = REAL;
   END_TYPE;
 
   TYPE area_measure = REAL;
@@ -2173,20 +2216,106 @@ SCHEMA measure_schema;
 
   TYPE descriptive_measure = STRING;
   END_TYPE;
+  
+  TYPE capacitance_measure = REAL;
+  END_TYPE;
+  
+  TYPE dose_equivalent_measure = REAL;
+  END_TYPE;
 
+  TYPE electric_charge_measure = REAL;
+  END_TYPE;
+  
   TYPE electric_current_measure = REAL;
   END_TYPE;
 
+  TYPE conductance_measure = REAL;
+  END_TYPE;
+
+  TYPE electric_potential_measure = REAL;
+  END_TYPE;
+  
+  TYPE energy_measure = REAL;
+  END_TYPE;  
+  
+  TYPE force_measure = REAL;
+  END_TYPE;  
+  
+  TYPE frequency_measure = REAL;
+  END_TYPE; 
+  
+  TYPE magnetic_flux_density_measure = REAL;
+  END_TYPE;
+
+  TYPE illuminance_measure = REAL;
+  END_TYPE;  
+
+  TYPE inductance_measure = REAL;
+  END_TYPE;
+  
   TYPE length_measure = REAL;
   END_TYPE;
 
   TYPE luminous_intensity_measure = REAL;
   END_TYPE;
 
+  TYPE luminous_flux_measure = REAL;
+  END_TYPE;
+
   TYPE mass_measure = REAL;
   END_TYPE;
 
-  TYPE measure_value = SELECT (length_measure, mass_measure, time_measure, electric_current_measure, thermodynamic_temperature_measure, celsius_temperature_measure, amount_of_substance_measure, luminous_intensity_measure, plane_angle_measure, solid_angle_measure, area_measure, volume_measure, ratio_measure, parameter_value, numeric_measure, context_dependent_measure, descriptive_measure, positive_length_measure, positive_plane_angle_measure, positive_ratio_measure, count_measure);
+  TYPE measure_value = SELECT 
+    (absorbed_dose_measure,
+     dose_equivalent_measure,
+     radioactivity_measure,
+     acceleration_measure,
+     amount_of_substance_measure, 
+     area_measure, 
+     celsius_temperature_measure, 
+     context_dependent_measure, 
+     count_measure, 
+     descriptive_measure, 
+     capacitance_measure,
+     electric_charge_measure,
+     conductance_measure,
+     electric_current_measure, 
+     electric_potential_measure,
+     energy_measure,
+     magnetic_flux_density_measure,
+     force_measure,
+     frequency_measure,
+     illuminance_measure,
+     inductance_measure,
+     length_measure, 
+     luminous_flux_measure,
+     luminous_intensity_measure, 
+     magnetic_flux_measure,
+     mass_measure, 
+     numeric_measure, 
+     non_negative_length_measure,
+     parameter_value, 
+     plane_angle_measure, 
+     positive_length_measure, 
+     positive_plane_angle_measure, 
+     positive_ratio_measure, 
+     power_measure,
+     pressure_measure,
+     ratio_measure, 
+     resistance_measure,
+     solid_angle_measure, 
+     thermodynamic_temperature_measure, 
+     time_measure, 
+     velocity_measure,
+     volume_measure);
+  END_TYPE;
+
+  TYPE magnetic_flux_measure = REAL;
+  END_TYPE;
+
+  TYPE non_negative_length_measure = length_measure;
+   WHERE
+    WR1: SELF >= 0.0;
   END_TYPE;
 
   TYPE numeric_measure = NUMBER;
@@ -2198,22 +2327,31 @@ SCHEMA measure_schema;
   TYPE plane_angle_measure = REAL;
   END_TYPE;
 
-  TYPE positive_length_measure = length_measure;
+  TYPE positive_length_measure = non_negative_length_measure;
     WHERE
-      WR1: SELF > 0.000000;
+      WR1: SELF > 0.0;
   END_TYPE;
 
   TYPE positive_plane_angle_measure = plane_angle_measure;
     WHERE
-      WR1: SELF > 0.000000;
+      WR1: SELF > 0.0;
   END_TYPE;
 
   TYPE positive_ratio_measure = ratio_measure;
     WHERE
-      WR1: SELF > 0.000000;
+      WR1: SELF > 0.0;
+  END_TYPE;
+
+  TYPE power_measure = REAL;
+  END_TYPE;
+
+  TYPE pressure_measure = REAL;
   END_TYPE;
 
   TYPE ratio_measure = REAL;
+  END_TYPE;
+
+  TYPE resistance_measure = REAL;
   END_TYPE;
 
   TYPE si_prefix = ENUMERATION OF (exa, peta, tera, giga, mega, kilo, hecto, deca, deci, centi, milli, micro, nano, pico, femto, atto);
@@ -2231,11 +2369,65 @@ SCHEMA measure_schema;
   TYPE time_measure = REAL;
   END_TYPE;
 
-  TYPE unit = SELECT (named_unit, derived_unit);
+  TYPE unit = SELECT (derived_unit, named_unit);
   END_TYPE;
 
+  TYPE velocity_measure = REAL;
+  END_TYPE;
+  
   TYPE volume_measure = REAL;
   END_TYPE;
+
+ENTITY absorbed_dose_measure_with_unit
+ SUBTYPE OF (measure_with_unit);
+WHERE
+    WR1: 'MEASURE_SCHEMA.ABSORBED_DOSE_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+END_ENTITY;
+
+ENTITY absorbed_dose_unit
+ SUBTYPE OF (derived_unit);
+WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.gray);  
+END_ENTITY;
+
+  ENTITY si_absorbed_dose_unit
+     SUBTYPE OF (absorbed_dose_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.gray;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+
+  ENTITY acceleration_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.ACCELERATION_UNIT' IN TYPEOF (SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+  
+  ENTITY acceleration_unit
+    SUBTYPE OF (derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = 
+       dimensional_exponents ( 1.0, 0.0, -2.0, 0.0, 0.0, 0.0, 0.0 );
+  END_ENTITY;
+
+ENTITY radioactivity_measure_with_unit
+ SUBTYPE OF (measure_with_unit);
+WHERE
+    WR1: 'MEASURE_SCHEMA.RADIOACTIVITY_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+END_ENTITY;
+
+ENTITY radioactivity_unit
+ SUBTYPE OF (derived_unit);
+WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.becquerel);  
+END_ENTITY;
+
+  ENTITY si_radioactivity_unit
+     SUBTYPE OF (radioactivity_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.becquerel;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
 
   ENTITY amount_of_substance_measure_with_unit
     SUBTYPE OF (measure_with_unit);
@@ -2246,7 +2438,7 @@ SCHEMA measure_schema;
   ENTITY amount_of_substance_unit
     SUBTYPE OF (named_unit);
   WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 0.000000) AND (SELF\named_unit.dimensions.mass_exponent = 0.000000) AND (SELF\named_unit.dimensions.time_exponent = 0.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 1.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.000000);
+    WR1: (SELF\named_unit.dimensions.length_exponent = 0.0) AND (SELF\named_unit.dimensions.mass_exponent = 0.0) AND (SELF\named_unit.dimensions.time_exponent = 0.0) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.0) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.0) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 1.0) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.0);
   END_ENTITY;
 
   ENTITY area_measure_with_unit
@@ -2256,9 +2448,10 @@ SCHEMA measure_schema;
   END_ENTITY;
 
   ENTITY area_unit
-    SUBTYPE OF (named_unit);
+   SUBTYPE OF (derived_unit);
   WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 2.000000) AND (SELF\named_unit.dimensions.mass_exponent = 0.000000) AND (SELF\named_unit.dimensions.time_exponent = 0.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.000000);
+  WR1: derive_dimensional_exponents(SELF) = 
+      dimensional_exponents ( 2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 );
   END_ENTITY;
 
   ENTITY celsius_temperature_measure_with_unit
@@ -2274,16 +2467,40 @@ SCHEMA measure_schema;
 
   ENTITY conversion_based_unit
     SUBTYPE OF (named_unit);
-    name : label;
-    conversion_factor : measure_with_unit;
+     name : label;
+     conversion_factor : measure_with_unit;
+   DERIVE
+     SELF\named_unit.dimensions : dimensional_exponents := 
+    derive_dimensional_exponents(conversion_factor\measure_with_unit.unit_component);
   END_ENTITY;
 
-  ENTITY derived_unit;
+  ENTITY derived_unit
+    SUPERTYPE OF (ONEOF(absorbed_dose_unit,
+	acceleration_unit,
+    radioactivity_unit,
+	area_unit,
+    capacitance_unit,
+	dose_equivalent_unit,
+    electric_charge_unit,
+    conductance_unit,
+    electric_potential_unit,
+    energy_unit,
+    magnetic_flux_density_unit,
+    force_unit,
+    frequency_unit,
+    illuminance_unit,
+    inductance_unit,
+    magnetic_flux_unit,
+    power_unit,
+    pressure_unit,
+    resistance_unit,
+    velocity_unit,
+    volume_unit));
     elements : SET [1:?] OF derived_unit_element;
   DERIVE
     name : label := get_name_value(SELF);
   WHERE
-    WR1: (SIZEOF(elements) > 1) OR ((SIZEOF(elements) = 1) AND (elements[1].exponent <> 1.000000));
+    WR1: (SIZEOF(elements) > 1) OR ((SIZEOF(elements) = 1) AND (elements[1].exponent <> 1.0));
     WR2: SIZEOF(USEDIN(SELF, 'BASIC_ATTRIBUTE_SCHEMA.' + 'NAME_ATTRIBUTE.NAMED_ITEM')) <= 1;
   END_ENTITY;
 
@@ -2302,6 +2519,63 @@ SCHEMA measure_schema;
     luminous_intensity_exponent : REAL;
   END_ENTITY;
 
+  ENTITY capacitance_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.farad);  
+  END_ENTITY;
+
+  ENTITY capacitance_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.CAPACITANCE_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_capacitance_unit
+     SUBTYPE OF (capacitance_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.farad;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+
+ENTITY dose_equivalent_measure_with_unit
+ SUBTYPE OF (measure_with_unit);
+WHERE
+    WR1: 'MEASURE_SCHEMA.DOSE_EQUIVALENT_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+END_ENTITY;
+
+ENTITY dose_equivalent_unit
+ SUBTYPE OF (derived_unit);
+WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.sievert);  
+END_ENTITY;
+
+  ENTITY si_dose_equivalent_unit
+     SUBTYPE OF (dose_equivalent_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.sievert;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+
+  ENTITY electric_charge_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.coulomb);  
+  END_ENTITY;
+
+  ENTITY electric_charge_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.ELECTRIC_CHARGE_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_electric_charge_unit
+     SUBTYPE OF (electric_charge_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.coulomb;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+  
   ENTITY electric_current_measure_with_unit
     SUBTYPE OF (measure_with_unit);
   WHERE
@@ -2311,14 +2585,166 @@ SCHEMA measure_schema;
   ENTITY electric_current_unit
     SUBTYPE OF (named_unit);
   WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 0.000000) AND (SELF\named_unit.dimensions.mass_exponent = 0.000000) AND (SELF\named_unit.dimensions.time_exponent = 0.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 1.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.000000);
+    WR1: (SELF\named_unit.dimensions.length_exponent = 0.0) AND (SELF\named_unit.dimensions.mass_exponent = 0.0) AND (SELF\named_unit.dimensions.time_exponent = 0.0) AND (SELF\named_unit.dimensions.electric_current_exponent = 1.0) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.0) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.0) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.0);
+  END_ENTITY;
+  
+   ENTITY conductance_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.siemens);  
   END_ENTITY;
 
+  ENTITY conductance_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.CONDUCTANCE_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_conductance_unit
+     SUBTYPE OF (conductance_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.siemens;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+
+  ENTITY electric_potential_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.volt);  
+  END_ENTITY;
+
+  ENTITY electric_potential_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.ELECTRIC_POTENTIAL_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_electric_potential_unit
+     SUBTYPE OF (electric_potential_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.volt;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+
+  ENTITY energy_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.joule);  
+  END_ENTITY;
+
+  ENTITY energy_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.ENERGY_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_energy_unit
+     SUBTYPE OF (energy_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.joule;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+
+  ENTITY magnetic_flux_density_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.tesla);  
+  END_ENTITY;
+
+  ENTITY magnetic_flux_density_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.MAGNETIC_FLUX_DENSITY_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_magnetic_flux_density_unit
+     SUBTYPE OF (magnetic_flux_density_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.tesla;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+
+  ENTITY force_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.newton);  
+  END_ENTITY;
+
+  ENTITY force_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.FORCE_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_force_unit
+     SUBTYPE OF (force_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.newton;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+
+  ENTITY frequency_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.hertz);  
+  END_ENTITY;
+
+  ENTITY frequency_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.FREQUENCY_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_frequency_unit
+     SUBTYPE OF (frequency_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.hertz;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+ 
   ENTITY global_unit_assigned_context
     SUBTYPE OF (representation_context);
     units : SET [1:?] OF unit;
   END_ENTITY;
 
+  ENTITY illuminance_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.lux);  
+  END_ENTITY;
+
+  ENTITY illuminance_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.ILLUMINANCE_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_illuminance_unit
+     SUBTYPE OF (illuminance_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.lux;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+
+  ENTITY inductance_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.henry);  
+  END_ENTITY;
+
+  ENTITY inductance_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.INDUCTANCE_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_inductance_unit
+     SUBTYPE OF (inductance_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.henry;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+ 
   ENTITY length_measure_with_unit
     SUBTYPE OF (measure_with_unit);
   WHERE
@@ -2328,7 +2754,25 @@ SCHEMA measure_schema;
   ENTITY length_unit
     SUBTYPE OF (named_unit);
   WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 1.000000) AND (SELF\named_unit.dimensions.mass_exponent = 0.000000) AND (SELF\named_unit.dimensions.time_exponent = 0.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.000000);
+    WR1: (SELF\named_unit.dimensions.length_exponent = 1.0) AND 
+    (SELF\named_unit.dimensions.mass_exponent = 0.0) AND 
+    (SELF\named_unit.dimensions.time_exponent = 0.0) AND 
+    (SELF\named_unit.dimensions.electric_current_exponent = 0.0) AND 
+    (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.0) AND 
+    (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.0) AND 
+    (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.0);
+  END_ENTITY;
+
+  ENTITY luminous_flux_unit
+    SUBTYPE OF(named_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.lumen);  
+  END_ENTITY;
+
+  ENTITY luminous_flux_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.LUMINOUS_FLUX_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
   END_ENTITY;
 
   ENTITY luminous_intensity_measure_with_unit
@@ -2340,7 +2784,26 @@ SCHEMA measure_schema;
   ENTITY luminous_intensity_unit
     SUBTYPE OF (named_unit);
   WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 0.000000) AND (SELF\named_unit.dimensions.mass_exponent = 0.000000) AND (SELF\named_unit.dimensions.time_exponent = 0.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 1.000000);
+    WR1: (SELF\named_unit.dimensions.length_exponent = 0.0) AND (SELF\named_unit.dimensions.mass_exponent = 0.0) AND (SELF\named_unit.dimensions.time_exponent = 0.0) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.0) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.0) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.0) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 1.0);
+  END_ENTITY;
+
+  ENTITY magnetic_flux_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.weber);  
+  END_ENTITY;
+
+  ENTITY magnetic_flux_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.MAGNETIC_FLUX_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_magnetic_flux_unit
+     SUBTYPE OF (magnetic_flux_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.weber;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
   END_ENTITY;
 
   ENTITY mass_measure_with_unit
@@ -2352,11 +2815,43 @@ SCHEMA measure_schema;
   ENTITY mass_unit
     SUBTYPE OF (named_unit);
   WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 0.000000) AND (SELF\named_unit.dimensions.mass_exponent = 1.000000) AND (SELF\named_unit.dimensions.time_exponent = 0.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.000000);
+    WR1: (SELF\named_unit.dimensions.length_exponent = 0.0) AND (SELF\named_unit.dimensions.mass_exponent = 1.0) AND (SELF\named_unit.dimensions.time_exponent = 0.0) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.0) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.0) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.0) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.0);
   END_ENTITY;
 
   ENTITY measure_with_unit
-    SUPERTYPE OF (ONEOF(length_measure_with_unit, mass_measure_with_unit, time_measure_with_unit, electric_current_measure_with_unit, thermodynamic_temperature_measure_with_unit, celsius_temperature_measure_with_unit, amount_of_substance_measure_with_unit, luminous_intensity_measure_with_unit, plane_angle_measure_with_unit, solid_angle_measure_with_unit, area_measure_with_unit, volume_measure_with_unit, ratio_measure_with_unit));
+    SUPERTYPE OF (ONEOF(length_measure_with_unit, 
+    mass_measure_with_unit, 
+	time_measure_with_unit, 
+    electric_current_measure_with_unit, 
+	thermodynamic_temperature_measure_with_unit, 
+    celsius_temperature_measure_with_unit, 
+	amount_of_substance_measure_with_unit, 
+    luminous_intensity_measure_with_unit, 
+	plane_angle_measure_with_unit, 
+    solid_angle_measure_with_unit, 
+	area_measure_with_unit, 
+	volume_measure_with_unit, 
+    ratio_measure_with_unit, 
+    acceleration_measure_with_unit,
+    capacitance_measure_with_unit,
+    electric_charge_measure_with_unit,
+    conductance_measure_with_unit,
+    electric_potential_measure_with_unit,
+    energy_measure_with_unit,
+    magnetic_flux_density_measure_with_unit,
+    force_measure_with_unit,
+    frequency_measure_with_unit,
+    illuminance_measure_with_unit,
+    inductance_measure_with_unit,
+    luminous_flux_measure_with_unit,
+    magnetic_flux_measure_with_unit,
+    power_measure_with_unit,
+    pressure_measure_with_unit,
+    resistance_measure_with_unit,
+    velocity_measure_with_unit,
+	absorbed_dose_measure_with_unit,
+    radioactivity_measure_with_unit,
+    dose_equivalent_measure_with_unit));
     value_component : measure_value;
     unit_component : unit;
   WHERE
@@ -2364,7 +2859,10 @@ SCHEMA measure_schema;
   END_ENTITY;
 
   ENTITY named_unit
-    SUPERTYPE OF (ONEOF(si_unit, conversion_based_unit, context_dependent_unit) ANDOR ONEOF(length_unit, mass_unit, time_unit, electric_current_unit, thermodynamic_temperature_unit, amount_of_substance_unit, luminous_intensity_unit, plane_angle_unit, solid_angle_unit, area_unit, volume_unit, ratio_unit));
+    SUPERTYPE OF (ONEOF(si_unit, conversion_based_unit, context_dependent_unit) ANDOR 
+    ONEOF(length_unit, mass_unit, time_unit, electric_current_unit, thermodynamic_temperature_unit, 
+    amount_of_substance_unit, luminous_flux_unit, luminous_intensity_unit, plane_angle_unit, 
+    solid_angle_unit, ratio_unit));
     dimensions : dimensional_exponents;
   END_ENTITY;
 
@@ -2377,7 +2875,45 @@ SCHEMA measure_schema;
   ENTITY plane_angle_unit
     SUBTYPE OF (named_unit);
   WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 0.000000) AND (SELF\named_unit.dimensions.mass_exponent = 0.000000) AND (SELF\named_unit.dimensions.time_exponent = 0.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.000000);
+    WR1: (SELF\named_unit.dimensions.length_exponent = 0.0) AND (SELF\named_unit.dimensions.mass_exponent = 0.0) AND (SELF\named_unit.dimensions.time_exponent = 0.0) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.0) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.0) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.0) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.0);
+  END_ENTITY;
+
+  ENTITY power_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.watt);  
+  END_ENTITY;
+
+  ENTITY power_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.POWER_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_power_unit
+     SUBTYPE OF (power_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.watt;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+ 
+  ENTITY pressure_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.pascal);  
+  END_ENTITY;
+
+  ENTITY pressure_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.PRESSURE_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_pressure_unit
+     SUBTYPE OF (pressure_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.pascal;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
   END_ENTITY;
 
   ENTITY ratio_measure_with_unit
@@ -2389,15 +2925,39 @@ SCHEMA measure_schema;
   ENTITY ratio_unit
     SUBTYPE OF (named_unit);
   WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 0.000000) AND (SELF\named_unit.dimensions.mass_exponent = 0.000000) AND (SELF\named_unit.dimensions.time_exponent = 0.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.000000);
+    WR1: (SELF\named_unit.dimensions.length_exponent = 0.0) AND (SELF\named_unit.dimensions.mass_exponent = 0.0) AND (SELF\named_unit.dimensions.time_exponent = 0.0) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.0) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.0) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.0) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.0);
   END_ENTITY;
 
+  ENTITY resistance_unit
+    SUBTYPE OF(derived_unit);
+  WHERE
+    WR1: derive_dimensional_exponents(SELF) = dimensions_for_si_unit (si_unit_name.ohm);  
+  END_ENTITY;
+
+  ENTITY resistance_measure_with_unit
+    SUBTYPE OF (measure_with_unit);
+  WHERE
+    WR1: 'MEASURE_SCHEMA.RESISTANCE_UNIT' IN TYPEOF(SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+
+  ENTITY si_resistance_unit
+     SUBTYPE OF (resistance_unit,si_unit);
+  WHERE
+    WR1: SELF\si_unit.name = si_unit_name.ohm;
+    WR2: NOT EXISTS(SELF\derived_unit.name);
+  END_ENTITY;
+
+  
   ENTITY si_unit
     SUBTYPE OF (named_unit);
     prefix : OPTIONAL si_prefix;
     name : si_unit_name;
   DERIVE
     SELF\named_unit.dimensions : dimensional_exponents := dimensions_for_si_unit(name);
+  WHERE
+    WR1: NOT(('MEASURE_SCHEMA.MASS_UNIT' IN TYPEOF(SELF)) AND
+             (SIZEOF(USEDIN(SELF,'MEASURE_SCHEMA.DERIVED_UNIT_ELEMENT.UNIT')) > 0)) OR
+            (prefix = si_prefix.kilo); 
   END_ENTITY;
 
   ENTITY solid_angle_measure_with_unit
@@ -2409,7 +2969,7 @@ SCHEMA measure_schema;
   ENTITY solid_angle_unit
     SUBTYPE OF (named_unit);
   WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 0.000000) AND (SELF\named_unit.dimensions.mass_exponent = 0.000000) AND (SELF\named_unit.dimensions.time_exponent = 0.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.000000);
+    WR1: (SELF\named_unit.dimensions.length_exponent = 0.0) AND (SELF\named_unit.dimensions.mass_exponent = 0.0) AND (SELF\named_unit.dimensions.time_exponent = 0.0) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.0) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.0) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.0) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.0);
   END_ENTITY;
 
   ENTITY thermodynamic_temperature_measure_with_unit
@@ -2421,7 +2981,7 @@ SCHEMA measure_schema;
   ENTITY thermodynamic_temperature_unit
     SUBTYPE OF (named_unit);
   WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 0.000000) AND (SELF\named_unit.dimensions.mass_exponent = 0.000000) AND (SELF\named_unit.dimensions.time_exponent = 0.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 1.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.000000);
+    WR1: (SELF\named_unit.dimensions.length_exponent = 0.0) AND (SELF\named_unit.dimensions.mass_exponent = 0.0) AND (SELF\named_unit.dimensions.time_exponent = 0.0) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.0) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 1.0) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.0) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.0);
   END_ENTITY;
 
   ENTITY time_measure_with_unit
@@ -2433,7 +2993,20 @@ SCHEMA measure_schema;
   ENTITY time_unit
     SUBTYPE OF (named_unit);
   WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 0.000000) AND (SELF\named_unit.dimensions.mass_exponent = 0.000000) AND (SELF\named_unit.dimensions.time_exponent = 1.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.000000);
+    WR1: (SELF\named_unit.dimensions.length_exponent = 0.0) AND (SELF\named_unit.dimensions.mass_exponent = 0.0) AND (SELF\named_unit.dimensions.time_exponent = 1.0) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.0) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.0) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.0) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.0);
+  END_ENTITY;
+
+  ENTITY velocity_measure_with_unit
+   SUBTYPE OF (measure_with_unit);
+  WHERE
+   WR1: 'MEASURE_SCHEMA.VELOCITY_UNIT' IN TYPEOF (SELF\measure_with_unit.unit_component);
+  END_ENTITY;
+  
+  ENTITY velocity_unit
+  SUBTYPE OF (derived_unit);
+  WHERE
+  WR1: derive_dimensional_exponents(SELF) = 
+       dimensional_exponents ( 1.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0 );
   END_ENTITY;
 
   ENTITY volume_measure_with_unit
@@ -2443,28 +3016,43 @@ SCHEMA measure_schema;
   END_ENTITY;
 
   ENTITY volume_unit
-    SUBTYPE OF (named_unit);
-  WHERE
-    WR1: (SELF\named_unit.dimensions.length_exponent = 3.000000) AND (SELF\named_unit.dimensions.mass_exponent = 0.000000) AND (SELF\named_unit.dimensions.time_exponent = 0.000000) AND (SELF\named_unit.dimensions.electric_current_exponent = 0.000000) AND (SELF\named_unit.dimensions.thermodynamic_temperature_exponent = 0.000000) AND (SELF\named_unit.dimensions.amount_of_substance_exponent = 0.000000) AND (SELF\named_unit.dimensions.luminous_intensity_exponent = 0.000000);
+    SUBTYPE OF (derived_unit);
+   WHERE
+     WR1: derive_dimensional_exponents(SELF) = 
+          dimensional_exponents ( 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 );
   END_ENTITY;
 
   FUNCTION derive_dimensional_exponents (x : unit):dimensional_exponents;
     LOCAL
-      result : dimensional_exponents := dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000);
+      result : dimensional_exponents := dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
     END_LOCAL;
 
     IF 'MEASURE_SCHEMA.DERIVED_UNIT' IN TYPEOF(x) THEN
-      REPEAT i := LOINDEX(x.elements) TO HIINDEX(x.elements);
-        result.length_exponent := result.length_exponent + (x.elements[i].exponent * x.elements[i].unit.dimensions.length_exponent);
-        result.mass_exponent := result.mass_exponent + (x.elements[i].exponent * x.elements[i].unit.dimensions.mass_exponent);
-        result.time_exponent := result.time_exponent + (x.elements[i].exponent * x.elements[i].unit.dimensions.time_exponent);
-        result.electric_current_exponent := result.electric_current_exponent + (x.elements[i].exponent * x.elements[i].unit.dimensions.electric_current_exponent);
-        result.thermodynamic_temperature_exponent := result.thermodynamic_temperature_exponent + (x.elements[i].exponent * x.elements[i].unit.dimensions.thermodynamic_temperature_exponent);
-        result.amount_of_substance_exponent := result.amount_of_substance_exponent + (x.elements[i].exponent * x.elements[i].unit.dimensions.amount_of_substance_exponent);
-        result.luminous_intensity_exponent := result.luminous_intensity_exponent + (x.elements[i].exponent * x.elements[i].unit.dimensions.luminous_intensity_exponent);
+      REPEAT i := LOINDEX(x\derived_unit.elements) TO HIINDEX(x\derived_unit.elements);
+        result.length_exponent := result.length_exponent + 
+        (x\derived_unit.elements[i]\derived_unit_element.exponent * 
+         x\derived_unit.elements[i]\derived_unit_element.unit\named_unit.dimensions.length_exponent);
+        result.mass_exponent := result.mass_exponent + 
+        (x\derived_unit.elements[i]\derived_unit_element.exponent * 
+         x\derived_unit.elements[i]\derived_unit_element.unit\named_unit.dimensions.mass_exponent);
+        result.time_exponent := result.time_exponent + 
+        (x\derived_unit.elements[i]\derived_unit_element.exponent * 
+         x\derived_unit.elements[i]\derived_unit_element.unit\named_unit.dimensions.time_exponent);
+        result.electric_current_exponent := result.electric_current_exponent + 
+        (x\derived_unit.elements[i]\derived_unit_element.exponent * 
+         x\derived_unit.elements[i]\derived_unit_element.unit\named_unit.dimensions.electric_current_exponent);
+        result.thermodynamic_temperature_exponent := result.thermodynamic_temperature_exponent + 
+        (x\derived_unit.elements[i]\derived_unit_element.exponent * 
+         x\derived_unit.elements[i]\derived_unit_element.unit\named_unit.dimensions.thermodynamic_temperature_exponent);
+        result.amount_of_substance_exponent := result.amount_of_substance_exponent + 
+        (x\derived_unit.elements[i]\derived_unit_element.exponent * 
+         x\derived_unit.elements[i]\derived_unit_element.unit\named_unit.dimensions.amount_of_substance_exponent);
+        result.luminous_intensity_exponent := result.luminous_intensity_exponent + 
+        (x\derived_unit.elements[i]\derived_unit_element.exponent * 
+         x\derived_unit.elements[i]\derived_unit_element.unit\named_unit.dimensions.luminous_intensity_exponent);
       END_REPEAT;
     ELSE
-      result := x.dimensions;
+      result := x\named_unit.dimensions;
     END_IF;
     RETURN (result);
   END_FUNCTION;
@@ -2472,61 +3060,61 @@ SCHEMA measure_schema;
   FUNCTION dimensions_for_si_unit (n : si_unit_name):dimensional_exponents;
     CASE n OF 
       metre:
-        RETURN (dimensional_exponents(1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
       gram:
-        RETURN (dimensional_exponents(0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0));
       second:
-        RETURN (dimensional_exponents(0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0));
       ampere:
-        RETURN (dimensional_exponents(0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0));
       kelvin:
-        RETURN (dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0));
       mole:
-        RETURN (dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0));
       candela:
-        RETURN (dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0));
       radian:
-        RETURN (dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
       steradian:
-        RETURN (dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
       hertz:
-        RETURN (dimensional_exponents(0.000000, 0.000000,  - 1.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0));
       newton:
-        RETURN (dimensional_exponents(1.000000, 1.000000,  - 2.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(1.0, 1.0, -2.0, 0.0, 0.0, 0.0, 0.0));
       pascal:
-        RETURN (dimensional_exponents( - 1.000000, 1.000000,  - 2.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(-1.0, 1.0, -2.0, 0.0, 0.0, 0.0, 0.0));
       joule:
-        RETURN (dimensional_exponents(2.000000, 1.000000,  - 2.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(2.0, 1.0, -2.0, 0.0, 0.0, 0.0, 0.0));
       watt:
-        RETURN (dimensional_exponents(2.000000, 1.000000,  - 3.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(2.0, 1.0, -3.0, 0.0, 0.0, 0.0, 0.0));
       coulomb:
-        RETURN (dimensional_exponents(0.000000, 0.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0));
       volt:
-        RETURN (dimensional_exponents(2.000000, 1.000000,  - 3.000000,  - 1.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(2.0, 1.0, -3.0, -1.0, 0.0, 0.0, 0.0));
       farad:
-        RETURN (dimensional_exponents( - 2.000000,  - 1.000000, 4.000000, 1.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(-2.0, -1.0, 4.0, 1.0, 0.0, 0.0, 0.0));
       ohm:
-        RETURN (dimensional_exponents(2.000000, 1.000000,  - 3.000000,  - 2.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(2.0, 1.0, -3.0, -2.0, 0.0, 0.0, 0.0));
       siemens:
-        RETURN (dimensional_exponents( - 2.000000,  - 1.000000, 3.000000, 2.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(-2.0, -1.0, 3.0, 2.0, 0.0, 0.0, 0.0));
       weber:
-        RETURN (dimensional_exponents(2.000000, 1.000000,  - 2.000000,  - 1.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(2.0, 1.0, -2.0, -1.0, 0.0, 0.0, 0.0));
       tesla:
-        RETURN (dimensional_exponents(0.000000, 1.000000,  - 2.000000,  - 1.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 1.0, -2.0, -1.0, 0.0, 0.0, 0.0));
       henry:
-        RETURN (dimensional_exponents(2.000000, 1.000000,  - 2.000000,  - 2.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(2.0, 1.0, -2.0, -2.0, 0.0, 0.0, 0.0));
       degree_Celsius:
-        RETURN (dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0));
       lumen:
-        RETURN (dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0));
       lux:
-        RETURN (dimensional_exponents( - 2.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000));
+        RETURN (dimensional_exponents(-2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0));
       becquerel:
-        RETURN (dimensional_exponents(0.000000, 0.000000,  - 1.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0));
       gray:
-        RETURN (dimensional_exponents(2.000000, 0.000000,  - 2.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(2.0, 0.0, -2.0, 0.0, 0.0, 0.0, 0.0));
       sievert:
-        RETURN (dimensional_exponents(2.000000, 0.000000,  - 2.000000, 0.000000, 0.000000, 0.000000, 0.000000));
+        RETURN (dimensional_exponents(2.0, 0.0, -2.0, 0.0, 0.0, 0.0, 0.0));
       OTHERWISE:
         RETURN (?);
     END_CASE;
@@ -2534,84 +3122,221 @@ SCHEMA measure_schema;
 
   FUNCTION valid_units (m : measure_with_unit):BOOLEAN;
     IF 'MEASURE_SCHEMA.LENGTH_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.MASS_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.TIME_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.ELECTRIC_CURRENT_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.THERMODYNAMIC_TEMPERATURE_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.CELSIUS_TEMPERATURE_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.AMOUNT_OF_SUBSTANCE_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.LUMINOUS_INTENSITY_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.PLANE_ANGLE_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.SOLID_ANGLE_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.AREA_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(2.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.VOLUME_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(3.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.RATIO_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.POSITIVE_LENGTH_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(1.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     IF 'MEASURE_SCHEMA.POSITIVE_PLANE_ANGLE_MEASURE' IN TYPEOF(m.value_component) THEN
-      IF derive_dimensional_exponents(m.unit_component) <> dimensional_exponents(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+      dimensional_exponents(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.ACCELERATION_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 1.0, 0.0, -2.0, 0.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+     IF 'MEASURE_SCHEMA.CAPACITANCE_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( -2.0, -1.0, 4.0, 1.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.ELECTRIC_CHARGE_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+        IF 'MEASURE_SCHEMA.CONDUCTANCE_MEASURE' IN TYPEOF(m.value_component) THEN
+          IF derive_dimensional_exponents(m.unit_component) <> 
+            dimensional_exponents( -2.0, -1.0, 3.0, 2.0, 0.0, 0.0, 0.0 ) THEN
+            RETURN (FALSE);
+          END_IF;
+    END_IF;
+        IF 'MEASURE_SCHEMA.ELECTRIC_POTENTIAL_MEASURE' IN TYPEOF(m.value_component) THEN
+          IF derive_dimensional_exponents(m.unit_component) <> 
+            dimensional_exponents( 2.0, 1.0, -3.0, -1.0, 0.0, 0.0, 0.0 ) THEN
+            RETURN (FALSE);
+          END_IF;
+    END_IF;    
+    IF 'MEASURE_SCHEMA.ENERGY_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 2.0, 1.0, -2.0, 0.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.FORCE_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 1.0, 1.0, -2.0, 0.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.FREQUENCY_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.ILLUMINANCE_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( -2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+     IF 'MEASURE_SCHEMA.INDUCTANCE_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 2.0, 1.0, -2.0, -2.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.LUMINOUS_FLUX_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.MAGNETIC_FLUX_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 2.0, 1.0, -2.0, -1.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+     IF 'MEASURE_SCHEMA.MAGNETIC_FLUX_DENSITY_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 0.0, 1.0, -2.0, -1.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.POWER_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 2.0, 1.0, -3.0, 0.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.PRESSURE_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( -1.0, 1.0, -2.0, 0.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.RESISTANCE_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 2.0, 1.0, -3.0, -2.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.VELOCITY_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents( 1.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0 ) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.RADIOACTIVITY_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents(0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 0.0) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.ABSORBED_DOSE_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents(2.0, 0.0, -2.0, 0.0, 0.0, 0.0, 0.0) THEN
+        RETURN (FALSE);
+      END_IF;
+    END_IF;
+    IF 'MEASURE_SCHEMA.DOSE_EQUIVALENT_MEASURE' IN TYPEOF(m.value_component) THEN
+      IF derive_dimensional_exponents(m.unit_component) <> 
+        dimensional_exponents(2.0, 0.0, -2.0, 0.0, 0.0, 0.0, 0.0) THEN
         RETURN (FALSE);
       END_IF;
     END_IF;
     RETURN (TRUE);
   END_FUNCTION;
-
 END_SCHEMA;
+
+
+
 SCHEMA basic_attribute_schema;
   REFERENCE FROM action_schema (action, action_request_solution);
   REFERENCE FROM application_context_schema (application_context);
