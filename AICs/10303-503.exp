@@ -82,7 +82,8 @@ WHERE
               (crv))
          )) = 0)
        )) = 0;
-  WR7: SIZEOF (QUERY (gcs <* QUERY (item <* SELF.items |         ('AIC_- GEOMETRICALLY_BOUNDED_2D_WIREFRAME.GEOMETRIC_CURVE_SET'
+  WR7: SIZEOF (QUERY (gcs <* QUERY (item <* SELF.items |
+           ('AIC_GEOMETRICALLY_BOUNDED_2D_WIREFRAME.GEOMETRIC_CURVE_SET'
                 IN TYPEOF (item))) |
          NOT (SIZEOF (QUERY (pnt <*
            QUERY (elem <* gcs\geometric_set.elements |
