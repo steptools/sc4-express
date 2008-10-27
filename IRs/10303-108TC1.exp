@@ -1,6 +1,6 @@
 (* THIS IS DOCUMENT ISO TC184/SC4/WG12 N4852, CONTAINING REVISED EXPRESS FOR *)
 (* ISO 10303-108, 'PARAMETERIZATION AND CONSTRAINTS FOR EXPLICIT GEOMETRIC   *)
-(* PRODUCT MODELS' TO TAKE INTO ACCOUNT TC1 FOR THAT DOCUMENT -- 2007-09-30  *)                                          
+(* PRODUCT MODELS' TO TAKE INTO ACCOUNT TC1 FOR THAT DOCUMENT -- 2008-03-17  *)                                          
 
 SCHEMA parameterization_schema;
 
@@ -40,11 +40,10 @@ ENTITY variational_parameter
   SUBTYPE OF (variational_representation_item, maths_variable);
   parameter_description : OPTIONAL text; 
   parameter_current_value : maths_value;
-DERIVE
-  SELF\maths_variable.name : label := SELF\representation_item.name;
 WHERE
   WR1 : member_of(parameter_current_value, 
     SELF\maths_variable.values_space);
+  WR2 : SELF\maths_variable.name = SELF\representation_item.name;
 END_ENTITY; 
 
 ENTITY bound_variational_parameter
@@ -1047,15 +1046,15 @@ END_ENTITY;
 
 ENTITY positioned_sketch
   SUBTYPE OF (geometric_representation_item);
-  sketch_basis           : sketch_basis_select;
-  auxiliary_elements     : 
+  sketch_basis       : sketch_basis_select;
+  auxiliary_elements : 
     SET[0:?] OF auxiliary_geometric_representation_item;
 WHERE
   WR1: NOT (('GEOMETRY_SCHEMA.CURVE_BOUNDED_SURFACE' IN 
     TYPEOF(sketch_basis)) AND NOT ('GEOMETRY_SCHEMA.PLANE' IN
-    TYPEOF(sketch_basis.basis_surface)));
+    TYPEOF(sketch_basis\curve_bounded_surface.basis_surface)));
   WR2: NOT (('TOPOLOGY_SCHEMA.FACE_SURFACE' IN TYPEOF(sketch_basis)) AND
-    NOT ('GEOMETRY_SCHEMA.PLANE' IN TYPEOF(sketch_basis.face_geometry)));
+    NOT ('GEOMETRY_SCHEMA.PLANE' IN TYPEOF(sketch_basis\face_surface.face_geometry)));
   WR3: SIZEOF(QUERY(q <* auxiliary_elements | (SIZEOF(TYPEOF(q) * 
     ['GEOMETRY_SCHEMA.POINT','GEOMETRY_SCHEMA.CURVE']) = 0))) = 0;
   WR4: SIZEOF(QUERY(q <* auxiliary_elements | 
@@ -1251,5 +1250,3 @@ FUNCTION get_plane_of_implicit_geometry
 END_FUNCTION;
 
 END_SCHEMA; -- sketch_schema
-
-
