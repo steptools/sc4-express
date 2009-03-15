@@ -1,7 +1,7 @@
-(* Document WG12 N2176, 2003/07/09
-   Complete EXPRESS code extracted from WG12 N2175 (ISO/CD 10303-110)
-*)
-
+(* Corrected 20008/10/27 to remove duplicate and add missing type and entity  removed false 
+REFERENCE  model_product_distribution 
+2008/11/20 Added reference from basis_schema of mbna_property_distribution_select to  domain and results schemas *)
+(* Part 110 DIS EXPRESS WG12 N5952 November 2008 - from DIS document WG12 N5951 *)
 SCHEMA basis_schema;
   REFERENCE FROM analysis_schema                        -- ISO 10303-53
                  (model_property_distribution);
@@ -32,17 +32,16 @@ SCHEMA basis_schema;
                  (flow_solution_data_name);
   REFERENCE FROM support_resource_schema                -- ISO 10303-41
                  (text);
-
 TYPE choose_general_property_identifier = EXTENSIBLE SELECT
      (externally_defined_item,
       defined_data_name);
 END_TYPE;
 
+
 TYPE choose_geometry_location = EXTENSIBLE SELECT
     (externally_defined_item,
      shape_representation);
 END_TYPE;
-
 TYPE choose_representation_context_identifier = EXTENSIBLE SELECT
      (externally_defined_item,
       defined_data_class);
@@ -124,17 +123,17 @@ ENTITY specified_representation_context
   class_specifier : choose_representation_context_identifier;
 END_ENTITY;
 
-END_SCHEMA; -- end of basis_schema
+END_SCHEMA; -- basis_schema
 
 SCHEMA hierarchy_schema;
   REFERENCE FROM analysis_schema                    -- ISO 10303-53
                  (model_action_domain,
+                  model_product_domain,
                   model_product_domain_with_mesh,
+                  model_state_domain,
                   numerical_model);
   REFERENCE FROM conditions_schema                  -- ISO 10303-110
                  (fd_zone_bc,
-                  mbna_family,
-                  mbna_integral_data,
                   mbna_reference_state,
                   mbna_zone_bc);
   REFERENCE FROM domain_schema                      -- ISO 10303-110
@@ -151,7 +150,7 @@ SCHEMA hierarchy_schema;
                  (mbna_discrete_data,
                   mbna_history,
                   mbna_solution);
-                  
+ 
 
 ENTITY fd_step
   SUBTYPE OF (mbna_step);
@@ -166,45 +165,33 @@ ENTITY fd_zone
 END_ENTITY;
 
 ENTITY mbna_model
-  SUBTYPE OF (numerical_model);
-  data               : SET OF mbna_integral_data;
-  equations          : SET OF mbna_equation_set;  
-  steps              : LIST OF mbna_step;
-INVERSE
+  SUBTYPE OF (model_product_domain);
+  SELF\model_product_domain.temporal_parts : LIST OF mbna_step;
+  equations : SET OF mbna_equation_set;  
+  INVERSE
   history : SET OF mbna_history for domain;  
 END_ENTITY;
 
+ENTITY mbna_state
+  SUBTYPE OF (model_state_domain);
+END_ENTITY;  
+
 ENTITY mbna_step
   SUBTYPE OF (model_action_domain);
-  data               : SET OF mbna_integral_data;
+  
+  SELF\model_action_domain.final : mbna_state;
   equations          : SET OF mbna_equation_set;  
-  families           : SET OF mbna_family;
   refstate           : SET OF mbna_reference_state;
   zones              : LIST OF mbna_zone;
 INVERSE
   history : SET OF mbna_history for domain;  
 END_ENTITY;
 
-ENTITY mbna_structured_zone
-  SUBTYPE OF (mbna_zone);
-  SELF\model_product_domain_with_mesh.model_mesh : structured_mesh;
-END_ENTITY;
-
-ENTITY mbna_unstructured_zone
-  SUBTYPE OF (mbna_zone);
-  SELF\model_product_domain_with_mesh.model_mesh : unstructured_mesh;
-END_ENTITY;
-
 ENTITY mbna_zone
   SUBTYPE OF (model_product_domain_with_mesh);
-  cell_dimension     : INTEGER;
   conditions         : SET OF mbna_zone_bc;
   equations          : SET OF mbna_equation_set;
-  families           : SET OF mbna_family;
-  global_data        : SET OF mbna_integral_data;
   grid_connectivity  : OPTIONAL multiple_mesh_block;
-  nindices           : INTEGER;
-  physical_dimension : INTEGER;
   rstate             : SET OF mbna_reference_state;
 INVERSE
   coordinates : SET OF grid_coordinates FOR domain;
@@ -213,12 +200,6 @@ INVERSE
   solution    : SET OF mbna_solution FOR domain;
 END_ENTITY;
 
-SUBTYPE_CONSTRAINT sc1_mbna_zone FOR mbna_zone;
-  ABSTRACT SUPERTYPE;
-  ONEOF(mbna_structured_zone,
-        mbna_unstructured_zone);
-END_SUBTYPE_CONSTRAINT;
-
 END_SCHEMA;  -- end of hierarchy_schema
 
 SCHEMA domain_schema;
@@ -226,7 +207,8 @@ SCHEMA domain_schema;
                  (model_product_domain_with_mesh,
                   model_property_distribution);
   REFERENCE FROM basis_schema                     -- ISO 10303-110
-                 (specified_general_property);
+                 (mbna_property_distribution_select,
+                 specified_general_property);
   REFERENCE FROM mathematical_description_of_distribution_schema  -- ISO 10303-51
                  (property_distribution_description);
   REFERENCE FROM mesh_topology_schema             -- ISO 10303-52
@@ -285,7 +267,7 @@ SCHEMA conditions_schema;
                   vertex_defined_cell);
   REFERENCE FROM support_resource_schema       -- ISO 10303-41
                  (label,
-                  text);                
+                  text);
 
 TYPE fd_bc_type_compound = EXTENSIBLE ENUMERATION 
      BASED_ON mbna_bc_type_compound WITH
@@ -383,21 +365,17 @@ ENTITY indexed_points_bc
 END_ENTITY;
 
 ENTITY mbna_bc
+  SUPERTYPE OF(ONEOF(elements_bc,
+        indexed_elements_bc,
+        indexed_points_bc)) 
   SUBTYPE OF (mbna_condition);
   datasets            : SET OF mbna_bc_dataset;
-  family              : SET OF mbna_family;
   gridloc             : mesh_location;
   inward_normal_index : OPTIONAL ijk_minmax;
   inward_normal_list  : OPTIONAL indices_list;
   rstate              : SET OF mbna_reference_state;
   the_type            : mbna_bc_type;
 END_ENTITY;
-
-SUBTYPE_CONSTRAINT sc1_mbna_bc FOR mbna_bc;
-  ONEOF(elements_bc,
-        indexed_elements_bc,
-        indexed_points_bc);
-END_SUBTYPE_CONSTRAINT;
 
 ENTITY mbna_bc_data
   SUBTYPE OF (mbna_condition);
@@ -420,47 +398,30 @@ INVERSE
 END_ENTITY;
 
 ENTITY mbna_bc_dataset
+  SUPERTYPE OF (ONEOF(mbna_Dirichlet_bc_dataset,
+               mbna_Neumann_bc_dataset))
   SUBTYPE OF (mbna_condition);
   gridloc  : mesh_location;
   rstate   : SET OF mbna_reference_state;
   the_type : mbna_bc_type_simple;
 END_ENTITY;
 
-SUBTYPE_CONSTRAINT sc1_mbna_bc_dataset FOR mbna_bc_dataset;
-  ONEOF(mbna_Dirichlet_bc_dataset,
-        mbna_Neumann_bc_dataset);
-END_SUBTYPE_CONSTRAINT;
+
 
 ENTITY mbna_condition
-  SUBTYPE OF (model_state_domain);
-END_ENTITY;
-
-SUBTYPE_CONSTRAINT sc1_mbna_condition FOR mbna_condition;
-  ABSTRACT SUPERTYPE;
-  ONEOF(mbna_zone_bc,
+  ABSTRACT SUPERTYPE OF(ONEOF(
+        mbna_zone_bc,
         mbna_bc,
         mbna_bc_dataset,
         mbna_bc_data,
-        mbna_reference_state,
-        mbna_integral_data);
-END_SUBTYPE_CONSTRAINT;
+        mbna_reference_state))
+   SUBTYPE OF (model_state_domain);
+END_ENTITY;
+
 
 ENTITY mbna_Dirichlet_bc_dataset
   SUBTYPE OF (mbna_bc_dataset);
   data : mbna_bc_data;
-END_ENTITY;
-
-ENTITY mbna_family;
-  description  : text;
-  id           : label;
-  conditions   : SET OF mbna_bc_type;
-  geometry     : SET OF geometry_reference;
-END_ENTITY;
-
-ENTITY mbna_integral_data
-  SUBTYPE OF (mbna_condition);
-INVERSE
-  data : SET OF model_property_distribution FOR domain;
 END_ENTITY;
 
 ENTITY mbna_Neumann_bc_dataset
@@ -484,8 +445,7 @@ END_SCHEMA;  -- end of conditions_schema
 
 SCHEMA equations_schema;
   REFERENCE FROM analysis_schema               -- ISO 10303-53
-                 (model_product_distribution,
-                  model_product_domain,
+                 (model_product_domain,
                   model_property_distribution);
 
 TYPE fd_behaviour_models = EXTENSIBLE SELECT
@@ -630,6 +590,7 @@ TYPE turbulence_model_type = EXTENSIBLE ENUMERATION OF
       two_equation_Wilcox);
 END_TYPE;
 
+
 TYPE viscosity_model_data_name = EXTENSIBLE ENUMERATION OF
      (viscosity_molecular_reference,
       Sutherland_constant_viscosity);
@@ -730,9 +691,12 @@ END_ENTITY;
 
 END_SCHEMA; -- end of equations_schema
 
+
 SCHEMA results_schema;
   REFERENCE FROM analysis_schema           -- ISO 10303-53
                  (model_property_distribution);
+  REFERENCE FROM basis_schema                     -- ISO 10303-110
+                 (mbna_property_distribution_select);
   REFERENCE FROM mathematical_description_of_distribution_schema -- ISO 10303-51
                  (property_distribution_description);
   REFERENCE FROM mesh_topology_schema      -- ISO 10303-52
@@ -844,3 +808,5 @@ ENTITY mbna_solution_with_rind
   SUBTYPE OF (mbna_solution);
   rind_planes : rind;
 END_ENTITY;
+
+END_SCHEMA; -- end of results_schema
