@@ -1,5 +1,10 @@
-(* ISO/IS 10303-45E2  WG12N5100 supersedes WG12N4857 
-   Document WG12N5099, date of signoff 2008-05-14 *) 
+(*
+$Id$ 
+ISO TC184/SC4/WG12 N6751 - ISO/IS 10303-45 Material properties - EXPRESS
+Supersedes ISO TC184/SC4/WG12 N5100 - ISO/IS 10303-45 Material properties - EXPRESS
+changes to material_designation as per SEDS #1423.
+*)
+
 
 SCHEMA material_property_definition_schema;
 
@@ -37,10 +42,6 @@ END_TYPE;
 ENTITY material_designation; 
   name       		: label;
   definitions 	: SET [1:?] OF characterized_definition;
-WHERE
-  WR1: SIZEOF (QUERY(temp <* SELF\material_designation.definitions |
-        ('PRODUCT_PROPERTY_DEFINITION_SCHEMA.' +
-         'CHARACTERIZED_OBJECT' IN TYPEOF(temp)))) = 0;
 END_ENTITY;
 
 ENTITY material_designation_characterization;
@@ -111,6 +112,11 @@ FUNCTION acyclic_property_definition_relationship
 END_FUNCTION;  -- acyclic_property_definition_relationship
 
 END_SCHEMA;    -- material_property_definition_schema
+(*
+$Id$ 
+ISO TC184/SC4/WG12 N5100 - ISO/IS 10303-45 Material properties - EXPRESS
+*)
+
 
 SCHEMA material_property_representation_schema;
 
@@ -139,6 +145,11 @@ ENTITY material_property_representation
   dependent_environment : data_environment;
 END_ENTITY;
 END_SCHEMA;		-- material_property_representation_schema
+(*
+$Id$ 
+ISO TC184/SC4/WG12 N5100 - ISO/IS 10303-45 Material properties - EXPRESS
+*)
+
 
 SCHEMA qualified_measure_schema;
 
