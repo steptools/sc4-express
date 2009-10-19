@@ -1,10 +1,10 @@
 (*
-2009-06-29
+2009-10-15
 ISO TC184/SC4/WG12 N6753 - ISO/IS 10303-41 Fundamentals of product description and support - EXPRESS
 *)
 (*
 Supersedes ISO TC184/SC4/WG12 N4883 - ISO/IS 10303-41 Fundamentals of product description and support - EXPRESS
-changes to measure_schema as per TC2 - WG12 N6752.
+changes to product_property_representation_schema and to measure_schema as per TC2 - WG12 N6752.
 *)
 
 SCHEMA application_context_schema;
@@ -64,6 +64,7 @@ SCHEMA application_context_schema;
   END_ENTITY;
 
 END_SCHEMA;
+
 SCHEMA product_definition_schema;
   REFERENCE FROM application_context_schema (product_context, product_definition_context);
   REFERENCE FROM basic_attribute_schema (get_id_value, get_name_value, name_attribute);
@@ -276,6 +277,7 @@ SCHEMA product_definition_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA product_property_definition_schema;
   REFERENCE FROM process_property_schema (action_property, resource_property);
   REFERENCE FROM product_definition_schema (product_definition, product_definition_relationship);
@@ -436,16 +438,47 @@ SCHEMA product_property_definition_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA product_property_representation_schema;
   REFERENCE FROM basic_attribute_schema (description_attribute, get_description_value, get_name_value, name_attribute);
   REFERENCE FROM material_property_definition_schema (property_definition_relationship);
   REFERENCE FROM product_definition_schema (product_definition, product_definition_relationship);
   REFERENCE FROM product_property_definition_schema (characterized_definition, general_property, product_definition_shape, property_definition, shape_aspect, shape_aspect_relationship);
-  REFERENCE FROM representation_schema (representation, representation_item, representation_relationship, using_representations);
+  REFERENCE FROM representation_schema (representation, representation_item, representation_relationship, using_representations, mapped_item, representation_context, representation_map);
   REFERENCE FROM support_resource_schema (bag_to_set, label, text);
+
+  TYPE chained_representation_link = SELECT (mapped_item, representation_context, representation_relationship);
+  END_TYPE;
+
   TYPE represented_definition = SELECT (general_property, property_definition, property_definition_relationship, shape_aspect, shape_aspect_relationship);
   END_TYPE;
 
+  ENTITY chain_based_item_identified_representation_usage
+     SUBTYPE OF (item_identified_representation_usage);
+                      nodes : LIST [2:?] OF UNIQUE representation;
+            undirected_link : LIST [1:?] OF UNIQUE chained_representation_link;
+     DERIVE
+                       root : representation := nodes[1];
+              SELF\item_identified_representation_usage.used_representation RENAMED leaf 
+                            : representation := nodes[HIINDEX(nodes)];
+              directed_link : LIST [1:?] OF representation_relationship := get_directed_link(nodes, undirected_link);
+    WHERE
+      WR1 : root :=: directed_link[1]\representation_relationship.rep_1;
+      WR2 : leaf :=: directed_link[HIINDEX(undirected_link)]\representation_relationship.rep_2;
+      WR3 : SIZEOF(nodes) :=: SIZEOF(undirected_link) + 1;
+      WR4 : (SIZEOF(QUERY(directed_link_element <* directed_link |(root :=:  directed_link_element\representation_relationship.rep_1))) +
+             SIZEOF(QUERY(directed_link_element <* directed_link |(root :=:  directed_link_element\representation_relationship.rep_2)))) = 1;
+      WR5 : (SIZEOF(QUERY(directed_link_element <* directed_link |(leaf :=:  directed_link_element\representation_relationship.rep_1))) +
+             SIZEOF(QUERY(directed_link_element <* directed_link |(leaf :=:  directed_link_element\representation_relationship.rep_2)))) = 1;
+      WR6 : (SIZEOF(QUERY(directed_link_element <* directed_link |(root :<>: directed_link_element\representation_relationship.rep_1))) +
+             SIZEOF(QUERY(directed_link_element <* directed_link |(root :<>: directed_link_element\representation_relationship.rep_2))) + 
+             SIZEOF(QUERY(directed_link_element <* directed_link |(leaf :<>: directed_link_element\representation_relationship.rep_1))) +
+             SIZEOF(QUERY(directed_link_element <* directed_link |(leaf :<>: directed_link_element\representation_relationship.rep_2)))) = 2;
+      WR7 : NOT('REPRESENTATION_SCHEMA.MAPPED_ITEM' IN TYPEOF(undirected_link[1])) OR
+                (root IN using_representations(undirected_link[1]));
+      WR8 : SIZEOF(undirected_link) = SIZEOF(directed_link);
+  END_ENTITY;
+ 
   ENTITY context_dependent_shape_representation;
     representation_relation : shape_representation_relationship;
     represented_product_relation : product_definition_shape;
@@ -495,6 +528,53 @@ SCHEMA product_property_representation_schema;
   WHERE
     WR1: 'PRODUCT_PROPERTY_REPRESENTATION_SCHEMA.SHAPE_REPRESENTATION' IN (TYPEOF(SELF\representation_relationship.rep_1) + TYPEOF(SELF\representation_relationship.rep_2));
   END_ENTITY;
+
+  FUNCTION get_directed_link ( nodes : LIST OF representation;
+                            undirected_link  : LIST OF chained_representation_link) : LIST OF representation_relationship;
+  LOCAL
+   directed_link : LIST OF representation_relationship := [];
+    i : INTEGER := 0;
+  END_LOCAL;
+
+  REPEAT i := 1 to SIZEOF(undirected_link);
+   CASE TRUE OF
+    ('REPRESENTATION_SCHEMA.REPRESENTATION_CONTEXT' IN TYPEOF(undirected_link[i])) :
+    BEGIN
+     IF ((nodes[i]\representation.context_of_items   :=: undirected_link[i]) AND 
+         (nodes[i+1]\representation.context_of_items :=: undirected_link[i])) THEN
+       INSERT(directed_link, representation_relationship('','',nodes[i],nodes[i+1]), (i - 1));
+     ELSE
+       RETURN(?); 
+     END_IF;
+    END;
+
+    ('REPRESENTATION_SCHEMA.REPRESENTATION_RELATIONSHIP' IN TYPEOF(undirected_link[i])) :
+    BEGIN
+     IF (((nodes[i]   :=: undirected_link[i]\representation_relationship.rep_1) AND
+          (nodes[i+1] :=: undirected_link[i]\representation_relationship.rep_2)) OR
+         ((nodes[i]   :=: undirected_link[i]\representation_relationship.rep_2) AND
+          (nodes[i+1] :=: undirected_link[i]\representation_relationship.rep_1))) THEN
+       INSERT(directed_link, representation_relationship('','',nodes[i],nodes[i+1]), (i - 1));
+     ELSE
+       RETURN(?); 
+     END_IF;
+    END;
+
+    ('REPRESENTATION_SCHEMA.MAPPED_ITEM' IN TYPEOF(undirected_link[i])) :
+    BEGIN
+     IF ((nodes[i] IN using_representations(undirected_link[i])) AND 
+         (nodes[i+1] :=: undirected_link[i]\mapped_item.mapping_source\representation_map.mapped_representation)) THEN
+       INSERT(directed_link, representation_relationship('','',nodes[i],nodes[i+1]), (i - 1));
+     ELSE
+       RETURN(?); 
+     END_IF;
+    END;
+
+    OTHERWISE : RETURN(?);
+   END_CASE;
+  END_REPEAT;
+  RETURN(directed_link);
+  END_FUNCTION;
 
   FUNCTION relatives_of_product_definitions (definition_set : SET OF product_definition; relation_subtype : STRING):SET OF product_definition;
     FUNCTION local_relatives_of_product_definitions (definition_set : SET OF product_definition; total_definitions : SET OF product_definition; relation_subtype : STRING):SET OF product_definition;
@@ -565,6 +645,7 @@ SCHEMA product_property_representation_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA management_resources_schema;
   REFERENCE FROM action_schema;
   REFERENCE FROM application_context_schema (library_context);
@@ -1031,6 +1112,7 @@ SCHEMA management_resources_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA document_schema;
   REFERENCE FROM product_definition_schema (product, product_definition, product_definition_formation);
   REFERENCE FROM support_resource_schema (bag_to_set, identifier, label, text);
@@ -1098,6 +1180,7 @@ SCHEMA document_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA action_schema;
   REFERENCE FROM basic_attribute_schema (description_attribute, get_description_value, get_id_value, get_name_value, id_attribute, name_attribute);
   REFERENCE FROM support_resource_schema (bag_to_set, identifier, label, text);
@@ -1275,6 +1358,7 @@ SCHEMA action_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA certification_schema;
   REFERENCE FROM support_resource_schema (label, text);
   ENTITY certification;
@@ -1288,6 +1372,7 @@ SCHEMA certification_schema;
   END_ENTITY;
 
 END_SCHEMA;
+
 SCHEMA approval_schema;
   REFERENCE FROM basic_attribute_schema (description_attribute, get_description_value, get_role, object_role, role_association);
   REFERENCE FROM date_time_schema (date_time_select);
@@ -1350,6 +1435,7 @@ SCHEMA approval_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA contract_schema;
   REFERENCE FROM support_resource_schema (bag_to_set, identifier, label, text);
   ENTITY contract;
@@ -1388,6 +1474,7 @@ SCHEMA contract_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA security_classification_schema;
   REFERENCE FROM support_resource_schema (label, text);
   ENTITY security_classification;
@@ -1401,6 +1488,7 @@ SCHEMA security_classification_schema;
   END_ENTITY;
 
 END_SCHEMA;
+
 SCHEMA person_organization_schema;
   REFERENCE FROM basic_attribute_schema (description_attribute, get_description_value, get_id_value, get_name_value, get_role, id_attribute, name_attribute, object_role, role_association);
   REFERENCE FROM support_resource_schema (bag_to_set, identifier, label, text);
@@ -1663,6 +1751,7 @@ SCHEMA person_organization_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA date_time_schema;
 
 REFERENCE FROM basic_attribute_schema   -- ISO 10303-41
@@ -1960,6 +2049,7 @@ FUNCTION valid_time
 END_FUNCTION; 
 
 END_SCHEMA;
+
 SCHEMA group_schema;
   REFERENCE FROM support_resource_schema (label, bag_to_set, identifier, text);
   REFERENCE FROM basic_attribute_schema (get_id_value, id_attribute);
@@ -1997,6 +2087,7 @@ SCHEMA group_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA effectivity_schema;
   REFERENCE FROM basic_attribute_schema (description_attribute, get_description_value, get_name_value, name_attribute);
   REFERENCE FROM date_time_schema (date_time_or_event_occurrence, time_interval);
@@ -2061,6 +2152,7 @@ SCHEMA effectivity_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA external_reference_schema;
   REFERENCE FROM basic_attribute_schema (description_attribute, get_description_value);
   REFERENCE FROM support_resource_schema (label, text, identifier, bag_to_set);
@@ -2136,6 +2228,7 @@ SCHEMA external_reference_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA support_resource_schema;
   TYPE identifier = STRING;
   END_TYPE;
@@ -3334,8 +3427,6 @@ END_ENTITY;
   END_FUNCTION;
 END_SCHEMA;
 
-
-
 SCHEMA basic_attribute_schema;
   REFERENCE FROM action_schema (action, action_request_solution);
   REFERENCE FROM application_context_schema (application_context);
@@ -3439,6 +3530,7 @@ SCHEMA basic_attribute_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA experience_schema;
   REFERENCE FROM support_resource_schema (identifier, label, text, bag_to_set);
   ENTITY experience;
@@ -3504,6 +3596,7 @@ SCHEMA experience_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA qualifications_schema;
   REFERENCE FROM support_resource_schema (identifier, label, text, bag_to_set);
   ENTITY qualification;
@@ -3569,6 +3662,7 @@ SCHEMA qualifications_schema;
   END_FUNCTION;
 
 END_SCHEMA;
+
 SCHEMA location_schema;
   REFERENCE FROM support_resource_schema (identifier, label, text, bag_to_set);
   ENTITY location;
