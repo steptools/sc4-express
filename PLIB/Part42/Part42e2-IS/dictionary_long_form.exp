@@ -1810,7 +1810,7 @@ FUNCTION class_value_assigned
 	THEN
 		RETURN (val);
 	END_IF;
-	IF NOT (('ISO13584_IEC61360_DICTIONARY_SCHEMA'
+	IF NOT (('ISO13584_42_2_LONG_FORM_SCHEMA'
 		+'.ITEM_CLASS') IN TYPEOF(cl.definition[1]))
 	THEN
 		RETURN (val);
@@ -2205,7 +2205,7 @@ IF (('ISO13584_42_2_LONG_FORM_SCHEMA'
 THEN
 
 (* the data type is a class_reference_type*)
-	IF NOT (('MYY_SCHEMA'
+	IF NOT (('ISO13584_42_2_LONG_FORM_SCHEMA'
 	+'.ENTITY_INSTANCE_TYPE') IN TYPEOF (typ))
 	THEN RETURN(FALSE);
  	END_IF;
@@ -2465,7 +2465,7 @@ IF 'ISO13584_42_2_LONG_FORM_SCHEMA.AGGREGATE_ENTITY_INSTANCE_VALUE' IN TYPEOF(va
 	END_IF;
 
 	IF (NOT(
-	'MY_AGGREGATE_EXTENSION_SCHEMA'
+	'ISO13584_42_2_LONG_FORM_SCHEMA'
  + '.AGGREGATE_TYPE' IN dom.type_name))
 	THEN
 		RETURN(FALSE);
@@ -2647,7 +2647,7 @@ THEN
 			END_IF;
 	END_REPEAT;
 
-	IF (('ISO13584_IEC61360_ITEM_CLASS_CASE_OF_SCHEMA.'
+	IF (('ISO13584_42_2_LONG_FORM_SCHEMA.'
 		+ 'A_PRIORI_SEMANTIC_RELATIONSHIP') 
 		IN TYPEOF (classes[nb].definition[1])) 
 	THEN 
@@ -2709,6 +2709,45 @@ RETURN(s);
 
 END_FUNCTION; -- compute_known_referenced_property_constraints
 
+FUNCTION superclass_of_item_is_item(cl: item_class): LOGICAL;
+
+IF NOT EXISTS(cl\class.its_superclass)
+THEN
+	RETURN(TRUE);
+END_IF;
+
+IF SIZEOF(cl\class.its_superclass.definition) = 0
+THEN
+	RETURN(UNKNOWN);
+END_IF;
+
+RETURN(('ISO13584_42_2_LONG_FORM_SCHEMA.ITEM_CLASS')
+	IN TYPEOF(cl\class.its_superclass.definition[1]));
+
+END_FUNCTION; -- superclass_of_item_is_item
+
+FUNCTION check_is_case_of_referenced_classes_definition(
+	cl: item_class_case_of): BOOLEAN;
+LOCAL 
+	class_def_ok: BOOLEAN := TRUE;
+END_LOCAL;
+
+REPEAT i := 1 TO SIZEOF(cl.is_case_of);
+	IF (SIZEOF(cl.is_case_of[i].definition) = 1)
+	THEN
+		IF (NOT('ISO13584_42_2_LONG_FORM_SCHEMA' + 
+			'.ITEM_CLASS'
+			IN TYPEOF(cl.is_case_of[i].definition[1])))
+		THEN
+			class_def_ok := FALSE;
+		END_IF;
+		
+	END_IF;
+END_REPEAT;
+
+RETURN(class_def_ok);
+
+END_FUNCTION; -- check_is_case_of_referenced_classes_definition
 
 
 (************************************************************************************)
@@ -5821,46 +5860,6 @@ END_IF;
 RETURN([]);
 
 END_FUNCTION; -- data_type_non_quantitative_code_type
-
-FUNCTION superclass_of_item_is_item(cl: item_class): LOGICAL;
-
-IF NOT EXISTS(cl\class.its_superclass)
-THEN
-	RETURN(TRUE);
-END_IF;
-
-IF SIZEOF(cl\class.its_superclass.definition) = 0
-THEN
-	RETURN(UNKNOWN);
-END_IF;
-
-RETURN(('ISO13584_42_2_LONG_FORM_SCHEMA.ITEM_CLASS')
-	IN TYPEOF(cl\class.its_superclass.definition[1]));
-
-END_FUNCTION; -- superclass_of_item_is_item
-
-FUNCTION check_is_case_of_referenced_classes_definition(
-	cl: item_class_case_of): BOOLEAN;
-LOCAL 
-	class_def_ok: BOOLEAN := TRUE;
-END_LOCAL;
-
-REPEAT i := 1 TO SIZEOF(cl.is_case_of);
-	IF (SIZEOF(cl.is_case_of[i].definition) = 1)
-	THEN
-		IF (NOT('ISO13584_42_2_LONG_FORM_SCHEMA' + 
-			'.ITEM_CLASS'
-			IN TYPEOF(cl.is_case_of[i].definition[1])))
-		THEN
-			class_def_ok := FALSE;
-		END_IF;
-		
-	END_IF;
-END_REPEAT;
-
-RETURN(class_def_ok);
-
-END_FUNCTION; -- check_is_case_of_referenced_classes_definition
 
 
 (************************************************************************************)
