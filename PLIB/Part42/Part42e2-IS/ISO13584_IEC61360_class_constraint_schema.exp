@@ -9,6 +9,9 @@ of the Schema for the purposes of developing, implementing, installing and using
 based on the Schema, and to permit persons to whom the Schema is furnished to do so, 
 subject to the following conditions:
 
+The above copyright notice and this permission notice shall be included in all copies or 
+substantial portions of the Software.
+
 THE SCHEMA IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
 INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
 PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
@@ -18,7 +21,7 @@ DEALINGS IN THE SCHEMA.
 
 In addition, any modified copy of the Schema shall include the following notice:
 
-THIS SCHEMA HAS BEEN MODIFIED FROM THE SCHEMA DOCUMENTED IN ISO 13584-42, AND SHOULD NOT 
+THIS SCHEMA HAS BEEN MODIFIED FROM THE SCHEMA DOCUMENTED IN ISO 13584-42Ed2, AND SHOULD NOT 
 BE INTERPRETED AS COMPLYING WITH THAT STANDARD.
 
 *)
